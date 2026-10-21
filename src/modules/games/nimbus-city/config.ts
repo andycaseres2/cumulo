@@ -16,6 +16,7 @@ export const INTERACT_RANGE = 20;
 export const REGISTRY = {
   playerKey: 'playerKey',
   playerName: 'playerName',
+  missions: 'missions',
 } as const;
 
 export const EVENTS = {

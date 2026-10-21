@@ -33,7 +33,9 @@ Restart the dev server after changing `src/content.config.ts`.
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
 
-Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it.
+Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
+
+Missions: a "!" marks a building with a job and a check marks it once completed. Inside, talk to the client (e.g. Rosa Quispe at the Pastelería Dulce Nube counter), accept the job and choose **Aprender** (definitions before choosing, explanation after each answer) or **Práctica** (no hints, review at the end). Answer with clicks or the keys 1–4; Escape or "Salir" leaves without saving. Progress is saved in this browser.
 
 ## Architecture
 
@@ -46,6 +48,7 @@ src/
 │   ├── theory/          domain (Topic, TopicRepository port) → application (use cases) → infrastructure (content collection adapter) → presentation
 │   ├── games/           domain (Game, GameCatalog port) → application → infrastructure (static catalog) → presentation
 │   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots, access rule, office layouts and pathfinding, office talk), engine (Kenney tile indices, office furniture drawn in the Kenney palette, renderers, entities, shared systems for input and interactions, scenes, HUD), mount.ts (public entry point)
+│   ├── missions/        domain (Mission, run rules, progress port) → application (play and record) → infrastructure (mission content, static catalog, localStorage progress) → presentation (mission panel)
 │   └── player/          domain (Player, PlayerSession port) → application → infrastructure (guest session) → presentation
 ├── composition/         Composition root: wires adapters into use cases. Pages only import from here.
 ├── content/theory/      Theory topics in Markdown, validated by src/content.config.ts
@@ -55,7 +58,11 @@ src/
 
 Dependency rule: `pages → composition → application → domain`, and `infrastructure → domain`. Presentational components receive data through props.
 
-To add real sign-in, write a `PlayerSession` adapter (for example with Supabase Auth) and swap it in `src/composition/player.ts`. The game receives the player name through `mountNimbusCity(parent, { playerName })` and does not change.
+To add real sign-in, write a `PlayerSession` adapter (for example with Supabase Auth) and swap it in `src/composition/player.ts`. The game receives the player name and its missions through `mountNimbusCity(parent, { playerName, missions })` (the `GameMissions` port in `src/modules/games/nimbus-city/missions.ts`) and does not change. Mission progress moves to an account the same way: replace `localStorageProgressStore` in `src/composition/missions.ts`.
+
+### Adding a mission
+
+Write it as typed data in `src/modules/missions/infrastructure/content/` and register it in `staticMissionCatalog.ts`. `pnpm test` checks the content contract (`missionContent.test.ts`): four options per decision with exactly one correct, varied answer positions, a definition and an explanation for every option, and theory topics and exam tasks that exist.
 
 ### Adding theory
 

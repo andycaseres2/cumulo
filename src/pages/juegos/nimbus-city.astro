@@ -11,19 +11,22 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
 </GameLayout>
 
 <style>
+  /* Positioned so the mission panel overlay covers the game. */
   .game-root {
+    position: relative;
     width: 100%;
     height: 100%;
   }
 </style>
 
 <script>
+  import { gameMissions } from '@/composition/missions';
   import { currentPlayer } from '@/composition/player';
   import { mountNimbusCity } from '@/modules/games/nimbus-city/mount';
 
   const root = document.querySelector<HTMLElement>('[data-nimbus-city]');
   if (root) {
     const player = await currentPlayer();
-    await mountNimbusCity(root, { playerName: player.displayName });
+    await mountNimbusCity(root, { playerName: player.displayName, missions: gameMissions(root) });
   }
 </script>

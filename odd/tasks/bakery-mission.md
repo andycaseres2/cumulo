@@ -20,8 +20,8 @@ Branch: `feat/bakery-mission` (stacked on `feat/building-interiors`) · Delivery
 | T2 | S2, S4 | inline | done | content contract RED→GREEN (4 options, one correct, varied positions, theory slugs, exam tasks); Auto Scaling cost claim matches verified theory |
 | T3 | S5 | inline | done | ConversationCursor RED→GREEN (pages, blocked choices, valid choices); HUD choice buttons + keys 1–3; interior regression green |
 | T4 | S2, S3 | inline | done | panel tests RED→GREEN in happy-dom: learn (definitions, instant feedback, theory link), practice (no hints, review at end), leave early, number keys |
-| T5 | S1, S5, S6 | inline | pending | |
-| T6 | S1–S6 | inline | pending | |
+| T5 | S1, S5, S6 | inline | done | playMission + client talk RED→GREEN; browser: "!" on bakery and Rosa, 4 intro pages, accept with key 1, learn run 4/5, outro, "✓", progress survives reload |
+| T6 | S1–S6 | inline | done | README (controls, architecture, adding a mission); 142 tests; astro check 0; build |
 
 - T1: `missions` module: domain (Mission, Decision, Option, run state machine, result), progress port + use cases, localStorage and in-memory adapters; tests first.
 - T2: bakery mission content (story, five decisions on elasticity, Auto Scaling, load balancing, Availability Zones, variable expense) + content contract test (one correct option, four options, theory slugs and exam tasks exist).
@@ -35,4 +35,5 @@ Branch: `feat/bakery-mission` (stacked on `feat/building-interiors`) · Delivery
 - L1 (2026-10-21) Original request: S1.
 - L2 Content basis: theory topics `beneficios-de-la-nube` (elasticity, variable expense), `escalado-y-balanceo-de-carga` (EC2 Auto Scaling, ELB health checks), `infraestructura-global` (multiple AZs).
 - L3 The mission panel is a DOM overlay, not Phaser text: long explanations need wrapping, scrolling, links and accessible buttons.
+- L5 Browser bugs found and fixed: Rosa was unreachable behind the counter (talk point moved to the front of the counter for counter workers); the panel overflowed the screen and focus scrolled the game stage (flex + min-height: 0, focus with preventScroll, scroll only the panel body).
 - L4 Engram mirror `odd/bakery-mission/tasks`: pending — Engram resolves the Desktop as an ambiguous workspace.

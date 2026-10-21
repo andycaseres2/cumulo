@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { createCharacters } from '../art/characters';
 import { SHEET, SHEET_URL } from '../art/kenney';
+import { createMarkers } from '../art/markers';
 import { createOfficeProps } from '../art/officeProps';
 import { REGISTRY } from '../../config';
 
@@ -17,6 +18,7 @@ export class BootScene extends Phaser.Scene {
   create() {
     createCharacters(this);
     createOfficeProps(this);
+    createMarkers(this);
 
     // Dev shortcut: ?play=man or ?play=woman skips character selection.
     const quickStart = new URLSearchParams(window.location.search).get('play');

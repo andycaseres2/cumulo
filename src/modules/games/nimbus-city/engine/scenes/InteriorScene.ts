@@ -6,8 +6,11 @@ import { NameTag } from '../entities/NameTag';
 import { Walker } from '../entities/Walker';
 import { Worker } from '../entities/Worker';
 import { renderOffice } from '../render/officeRenderer';
-import { Interactions } from '../systems/Interactions';
+import { placeMarker } from '../art/markers';
+import { Interactions, type Interactable } from '../systems/Interactions';
 import { PlayerControls } from '../systems/PlayerControls';
+import { ACCEPT, clientOffer, clientOutro } from '../../missionTalk';
+import type { GameMissions, MissionBrief } from '../../missions';
 import { BUILDINGS, type BuildingDef } from '../../world/cityMap';
 import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
 import { workerLine, workerName } from '../../world/officeTalk';
@@ -27,7 +30,10 @@ export class InteriorScene extends Phaser.Scene {
   private nameTag!: NameTag;
   private controls!: PlayerControls;
   private interactions!: Interactions;
+  private workerTalk: Interactable[] = [];
   private leaving = false;
+  /** True while the mission panel is open over the office. */
+  private inMission = false;
 
   constructor() {
     super('interior');
@@ -37,6 +43,8 @@ export class InteriorScene extends Phaser.Scene {
     this.building = BUILDINGS.find((b) => b.id === data.buildingId)!;
     this.layout = buildOfficeLayout(this.building);
     this.leaving = false;
+    this.inMission = false;
+    this.workerTalk = [];
     this.physics.world.setBounds(0, 0, this.layout.width * TILE, this.layout.height * TILE);
 
     const solids = this.physics.add.staticGroup();
@@ -53,6 +61,7 @@ export class InteriorScene extends Phaser.Scene {
     const workers = this.spawnWorkers();
     this.physics.add.collider(this.player, solids);
     this.physics.add.collider(this.player, this.add.group(workers, { runChildUpdate: true }));
+    void this.setupClient(workers[0], this.workerTalk[0]);
 
     const camera = this.cameras.main.setBackgroundColor('#141c33');
     this.frameRoom(this.scale.width, this.scale.height);
@@ -70,7 +79,7 @@ export class InteriorScene extends Phaser.Scene {
 
   update() {
     this.nameTag.follow(this.player);
-    if (this.leaving) return;
+    if (this.leaving || this.inMission) return;
 
     const interact = this.controls.consumeInteract();
     if (this.interactions.busy) this.player.move(0, 0);
@@ -113,12 +122,12 @@ export class InteriorScene extends Phaser.Scene {
         takenSpots,
       );
       const name = workerName(this.building.id, i);
-      this.interactions.add({
+      const talk: Interactable = {
         get x() {
-          return worker.x;
+          return worker.talkPoint.x;
         },
         get y() {
-          return worker.y;
+          return worker.talkPoint.y;
         },
         prompt: `[E] Hablar con ${name}`,
         open: () => {
@@ -129,9 +138,61 @@ export class InteriorScene extends Phaser.Scene {
         close: () => {
           worker.frozen = false;
         },
-      });
+      };
+      this.interactions.add(talk);
+      this.workerTalk.push(talk);
       return worker;
     });
+  }
+
+  /** When the building has a job, its first worker becomes the client who offers it. */
+  private async setupClient(worker: Worker, talk: Interactable) {
+    const missions = this.registry.get(REGISTRY.missions) as GameMissions;
+    const brief = await missions.forBuilding(this.building.id);
+    if (!brief || !this.sys.isActive()) return;
+
+    worker.stayAtDesk();
+    const portrait = { key: worker.look, frame: frameName('down', 0) };
+    let state = await missions.status(brief.id);
+    let marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
+
+    talk.prompt = `[E] Hablar con ${brief.client.name}`;
+    talk.open = () => {
+      worker.frozen = true;
+      worker.face(this.player.x, this.player.y);
+      return {
+        pages: clientOffer(brief, state, portrait),
+        onChoice: (choice) => {
+          if (choice === ACCEPT) void play();
+        },
+      };
+    };
+
+    const play = async () => {
+      const outcome = await this.runMission(missions, brief);
+      if (!outcome || !this.sys.isActive()) return;
+      state = await missions.status(brief.id);
+      marker.destroy();
+      marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
+      worker.face(this.player.x, this.player.y);
+      this.interactions.start({ pages: clientOutro(brief, outcome.passed, portrait) });
+    };
+  }
+
+  /** Pauses the player and keyboard capture while the mission panel is on screen. */
+  private async runMission(missions: GameMissions, brief: MissionBrief) {
+    this.inMission = true;
+    this.player.move(0, 0);
+    this.interactions.clearPrompt();
+    const keyboard = this.input.keyboard!;
+    keyboard.disableGlobalCapture();
+    try {
+      return await missions.play(brief.id);
+    } finally {
+      keyboard.enableGlobalCapture();
+      this.controls.reset();
+      this.inMission = false;
+    }
   }
 
   private leave() {

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
 import { frameName, npcLookKey } from '../art/characters';
+import { placeMarker } from '../art/markers';
 import { EVENTS, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
 import { NameTag } from '../entities/NameTag';
 import { Npc } from '../entities/Npc';
@@ -8,6 +9,7 @@ import { Walker } from '../entities/Walker';
 import { renderBuildings, renderGround, renderProps, renderRoadMarkings, type Door } from '../render/cityRenderer';
 import { Interactions } from '../systems/Interactions';
 import { PlayerControls } from '../systems/PlayerControls';
+import type { GameMissions } from '../../missions';
 import { openAccess, type AccessPolicy } from '../../world/access';
 import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
 import { G } from '../../world/tileTypes';
@@ -39,6 +41,7 @@ export class CityScene extends Phaser.Scene {
   private marker!: Phaser.GameObjects.Arc;
   private readonly access: AccessPolicy = openAccess;
   private transitioning = false;
+  private markers: Phaser.GameObjects.Image[] = [];
 
   constructor() {
     super('city');
@@ -72,6 +75,7 @@ export class CityScene extends Phaser.Scene {
     this.physics.add.collider(this.player, npcGroup);
 
     this.setupCameras();
+    void this.refreshMarkers();
     this.scene.launch('hud');
     this.events.on('wake', (_: unknown, data: CityWakeData) => this.returnFromBuilding(data));
   }
@@ -122,8 +126,28 @@ export class CityScene extends Phaser.Scene {
     }
     this.controls.reset();
     this.transitioning = false;
+    void this.refreshMarkers();
     this.game.events.emit(EVENTS.location, { title: 'Nimbus City', subtitle: 'Objetivo: explora la ciudad', minimap: true });
     this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
+  }
+
+  /** "!" above buildings with an open job, a check once it is completed. */
+  private async refreshMarkers() {
+    const missions = this.registry.get(REGISTRY.missions) as GameMissions;
+    const placed = await Promise.all(
+      BUILDINGS.map(async (building) => {
+        const brief = await missions.forBuilding(building.id);
+        if (!brief) return null;
+        const completed = (await missions.status(brief.id)) === 'completed';
+        return { building, completed };
+      }),
+    );
+    for (const marker of this.markers) marker.destroy();
+    this.markers = placed
+      .filter((p) => p !== null)
+      .map(({ building, completed }) =>
+        placeMarker(this, (building.x + building.w / 2) * TILE, buildingTop(building) * TILE - 2, completed),
+      );
   }
 
   /** Citizens start on free pavement: not under a building and not on a prop. */

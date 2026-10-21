@@ -5,10 +5,13 @@ import { CityScene } from './engine/scenes/CityScene';
 import { HudScene } from './engine/scenes/HudScene';
 import { InteriorScene } from './engine/scenes/InteriorScene';
 import { SelectScene } from './engine/scenes/SelectScene';
+import { noMissions, type GameMissions } from './missions';
 
 export interface NimbusCityOptions {
   /** Shown above the player's character. Provided by whoever hosts the game. */
   playerName: string;
+  /** Jobs offered in the buildings; without it the city is free to explore. */
+  missions?: GameMissions;
 }
 
 export interface NimbusCityHandle {
@@ -31,7 +34,10 @@ export async function mountNimbusCity(parent: HTMLElement, options: NimbusCityOp
     scale: { mode: Phaser.Scale.RESIZE, width: parent.clientWidth, height: parent.clientHeight },
     physics: { default: 'arcade', arcade: { debug: false } },
     callbacks: {
-      preBoot: (booting) => booting.registry.set(REGISTRY.playerName, options.playerName),
+      preBoot: (booting) => {
+        booting.registry.set(REGISTRY.playerName, options.playerName);
+        booting.registry.set(REGISTRY.missions, options.missions ?? noMissions);
+      },
     },
     scene: [BootScene, SelectScene, CityScene, InteriorScene, HudScene],
   });

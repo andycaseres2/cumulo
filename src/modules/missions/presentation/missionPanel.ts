@@ -59,7 +59,7 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
     function show(...children: Child[]) {
       body.replaceChildren(...children);
       body.scrollTop = 0;
-      body.querySelector<HTMLElement>('h3')?.focus();
+      body.querySelector<HTMLElement>('h3')?.focus({ preventScroll: true });
     }
 
     function heading(text: string) {
@@ -146,7 +146,9 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
           button(finished ? 'Ver resultado' : 'Siguiente', () => (finished ? renderResults() : renderDecision()), { class: 'mp-primary' }),
         ]),
       );
-      body.querySelector<HTMLButtonElement>('.mp-primary')?.focus();
+      body.querySelector<HTMLButtonElement>('.mp-primary')?.focus({ preventScroll: true });
+      // The feedback is appended at the end: scroll only the panel body, never the game behind it.
+      body.scrollTop = body.scrollHeight;
     }
 
     function renderResults() {
