@@ -6,20 +6,20 @@ Built with Astro (static pages, Markdown content collections) and Phaser (the 2D
 
 ## Run
 
-Requires Node.js 22.22 or newer.
+Requires Node.js 22.22 or newer and pnpm 12. This project uses pnpm only: npm is blocked through `engines` and `engine-strict`.
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Starts the dev server |
-| `npm run build` | Typechecks (`astro check`) and builds static pages to `dist/` |
-| `npm run preview` | Serves the production build |
-| `npm run check` | Typechecks `.astro` and `.ts` files and validates content |
-| `npm test` | Runs the unit tests (Vitest) |
+| `pnpm dev` | Starts the dev server |
+| `pnpm build` | Typechecks (`astro check`) and builds static pages to `dist/` |
+| `pnpm preview` | Serves the production build |
+| `pnpm check` | Typechecks `.astro` and `.ts` files and validates content |
+| `pnpm test` | Runs the unit tests (Vitest) |
 
 Restart the dev server after changing `src/content.config.ts`.
 
