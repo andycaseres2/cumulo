@@ -17,9 +17,9 @@ Branch: `feat/astro-platform` · Delivery: ask-on-risk · Test runner: Vitest (d
 | ID | Specs | Route | Status | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | S2, S4, S5, S6 | inline | done | `astro check` 0 errors; player tests RED→GREEN (3); headless walk + mouse-only checks pass on `/juegos/nimbus-city`, name tag "Invitado" injected |
-| T2 | S3, S4 | inline | pending | |
+| T2 | S3, S4 | inline | done | 15 new tests RED→GREEN (exam, theory, games, city map); `astro check` 0/0/0; T1 commit assess: medium, under_budget |
 | T3 | S1, S3 | inline | pending | |
-| T4 | S1 (theory content) | delegated — parallel unit, disjoint surface `src/content/theory/**` | pending | |
+| T4 | S1 (theory content) | delegated — parallel unit, disjoint surface `src/content/theory/**` | done | 8 topics, 717–893 words, 1–6 official sources each; validated by the Zod schema in `astro check`; writer stayed inside its surface |
 | T5 | S1–S6 | inline | pending | |
 
 - T1: Astro scaffold; move the Phaser game into `src/modules/games/nimbus-city/` behind `mountNimbusCity(parent, { playerName })`; page `/juegos/nimbus-city`.
@@ -33,4 +33,6 @@ Branch: `feat/astro-platform` · Delivery: ask-on-risk · Test runner: Vitest (d
 - L1 (2026-10-21) Original request: "si eso dale con todo , necesito que todo este super bien pero demasiado bien componetizado y con clean arquitecture porfavor" — answering the proposal to migrate to Astro with routes `/`, `/juegos`, `/juegos/nimbus-city`, `/teoria`, `/teoria/[tema]`.
 - L2 Baseline: prototype committed on `main` as `9096d70`; feature branch created. Astro 7.4.2, Vitest 5.0.5 are current on npm.
 - L4 T1: Astro pinned to 7.4.1 because 7.4.2 requires Node >=22.23.4 and the machine runs 22.23.2 (ServBay-managed; not changed). The player module landed in T1 because the game page needs the injected name (S4).
+- L5 T2: exam domains live in a shared-kernel module `exam` so `games` does not depend on `theory`. The game `config.ts` no longer imports Phaser so the world module is pure and testable.
+- L6 T4 writer notes: no exact Region/AZ/edge counts, prices or Reserved Instance discount (not on official pages); "price" as a Region selection factor and IAM implicit deny are standard facts not quoted by the cited pages.
 - L3 Engram mirror `odd/astro-platform/tasks`: pending — the Engram server resolves the Desktop as an ambiguous workspace and does not offer this repo.

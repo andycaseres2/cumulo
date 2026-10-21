@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 export const TILE = 16;
 export const MAP_W = 64;
 export const MAP_H = 48;
@@ -28,7 +26,7 @@ export const EVENTS = {
 } as const;
 
 export function pickZoom(width: number, height: number): number {
-  return Phaser.Math.Clamp(Math.floor(Math.min(width / 480, height / 300)), 2, 4);
+  return Math.min(4, Math.max(2, Math.floor(Math.min(width / 480, height / 300))));
 }
 
 export function minimapRect(screenWidth: number) {
