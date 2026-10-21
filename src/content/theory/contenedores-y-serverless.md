@@ -64,7 +64,7 @@ Fargate funciona con **Amazon ECS y Amazon EKS**.
 - **Basado en eventos:** escribes una función y la conectas a un disparador (*trigger*), por ejemplo una subida a Amazon S3, un mensaje de Amazon SQS, una regla de Amazon EventBridge o una solicitud de Amazon API Gateway. Lambda la ejecuta cuando ocurre el evento.
 - **Escala automáticamente:** crea y destruye entornos de ejecución según el tráfico.
 - **Pago por uso:** sin compromisos por adelantado; en las funciones de eventos pagas por solicitud y por el tiempo de ejecución.
-- **Duración limitada:** una invocación de una función de eventos dura **hasta 15 minutos** por defecto. Para procesos muy largos, considera otras opciones como contenedores o AWS Batch.
+- **Duración limitada:** una invocación de una función de eventos puede durar **como máximo 15 minutos (900 segundos)**. Para procesos muy largos, considera otras opciones como contenedores o AWS Batch.
 
 En el ejemplo inicial, generar la miniatura cuando se sube un recibo a S3 es un caso típico de Lambda.
 
@@ -84,7 +84,7 @@ En el ejemplo inicial, generar la miniatura cuando se sube un recibo a S3 es un 
 - **Pensar que Fargate es un orquestador.** Fargate es el **motor de cómputo serverless**; el orquestador es ECS o EKS.
 - **Confundir ECR con ECS.** ECR **guarda** imágenes; ECS **ejecuta y orquesta** contenedores.
 - **Elegir ECS cuando el escenario menciona Kubernetes.** "Kubernetes" apunta a **EKS**.
-- **Usar Lambda para procesos de varias horas.** Una invocación de una función de eventos dura hasta 15 minutos por defecto.
+- **Usar Lambda para procesos de varias horas.** Una invocación de una función de eventos puede durar como máximo 15 minutos.
 - **Creer que serverless significa "sin servidores físicos".** Los servidores existen, pero AWS los administra.
 
 ## Resumen para el examen
@@ -95,5 +95,5 @@ En el ejemplo inicial, generar la miniatura cuando se sube un recibo a S3 es un 
 - ECR = registro de imágenes de contenedor.
 - Fargate = cómputo serverless para contenedores de ECS y EKS.
 - Lambda = funciones serverless basadas en eventos, con pago por uso.
-- Una invocación de Lambda (función de eventos) dura hasta 15 minutos por defecto.
+- Una invocación de Lambda (función de eventos) puede durar como máximo 15 minutos.
 - Serverless = AWS administra servidores, escalado y parches; tú te enfocas en el código.

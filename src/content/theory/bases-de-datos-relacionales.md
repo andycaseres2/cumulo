@@ -64,7 +64,7 @@ Una **base de datos relacional** guarda la información en **tablas** con filas 
 
 Beneficios clave:
 
-- **Alto rendimiento:** AWS indica que ofrece varias veces el rendimiento de MySQL y PostgreSQL estándar en hardware similar (consulta la cifra vigente en la documentación oficial).
+- **Alto rendimiento:** AWS indica que ofrece **hasta 6 veces** el rendimiento (throughput) de MySQL y de PostgreSQL estándar. El material antiguo menciona 5 y 3 veces; la cifra vigente es 6.
 - **Almacenamiento distribuido y resiliente:** los datos se guardan en un volumen de clúster con **copias en tres Availability Zones** de una Región, lo que da alta durabilidad y disponibilidad durante un *failover*.
 - **Almacenamiento que crece solo:** el volumen crece automáticamente a medida que aumentan los datos, y solo pagas el espacio que usas.
 - **Clustering y replicación automatizados**, una de las tareas más complejas de administrar por cuenta propia.

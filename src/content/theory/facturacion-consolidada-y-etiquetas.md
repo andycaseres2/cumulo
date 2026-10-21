@@ -7,6 +7,7 @@ examTasks: ["4.2"]
 services: ["AWS Organizations", "AWS Cost and Usage Reports", "AWS Cost Explorer", "Amazon S3", "Amazon Athena"]
 readingMinutes: 5
 sources:
+  - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier-plans.html"
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html"
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/useconsolidatedbilling-effective.html"
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-behavior.html"
@@ -32,7 +33,7 @@ Beneficios de la **facturación consolidada** (*consolidated billing*):
 - **Uso combinado:** el uso de todas las cuentas se suma, lo que permite compartir **descuentos por volumen**, descuentos de **Reserved Instances** y **Savings Plans**. El resultado puede ser un cargo menor que con cuentas independientes.
 - **Sin costo adicional:** la facturación consolidada es gratuita.
 
-Ejemplo: servicios como la transferencia de datos y Amazon S3 tienen **niveles de precio por volumen**. AWS suma el uso de todas las cuentas para decidir qué nivel aplicar, así la organización llega antes a los precios más bajos por GB y luego AWS reparte el descuento entre las cuentas según su uso. La capa gratuita también se aplica al uso total de la organización, no a cada cuenta.
+Ejemplo: servicios como la transferencia de datos y Amazon S3 tienen **niveles de precio por volumen**. AWS suma el uso de todas las cuentas para decidir qué nivel aplicar, así la organización llega antes a los precios más bajos por GB y luego AWS reparte el descuento entre las cuentas según su uso. La capa gratuita también se aplica al uso total de la organización, no a cada cuenta. Ojo: si una cuenta con el plan gratuito (Free account plan) se une a AWS Organizations, pasa automáticamente al plan pagado y pierde sus créditos de la capa gratuita.
 
 ## Asignación de costos entre cuentas
 

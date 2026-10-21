@@ -14,13 +14,13 @@ Branch: `feat/theory-complete` (stacked on `feat/astro-platform`) · Delivery: a
 
 | ID | Specs | Route | Status | Evidence |
 | --- | --- | --- | --- | --- |
-| T1 | S2, S4 | inline | pending | |
-| T2 | S1–S3 (D1, 4 new + 2 updated) | delegated — parallel unit, files listed in its prompt | pending | |
-| T3 | S1–S3 (D2, 8 new + 2 updated) | delegated — parallel unit | pending | |
-| T4 | S1–S3 (D3 orders 1–10, 9 new + 1 updated) | delegated — parallel unit | pending | |
-| T5 | S1–S3 (D3 orders 11–20, 9 new + 1 updated) | delegated — parallel unit | pending | |
-| T6 | S1–S3 (D4, 4 new + 2 updated) | delegated — parallel unit | pending | |
-| T7 | S1–S4 | inline + independent fact-check verifier | pending | |
+| T1 | S2, S4 | inline | done | exam tasks/services/format + coverage use case: 11 unit tests RED→GREEN; content contract RED until T2–T6, then GREEN; `fb04172` |
+| T2 | S1–S3 (D1, 4 new + 2 updated) | delegated — parallel unit, files listed in its prompt | done | `12b4e3f`; writer stayed in its file set; coverage contract green |
+| T3 | S1–S3 (D2, 8 new + 2 updated) | delegated — parallel unit | done | `12b4e3f`; writer stayed in its file set; coverage contract green |
+| T4 | S1–S3 (D3 orders 1–10, 9 new + 1 updated) | delegated — parallel unit | done | `12b4e3f`; writer stayed in its file set; coverage contract green |
+| T5 | S1–S3 (D3 orders 11–20, 9 new + 1 updated) | delegated — parallel unit | done | `12b4e3f`; writer stayed in its file set; coverage contract green |
+| T6 | S1–S3 (D4, 4 new + 2 updated) | delegated — parallel unit | done | `12b4e3f`; writer stayed in its file set; coverage contract green |
+| T7 | S1–S4 | inline + independent fact-check verifier | done | verifier: ~85 claims, 0 wrong, 0 blockers, 5 advisories; 4 applied (Lambda max 15 min wording, Aurora up to 6x, Free plan joining Organizations, Free Tier credits/offers), SRT kept hedged; 29 tests, astro check 0, 46 pages |
 
 - T1: exam tasks, in-scope services and exam format in the `exam` module; `examTasks` on topics; coverage use case; coverage contract test over the Markdown files; UI for tasks, format and coverage.
 - T2–T6: writers own disjoint file sets inside `src/content/theory/` (listed per prompt). Route reason: five independent units launched together.
@@ -30,4 +30,5 @@ Branch: `feat/theory-complete` (stacked on `feat/astro-platform`) · Delivery: a
 
 - L1 (2026-10-21) Original request: see S1.
 - L2 Research (official pages, 2026-10-21): CLF-C02 is current; no CLF-C03 page exists. Live guide edited in place: Business Support+ and Unified Operations replace older plan names; Developer Support no longer named. Format: 65 questions (50 scored, 15 unscored), 90 min, scaled 100–1000, pass 700, compensatory; multiple choice and multiple response.
+- L4 Results: 42 topics; contract test covers 19/19 tasks and every in-scope service; astro check 0/0/0; 46 pages built. Writers flagged renames and current changes (Business Support+/Unified Operations, older plans end 2027-01-01; Compute Savings Plans up to 66 %; Security Hub CSPM split; Migration Hub closed to new customers 2025-11-07; AppStream 2.0 now WorkSpaces Applications). Added @types/node for the contract test's node:fs typing.
 - L3 Engram mirror `odd/theory-complete/tasks`: pending — Engram resolves the Desktop as an ambiguous workspace.

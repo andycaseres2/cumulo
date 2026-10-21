@@ -7,6 +7,7 @@ examTasks: ["4.1"]
 services: ["Amazon S3", "Amazon EBS", "Amazon EC2", "Amazon CloudFront"]
 readingMinutes: 6
 sources:
+  - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier-plans.html"
   - "https://aws.amazon.com/pricing/"
   - "https://docs.aws.amazon.com/whitepapers/latest/how-aws-pricing-works/key-principles.html"
   - "https://aws.amazon.com/blogs/architecture/overview-of-data-transfer-costs-for-common-architectures/"
@@ -86,10 +87,10 @@ Si borras o mueves un objeto antes de su duración mínima, se cobra el resto de
 
 La **AWS Free Tier** cambió: el material de estudio antiguo describe un modelo anterior. Hoy, al crear una cuenta eliges entre:
 
-- **Free account plan (plan gratuito):** para experimentar y hacer pruebas de concepto **sin costo** durante **hasta seis meses**. Recibes **créditos** de AWS (puedes ganar más completando actividades) y acceso a servicios seleccionados. Termina a los seis meses o cuando se agotan los créditos, lo que ocurra primero; para seguir, debes pasar al plan pagado.
+- **Free account plan (plan gratuito):** para experimentar y hacer pruebas de concepto **sin costo** durante **hasta seis meses**. Recibes **USD 100 en créditos** de AWS y puedes ganar hasta USD 100 más completando actividades, y acceso a servicios seleccionados. Termina a los seis meses o cuando se agotan los créditos, lo que ocurra primero; para seguir, debes pasar al plan pagado.
 - **Paid account plan (plan pagado):** para cargas de producción; los créditos aplican primero y luego pagas con precios estándar de pago por uso.
 
-Además existen ofertas **Always Free** (asignaciones mensuales permanentes en algunos servicios) y **pruebas de corto plazo** en servicios seleccionados. Los montos de créditos y límites cambian, así que consúltalos en la página oficial de AWS Free Tier.
+En el plan gratuito solo están activas las ofertas **Always Free** (asignaciones mensuales permanentes en algunos servicios); las **pruebas de corto plazo** de servicios seleccionados aplican a cuentas con el plan pagado. Los montos de créditos y límites cambian, así que consúltalos en la página oficial de AWS Free Tier.
 
 ## Trampas típicas del examen
 
