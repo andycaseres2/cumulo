@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { EVENTS, INTERACT_RANGE } from '../../config';
 import type { Walker } from '../entities/Walker';
+import { ConversationCursor, toConversation, type Conversation } from '../ui/conversation';
 import type { DialogContent } from '../ui/dialog';
 
 /** Something the player can use when standing close to it: a person, a door, an object. */
@@ -8,37 +9,43 @@ export interface Interactable {
   readonly x: number;
   readonly y: number;
   prompt: string;
-  /** Returns the dialog to show, or null when the interaction is an action (e.g. walking through a door). */
-  open: () => DialogContent | null;
+  /** Returns what to say, or null when the interaction is an action (e.g. walking through a door). */
+  open: () => DialogContent | Conversation | null;
   close?: () => void;
 }
 
-/** Finds the nearest interactable, shows its prompt and drives the dialog lifecycle through the HUD. */
+/** Finds the nearest interactable, shows its prompt and drives conversations through the HUD. */
 export class Interactions {
   private items: Interactable[] = [];
-  private active: Interactable | null = null;
+  private cursor: ConversationCursor | null = null;
+  private owner: Interactable | null = null;
   private lastPrompt: string | null = null;
 
   constructor(
     private readonly scene: Phaser.Scene,
     private readonly player: Walker,
   ) {
-    const close = () => this.close();
-    scene.game.events.on(EVENTS.dialogClose, close);
-    scene.events.once('shutdown', () => scene.game.events.off(EVENTS.dialogClose, close));
+    const pageDone = () => this.onPageDone();
+    const choice = (id: string) => this.onChoice(id);
+    scene.game.events.on(EVENTS.dialogClose, pageDone);
+    scene.game.events.on(EVENTS.dialogChoice, choice);
+    scene.events.once('shutdown', () => {
+      scene.game.events.off(EVENTS.dialogClose, pageDone);
+      scene.game.events.off(EVENTS.dialogChoice, choice);
+    });
   }
 
   add(item: Interactable) {
     this.items.push(item);
   }
 
-  /** True while a dialog from this scene is open; the player should not move. */
+  /** True while a conversation from this scene is open; the player should not move. */
   get busy(): boolean {
-    return this.active !== null;
+    return this.cursor !== null;
   }
 
   update(interactPressed: boolean) {
-    if (this.active) {
+    if (this.cursor) {
       if (interactPressed) this.scene.game.events.emit(EVENTS.dialogAdvance);
       return;
     }
@@ -47,19 +54,42 @@ export class Interactions {
     if (!target || !interactPressed) return;
     const content = target.open();
     this.setPrompt(null);
-    if (!content) return;
-    this.active = target;
-    this.scene.game.events.emit(EVENTS.dialog, content);
+    if (content) this.start(toConversation(content), target);
+  }
+
+  /** Opens a conversation that did not come from walking up to something (e.g. after a mission). */
+  start(conversation: Conversation, owner: Interactable | null = null) {
+    this.cursor = new ConversationCursor(conversation);
+    this.owner = owner;
+    this.setPrompt(null);
+    this.scene.game.events.emit(EVENTS.dialog, this.cursor.current());
   }
 
   clearPrompt() {
     this.setPrompt(null);
   }
 
-  private close() {
-    if (!this.active) return;
-    this.active.close?.();
-    this.active = null;
+  private onPageDone() {
+    if (!this.cursor) return;
+    const step = this.cursor.advance();
+    if (step === 'next') this.scene.game.events.emit(EVENTS.dialog, this.cursor.current());
+    if (step !== 'end') return;
+    const { onEnd } = this.cursor.conversation;
+    this.finish();
+    onEnd?.();
+  }
+
+  private onChoice(choiceId: string) {
+    if (!this.cursor?.choose(choiceId)) return;
+    const { onChoice } = this.cursor.conversation;
+    this.finish();
+    onChoice?.(choiceId);
+  }
+
+  private finish() {
+    this.owner?.close?.();
+    this.cursor = null;
+    this.owner = null;
     this.scene.game.events.emit(EVENTS.dialog, null);
   }
 

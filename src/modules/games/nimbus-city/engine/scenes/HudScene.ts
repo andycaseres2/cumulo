@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { EVENTS, FONT, minimapRect } from '../../config';
 import { Button } from '../ui/Button';
-import type { DialogContent, LocationInfo } from '../ui/dialog';
+import type { DialogChoice, DialogContent, LocationInfo } from '../ui/dialog';
 import { revealedText } from '../ui/typewriter';
 
 const PANEL = 0x1b1b2a;
@@ -27,6 +27,8 @@ export class HudScene extends Phaser.Scene {
   private fullText = '';
   private typingStartedAt = 0;
   private typing = false;
+  private choices: DialogChoice[] = [];
+  private choiceButtons: Button[] = [];
 
   constructor() {
     super('hud');
@@ -65,6 +67,12 @@ export class HudScene extends Phaser.Scene {
       .container(0, 0, [this.dialogBox, this.portraitFrame, this.portrait, this.dialogTitle, this.dialogText, this.dialogAccept])
       .setVisible(false);
 
+    ['ONE', 'TWO', 'THREE'].forEach((key, i) =>
+      this.input.keyboard!.on(`keydown-${key}`, () => {
+        if (this.dialog.visible && !this.typing && this.choices[i]) this.choose(this.choices[i].id);
+      }),
+    );
+
     this.layout();
     this.scale.on('resize', this.layout, this);
     const handlers: [string, (...args: never[]) => void][] = [
@@ -84,7 +92,32 @@ export class HudScene extends Phaser.Scene {
     if (!this.typing) return;
     const shown = revealedText(this.fullText, time - this.typingStartedAt, CHARS_PER_SECOND);
     this.dialogText.setText(shown);
-    if (shown.length >= this.fullText.length) this.typing = false;
+    if (shown.length >= this.fullText.length) this.finishTyping();
+  }
+
+  private finishTyping() {
+    this.typing = false;
+    this.dialogText.setText(this.fullText);
+    this.showChoices();
+  }
+
+  /** Choice buttons replace "Aceptar", right-aligned at the bottom of the box, once the text is complete. */
+  private showChoices() {
+    for (const button of this.choiceButtons) button.destroy();
+    this.choiceButtons = [];
+    this.dialogAccept.setVisible(this.choices.length === 0);
+    let right = this.dialogBox.width - 14;
+    for (const [i, choice] of [...this.choices.entries()].reverse()) {
+      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 10);
+      button.setPosition(right - button.buttonWidth / 2, DIALOG_HEIGHT - button.buttonHeight / 2 - 12);
+      right -= button.buttonWidth + 10;
+      this.dialog.add(button);
+      this.choiceButtons.push(button);
+    }
+  }
+
+  private choose(choiceId: string) {
+    this.game.events.emit(EVENTS.dialogChoice, choiceId);
   }
 
   private layout() {
@@ -126,6 +159,10 @@ export class HudScene extends Phaser.Scene {
   private showDialog(content: DialogContent | null) {
     this.dialog.setVisible(content !== null);
     this.controls.setVisible(content === null);
+    this.choices = content?.choices ?? [];
+    for (const button of this.choiceButtons) button.destroy();
+    this.choiceButtons = [];
+    this.dialogAccept.setVisible(this.choices.length === 0);
     if (!content) {
       this.typing = false;
       return;
@@ -142,13 +179,12 @@ export class HudScene extends Phaser.Scene {
     this.typing = true;
   }
 
-  /** First press reveals the whole text; the next one closes the dialog. */
+  /** First press reveals the whole text; the next one closes the page, unless the player must pick a choice. */
   private advanceDialog() {
     if (this.typing) {
-      this.typing = false;
-      this.dialogText.setText(this.fullText);
+      this.finishTyping();
       return;
     }
-    this.game.events.emit(EVENTS.dialogClose);
+    if (this.choices.length === 0) this.game.events.emit(EVENTS.dialogClose);
   }
 }

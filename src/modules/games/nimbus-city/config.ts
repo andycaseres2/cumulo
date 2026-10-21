@@ -24,6 +24,8 @@ export const EVENTS = {
   dialogClose: 'hud:dialog-close',
   /** Player pressed E/Space/Aceptar while a dialog is open: the HUD completes the text or closes it. */
   dialogAdvance: 'hud:dialog-advance',
+  /** Player picked one of the dialog choices; carries the choice id. */
+  dialogChoice: 'hud:dialog-choice',
   interact: 'hud:interact',
   location: 'hud:location',
 } as const;

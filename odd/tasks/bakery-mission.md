@@ -18,7 +18,7 @@ Branch: `feat/bakery-mission` (stacked on `feat/building-interiors`) · Delivery
 | --- | --- | --- | --- | --- |
 | T1 | S3, S4, S6 | inline | done | run state machine + progress (best score, sticky completion) RED→GREEN |
 | T2 | S2, S4 | inline | done | content contract RED→GREEN (4 options, one correct, varied positions, theory slugs, exam tasks); Auto Scaling cost claim matches verified theory |
-| T3 | S5 | inline | pending | |
+| T3 | S5 | inline | done | ConversationCursor RED→GREEN (pages, blocked choices, valid choices); HUD choice buttons + keys 1–3; interior regression green |
 | T4 | S2, S3 | inline | pending | |
 | T5 | S1, S5, S6 | inline | pending | |
 | T6 | S1–S6 | inline | pending | |
