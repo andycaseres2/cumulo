@@ -20,7 +20,7 @@ Branch: `feat/astro-platform` · Delivery: ask-on-risk · Test runner: Vitest (d
 | T2 | S3, S4 | inline | done | 15 new tests RED→GREEN (exam, theory, games, city map); `astro check` 0/0/0; T1 commit assess: medium, under_budget |
 | T3 | S1, S3 | inline | done | `astro check` 0/0/0; build 12 pages; desktop screenshots of `/`, `/juegos`, `/teoria`, a topic; CDP 390px phone emulation: no page overflow (only the comparison table scrolls inside its box) |
 | T4 | S1 (theory content) | delegated — parallel unit, disjoint surface `src/content/theory/**` | done | 8 topics, 717–893 words, 1–6 official sources each; validated by the Zod schema in `astro check`; writer stayed inside its surface |
-| T5 | S1–S6 | inline | pending | |
+| T5 | S1–S6 | inline | done | 18 tests pass; `astro check` 0/0/0; build 12 pages; walk + mouse-only game checks pass; README documents routes, architecture and content authoring |
 
 - T1: Astro scaffold; move the Phaser game into `src/modules/games/nimbus-city/` behind `mountNimbusCity(parent, { playerName })`; page `/juegos/nimbus-city`.
 - T2: Domain + application + infrastructure for `theory`, `games`, `player`, composition root, Vitest tests written first.
