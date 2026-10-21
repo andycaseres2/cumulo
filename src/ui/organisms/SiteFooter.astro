@@ -8,6 +8,11 @@ import Container from '@/ui/atoms/Container.astro';
       Nimbus City es un proyecto independiente para preparar el examen AWS Certified Cloud Practitioner (CLF-C02). No está
       afiliado ni respaldado por Amazon Web Services.
     </p>
+    <p>
+      Arte del juego: <a href="https://kenney.nl/assets/rpg-urban-pack" rel="noopener noreferrer" target="_blank"
+        >RPG Urban Pack de Kenney</a
+      > (CC0).
+    </p>
   </Container>
 </footer>
 
@@ -23,5 +28,9 @@ import Container from '@/ui/atoms/Container.astro';
   p {
     max-width: var(--reading-width);
     margin: 0;
+  }
+
+  p + p {
+    margin-top: var(--space-2);
   }
 </style>

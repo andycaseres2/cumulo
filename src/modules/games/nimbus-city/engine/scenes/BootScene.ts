@@ -1,23 +1,20 @@
 import Phaser from 'phaser';
-import { createCharacter, PLAYER_LOOKS, randomLook } from '../art/characters';
-import { seededRandom } from '../art/canvas';
-import { generateProps } from '../art/props';
-import { generateTileset } from '../art/tiles';
-import { NPC_COUNT, REGISTRY } from '../../config';
-import { BUILDINGS } from '../../world/cityMap';
+import { createCharacters } from '../art/characters';
+import { SHEET, SHEET_URL } from '../art/kenney';
+import { REGISTRY } from '../../config';
 
-/** Generates every texture and animation in code, then opens character selection. */
+/** Loads the Kenney sheet, builds character textures and animations, then opens character selection. */
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('boot');
   }
 
+  preload() {
+    this.load.spritesheet(SHEET, SHEET_URL, { frameWidth: 16, frameHeight: 16 });
+  }
+
   create() {
-    generateTileset(this);
-    generateProps(this, BUILDINGS);
-    for (const [key, look] of Object.entries(PLAYER_LOOKS)) createCharacter(this, key, look);
-    const rng = seededRandom(42);
-    for (let i = 0; i < NPC_COUNT; i++) createCharacter(this, `npc-${i}`, randomLook(rng));
+    createCharacters(this);
 
     // Dev shortcut: ?play=man or ?play=woman skips character selection.
     const quickStart = new URLSearchParams(window.location.search).get('play');

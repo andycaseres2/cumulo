@@ -1,56 +1,8 @@
-export interface Painter {
-  rect: (x: number, y: number, w: number, h: number, color: string) => void;
-  px: (x: number, y: number, color: string) => void;
-}
-
 export function createCanvas(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
   return canvas;
-}
-
-export function painter(canvas: HTMLCanvasElement, ox = 0, oy = 0): Painter {
-  const ctx = canvas.getContext('2d')!;
-  const rect = (x: number, y: number, w: number, h: number, color: string) => {
-    ctx.fillStyle = color;
-    ctx.fillRect(ox + x, oy + y, w, h);
-  };
-  return { rect, px: (x, y, color) => rect(x, y, 1, 1, color) };
-}
-
-/** Lightens (amount > 0) or darkens (amount < 0) a #rrggbb color. */
-export function shade(hex: string, amount: number): string {
-  const n = parseInt(hex.slice(1), 16);
-  const channel = (v: number) =>
-    Math.round(Math.min(255, Math.max(0, amount < 0 ? v * (1 + amount) : v + (255 - v) * amount)));
-  const r = channel((n >> 16) & 255);
-  const g = channel((n >> 8) & 255);
-  const b = channel(n & 255);
-  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
-}
-
-/** Paints a 1px outline around every opaque pixel inside the given region. */
-export function outline(canvas: HTMLCanvasElement, x: number, y: number, w: number, h: number, color = '#1b1b2a') {
-  const ctx = canvas.getContext('2d')!;
-  const image = ctx.getImageData(x, y, w, h);
-  const { data } = image;
-  const n = parseInt(color.slice(1), 16);
-  const alphaAt = (i: number, j: number) => (i < 0 || j < 0 || i >= w || j >= h ? 0 : data[(j * w + i) * 4 + 3]);
-  const marks: number[] = [];
-  for (let j = 0; j < h; j++) {
-    for (let i = 0; i < w; i++) {
-      if (alphaAt(i, j) !== 0) continue;
-      if (alphaAt(i - 1, j) || alphaAt(i + 1, j) || alphaAt(i, j - 1) || alphaAt(i, j + 1)) marks.push((j * w + i) * 4);
-    }
-  }
-  for (const idx of marks) {
-    data[idx] = (n >> 16) & 255;
-    data[idx + 1] = (n >> 8) & 255;
-    data[idx + 2] = n & 255;
-    data[idx + 3] = 255;
-  }
-  ctx.putImageData(image, x, y);
 }
 
 /** Deterministic PRNG (mulberry32) so the city looks the same on every load. */
@@ -65,8 +17,39 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-export function hashString(value: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < value.length; i++) h = Math.imul(h ^ value.charCodeAt(i), 16777619);
-  return h >>> 0;
+/** Moves every saturated pixel whose hue is in [fromMin, fromMax] to `toHue`, keeping its shading. */
+export function shiftHue(canvas: HTMLCanvasElement, fromMin: number, fromMax: number, toHue: number) {
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+  const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const { data } = image;
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] === 0) continue;
+    const [h, s, l] = rgbToHsl(data[i], data[i + 1], data[i + 2]);
+    if (s < 0.2 || h < fromMin || h > fromMax) continue;
+    const [r, g, b] = hslToRgb(toHue, s, l);
+    data[i] = r;
+    data[i + 1] = g;
+    data[i + 2] = b;
+  }
+  ctx.putImageData(image, 0, 0);
+}
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  const [rn, gn, bn] = [r / 255, g / 255, b / 255];
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  const h = max === rn ? (gn - bn) / d + (gn < bn ? 6 : 0) : max === gn ? (bn - rn) / d + 2 : (rn - gn) / d + 4;
+  return [h * 60, s, l];
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
 }

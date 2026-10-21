@@ -45,7 +45,7 @@ src/
 │   ├── exam/            Shared kernel: the four CLF-C02 domains and their weights
 │   ├── theory/          domain (Topic, TopicRepository port) → application (use cases) → infrastructure (content collection adapter) → presentation
 │   ├── games/           domain (Game, GameCatalog port) → application → infrastructure (static catalog) → presentation
-│   │   └── nimbus-city/ The Phaser game: world (pure city map), engine (art, entities, scenes, HUD), mount.ts (public entry point)
+│   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots), engine (Kenney tile indices, renderer, entities, scenes, HUD), mount.ts (public entry point)
 │   └── player/          domain (Player, PlayerSession port) → application → infrastructure (guest session) → presentation
 ├── composition/         Composition root: wires adapters into use cases. Pages only import from here.
 ├── content/theory/      Theory topics in Markdown, validated by src/content.config.ts
@@ -78,5 +78,9 @@ sources:
 Start the body at `##`; the page renders the title. Every factual claim should be backed by an official AWS source listed in `sources`. Keep `examTasks` and `services` as single-line JSON arrays.
 
 `pnpm test` includes a coverage contract (`src/modules/theory/infrastructure/contentCoverage.test.ts`): it fails if any task statement of the official guide or any in-scope service is not covered by at least one topic.
+
+## Credits
+
+Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/nimbus-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime.
 
 Not affiliated with or endorsed by Amazon Web Services.

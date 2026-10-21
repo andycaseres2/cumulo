@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
-import { buildingLayout } from '../art/props';
+import { npcLookKey } from '../art/characters';
 import {
   EVENTS,
   FONT,
@@ -19,17 +19,9 @@ import {
 } from '../../config';
 import { Npc } from '../entities/Npc';
 import { Walker } from '../entities/Walker';
-import {
-  BENCH_SPOTS,
-  BUILDINGS,
-  buildCityTiles,
-  buildingTop,
-  lampSpots,
-  treeSpots,
-  type BuildingDef,
-  type TileGrid,
-} from '../../world/cityMap';
-import { T } from '../../world/tileTypes';
+import { renderBuildings, renderGround, renderProps, renderRoadMarkings, type Door } from '../render/cityRenderer';
+import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type GroundGrid } from '../../world/cityMap';
+import { G } from '../../world/tileTypes';
 
 export interface DialogContent {
   title: string;
@@ -77,25 +69,23 @@ export class CityScene extends Phaser.Scene {
   }
 
   create() {
-    const rng = seededRandom(2024);
-    const tiles = buildCityTiles(rng);
-    const map = this.make.tilemap({ data: tiles, tileWidth: TILE, tileHeight: TILE });
-    const ground = map.createLayer(0, map.addTilesetImage('tiles')!, 0, 0)!;
-    ground.setCollision([T.WATER]);
+    const cityGround = buildCityGround();
     this.physics.world.setBounds(0, 0, WORLD_W, WORLD_H);
 
     const solids = this.physics.add.staticGroup();
     const addSolid = (cx: number, cy: number, w: number, h: number) => solids.add(this.add.zone(cx, cy, w, h));
 
-    for (const def of BUILDINGS) this.placeBuilding(def, addSolid);
-    this.placeProps(tiles, rng, addSolid);
+    const ground = renderGround(this, cityGround);
+    renderRoadMarkings(this, cityGround);
+    for (const door of renderBuildings(this, ground, addSolid)) this.addDoor(door);
+    renderProps(this, cityGround, addSolid);
 
-    const academy = BUILDINGS.find((b) => b.id === 'academy')!;
-    const spawnX = (academy.x + academy.w / 2) * TILE;
-    const spawnY = (academy.bottom + 2) * TILE - 2;
+    const academy = doorTile(BUILDINGS.find((b) => b.id === 'academy')!);
+    const spawnX = (academy.x + 0.5) * TILE;
+    const spawnY = (academy.y + 1) * TILE - 2;
     this.player = new Walker(this, spawnX, spawnY, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
     this.nameTag = this.createNameTag(this.registry.get(REGISTRY.playerName));
-    this.spawnNpcs(tiles, rng);
+    this.spawnNpcs(cityGround, seededRandom(2024));
 
     const npcGroup = this.add.group(this.npcs, { runChildUpdate: true });
     for (const obstacle of [solids, ground]) {
@@ -116,55 +106,16 @@ export class CityScene extends Phaser.Scene {
     });
   }
 
-  private placeBuilding(def: BuildingDef, addSolid: (cx: number, cy: number, w: number, h: number) => void) {
-    const layout = buildingLayout(def);
-    const left = def.x * TILE;
-    const top = buildingTop(def) * TILE;
-    const depth = (def.bottom + 1) * TILE;
-    this.add.image(left, top, `building-${def.id}`).setOrigin(0, 0).setDepth(depth);
-    this.add
-      .text(left + layout.sign.x + layout.sign.w / 2, top + layout.sign.y + layout.sign.h / 2, def.name, {
-        fontFamily: FONT,
-        fontSize: '4px',
-        color: '#2b2118',
-        resolution: 4,
-      })
-      .setOrigin(0.5)
-      .setDepth(depth + 0.5)
-      .texture.setFilter(Phaser.Textures.FilterMode.LINEAR);
-    addSolid(left + layout.width / 2, top + layout.height / 2, layout.width, layout.height);
-
+  private addDoor({ building, x, y }: Door) {
     this.interactables.push({
-      x: left + layout.width / 2,
-      y: (def.bottom + 1) * TILE + 6,
-      prompt: `[E] Entrar a ${def.name}`,
+      x,
+      y,
+      prompt: `[E] Entrar a ${building.name}`,
       open: () => ({
-        title: def.name,
-        text: DOOR_TEXT[def.id] ?? 'Misión en construcción. Muy pronto podrás ayudar a este cliente con su problema en la nube.',
+        title: building.name,
+        text: DOOR_TEXT[building.id] ?? 'Misión en construcción. Muy pronto podrás ayudar a este cliente con su problema en la nube.',
       }),
     });
-  }
-
-  private placeProps(tiles: TileGrid, rng: () => number, addSolid: (cx: number, cy: number, w: number, h: number) => void) {
-    const benchTiles = new Set(BENCH_SPOTS.map((b) => `${b.x},${b.y}`));
-    for (const spot of treeSpots(tiles, rng)) {
-      if ([-1, 0, 1].some((d) => benchTiles.has(`${spot.x + d},${spot.y}`))) continue;
-      const x = spot.x * TILE + TILE / 2;
-      const y = spot.y * TILE + TILE - 1;
-      this.add.image(x, y, 'tree').setOrigin(0.5, 1).setDepth(y);
-      addSolid(x, y - 3, 6, 5);
-    }
-    for (const spot of lampSpots()) {
-      const x = spot.x * TILE + TILE / 2;
-      const y = spot.y * TILE + 6;
-      this.add.image(x, y, 'lamp').setOrigin(0.5, 1).setDepth(y);
-    }
-    for (const spot of BENCH_SPOTS) {
-      const x = spot.x * TILE + TILE / 2;
-      const y = spot.y * TILE + TILE - 2;
-      this.add.image(x, y, 'bench').setOrigin(0.5, 1).setDepth(y);
-      addSolid(x, y - 4, 16, 6);
-    }
   }
 
   /** Name label with a pointer arrow, drawn above every other world object. */
@@ -185,12 +136,20 @@ export class CityScene extends Phaser.Scene {
     return this.add.container(0, 0, [label, arrow]).setDepth(9_000);
   }
 
-  private spawnNpcs(tiles: TileGrid, rng: () => number) {
-    const sidewalks: { x: number; y: number }[] = [];
-    for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) if (tiles[y][x] === T.SIDEWALK) sidewalks.push({ x, y });
+  /** Citizens start on free pavement: not under a building and not on a prop. */
+  private spawnNpcs(ground: GroundGrid, rng: () => number) {
+    const taken = new Set(streetProps(ground).map((p) => `${p.x},${p.y}`));
+    const underBuilding = (x: number, y: number) =>
+      BUILDINGS.some((b) => x >= b.x && x < b.x + b.w && y >= buildingTop(b) && y <= b.bottom);
+    const free: { x: number; y: number }[] = [];
+    for (let y = 0; y < MAP_H; y++) {
+      for (let x = 0; x < MAP_W; x++) {
+        if (ground[y][x] === G.PAVEMENT && !underBuilding(x, y) && !taken.has(`${x},${y}`)) free.push({ x, y });
+      }
+    }
     for (let i = 0; i < NPC_COUNT; i++) {
-      const spot = sidewalks[Math.floor(rng() * sidewalks.length)];
-      const npc = new Npc(this, spot.x * TILE + TILE / 2, spot.y * TILE + TILE - 2, `npc-${i}`, NPC_LINES[i % NPC_LINES.length]);
+      const spot = free[Math.floor(rng() * free.length)];
+      const npc = new Npc(this, (spot.x + 0.5) * TILE, (spot.y + 1) * TILE - 2, npcLookKey(i), NPC_LINES[i % NPC_LINES.length]);
       this.npcs.push(npc);
       this.interactables.push({
         get x() {
@@ -257,7 +216,7 @@ export class CityScene extends Phaser.Scene {
   update() {
     const k = this.keys;
     this.marker.setPosition(this.player.x, this.player.y - 8);
-    this.nameTag.setPosition(Math.round(this.player.x), Math.round(this.player.y) - 27);
+    this.nameTag.setPosition(Math.round(this.player.x), Math.round(this.player.y) - 18);
 
     const interact =
       Phaser.Input.Keyboard.JustDown(k.e) || Phaser.Input.Keyboard.JustDown(k.space) || this.interactRequested;

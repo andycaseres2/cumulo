@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { frameName, type Direction } from '../art/characters';
+import { frameName, walkAnimation, type Direction } from '../art/characters';
 
 /** A character that walks in four directions with a feet-sized physics body. */
 export class Walker extends Phaser.Physics.Arcade.Sprite {
@@ -10,7 +10,7 @@ export class Walker extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1);
-    this.arcadeBody.setSize(10, 6).setOffset(3, 17).setCollideWorldBounds(true);
+    this.arcadeBody.setSize(8, 5).setOffset(4, 11).setCollideWorldBounds(true);
   }
 
   get arcadeBody(): Phaser.Physics.Arcade.Body {
@@ -24,8 +24,9 @@ export class Walker extends Phaser.Physics.Arcade.Sprite {
       this.setFrame(frameName(this.facing, 0));
     } else {
       this.facing = Math.abs(vx) > Math.abs(vy) ? (vx < 0 ? 'left' : 'right') : vy < 0 ? 'up' : 'down';
-      this.anims.play(`${this.look}-walk-${this.facing}`, true);
+      this.anims.play(walkAnimation(this.look, this.facing), true);
     }
+    this.setFlipX(this.facing === 'right');
     this.setDepth(this.y);
   }
 

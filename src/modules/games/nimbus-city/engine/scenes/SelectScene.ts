@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { FONT, REGISTRY } from '../../config';
+import { walkAnimation } from '../art/characters';
 import { Button } from '../ui/Button';
 
 const OPTIONS = [
@@ -31,10 +32,10 @@ export class SelectScene extends Phaser.Scene {
       .text(0, 0, 'Clic o ← → para elegir   ·   ENTER para aceptar', { fontFamily: FONT, fontSize: '8px', color: '#c7d2fe' })
       .setOrigin(0.5);
     this.accept = new Button(this, 0, 0, 'Aceptar', () => this.startGame(), 16);
-    this.frame = this.add.rectangle(0, 0, 150, 210).setStrokeStyle(4, 0xffd166).setFillStyle(0xffffff, 0.06);
+    this.frame = this.add.rectangle(0, 0, 170, 200).setStrokeStyle(4, 0xffd166).setFillStyle(0xffffff, 0.06);
 
     OPTIONS.forEach((option, i) => {
-      const sprite = this.add.sprite(0, 0, option.key).setScale(6).play(`${option.key}-walk-down`);
+      const sprite = this.add.sprite(0, 0, option.key).setScale(8).play(walkAnimation(option.key, 'down'));
       sprite.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.select(i));
       this.sprites.push(sprite);
       this.labels.push(this.add.text(0, 0, option.label, { fontFamily: FONT, fontSize: '12px', color: '#ffffff' }).setOrigin(0.5));
@@ -63,7 +64,7 @@ export class SelectScene extends Phaser.Scene {
     this.sprites.forEach((sprite, i) => {
       const x = width / 2 + (i === 0 ? -110 : 110);
       sprite.setPosition(x, cy);
-      this.labels[i].setPosition(x, cy + 105);
+      this.labels[i].setPosition(x, cy + 90);
     });
     this.select(this.selected);
   }

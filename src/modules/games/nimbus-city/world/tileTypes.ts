@@ -1,16 +1,17 @@
-export const T = {
-  GRASS: 0,
-  FLOWERS: 1,
-  ROAD: 2,
-  ROAD_H_TOP: 3,
-  ROAD_H_BOTTOM: 4,
-  ROAD_V_LEFT: 5,
-  ROAD_V_RIGHT: 6,
-  SIDEWALK: 7,
-  CROSS_H: 8,
-  CROSS_V: 9,
-  PLAZA: 10,
-  WATER: 11,
+/** What the ground is at each tile. The engine decides how each type is drawn. */
+export const G = {
+  ROAD: 0,
+  /** Crosswalk across a horizontal road (pedestrians walk north–south). */
+  CROSSWALK_H: 1,
+  /** Crosswalk across a vertical road (pedestrians walk east–west). */
+  CROSSWALK_V: 2,
+  PAVEMENT: 3,
+  GRASS: 4,
+  WATER: 5,
 } as const;
 
-export const TILE_COUNT = 12;
+export type Ground = (typeof G)[keyof typeof G];
+
+export function isRoad(ground: number): boolean {
+  return ground === G.ROAD || ground === G.CROSSWALK_H || ground === G.CROSSWALK_V;
+}
