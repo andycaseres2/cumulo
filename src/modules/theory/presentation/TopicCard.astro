@@ -14,7 +14,11 @@ const { topic } = Astro.props;
 <Card accent={domainColor(topic.domainId)} as="div">
   <h3 class="title"><a href={routes.topic(topic.slug)}>{topic.title}</a></h3>
   <p class="summary">{topic.summary}</p>
-  <p class="meta">{topic.readingMinutes} min de lectura{topic.services.length > 0 && ` · ${topic.services.length} servicios`}</p>
+  <p class="meta">
+    {topic.readingMinutes} min de lectura{
+      topic.services.length > 0 && ` · ${topic.services.length} ${topic.services.length === 1 ? 'servicio' : 'servicios'}`
+    }
+  </p>
 </Card>
 
 <style>
