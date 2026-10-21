@@ -3,11 +3,14 @@ title: "Modelos de servicio y de despliegue"
 summary: "Distingue IaaS, PaaS y SaaS, y los despliegues en la nube, híbrido y on-premises, según cuánto controla y gestiona cada parte."
 domain: "cloud-concepts"
 order: 2
-services: ["Amazon EC2"]
-readingMinutes: 5
+examTasks: ["1.1", "3.1"]
+services: ["Amazon EC2", "AWS Elastic Beanstalk", "AWS Outposts"]
+readingMinutes: 6
 sources:
   - "https://aws.amazon.com/types-of-cloud-computing/"
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/types-of-cloud-computing.html"
+  - "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html"
+  - "https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html"
 ---
 
 ## ¿Por qué importa?
@@ -21,7 +24,7 @@ Cada idea corresponde a un **modelo de servicio** distinto, y la situación con 
 Un **modelo de servicio** describe qué parte de la tecnología administra el proveedor y qué parte administras tú. Cuanto más "arriba" vas, menos administras y menos control tienes.
 
 - **IaaS (Infrastructure as a Service, infraestructura como servicio):** según AWS, contiene los bloques básicos de la TI en la nube: redes, cómputo y almacenamiento. Te da **la mayor flexibilidad y control** sobre tus recursos. Ejemplo típico en AWS: **Amazon EC2**, donde rentas servidores virtuales y tú instalas y actualizas el sistema operativo.
-- **PaaS (Platform as a Service, plataforma como servicio):** el proveedor elimina la necesidad de que administres la infraestructura subyacente (hardware y sistemas operativos). Tú te concentras en **desplegar y administrar tu aplicación**.
+- **PaaS (Platform as a Service, plataforma como servicio):** el proveedor elimina la necesidad de que administres la infraestructura subyacente (hardware y sistemas operativos). Tú te concentras en **desplegar y administrar tu aplicación**. En AWS, **AWS Elastic Beanstalk** funciona con este enfoque: tú construyes y subes tu aplicación, y el servicio aprovisiona las instancias EC2, configura el balanceo de carga, el monitoreo de salud y el escalado. No tiene costo adicional; pagas los recursos que usa tu aplicación.
 - **SaaS (Software as a Service, software como servicio):** el proveedor te entrega una aplicación completa que él mismo ejecuta y administra. Solo piensas en **cómo usas el software**. AWS da como ejemplo común el correo electrónico basado en web.
 
 | | IaaS | PaaS | SaaS |
@@ -30,7 +33,7 @@ Un **modelo de servicio** describe qué parte de la tecnología administra el pr
 | ¿Quién gestiona el sistema operativo? | Tú | El proveedor | El proveedor |
 | ¿Quién gestiona la aplicación? | Tú | Tú | El proveedor |
 | Nivel de control | Máximo | Medio | Mínimo |
-| Ejemplo | Servidores virtuales (Amazon EC2) | Subir tu código y que la plataforma lo ejecute | Correo web |
+| Ejemplo | Servidores virtuales (Amazon EC2) | Subir tu código a AWS Elastic Beanstalk | Correo web |
 
 Regla práctica: si en el escenario alguien **parcha el sistema operativo**, es IaaS. Si solo **sube código**, es PaaS. Si solo **usa** el producto, es SaaS.
 
@@ -44,11 +47,19 @@ Un **modelo de despliegue** describe **dónde** viven tus aplicaciones. AWS defi
 
 **On-premises** significa literalmente "en las instalaciones": los servidores están en un centro de datos propiedad de la empresa.
 
+Para escenarios híbridos, **AWS Outposts** es un servicio totalmente administrado que lleva infraestructura, servicios, APIs y herramientas de AWS a las instalaciones del cliente. AWS opera y administra esa capacidad como parte de una Región. Se usa cuando una aplicación necesita **baja latencia** hacia sistemas locales o **procesamiento local de datos**, pero quieres trabajar con las mismas APIs que en la nube.
+
 | Modelo | ¿Dónde se ejecuta? | Caso típico |
 | --- | --- | --- |
 | Nube | Todo en la nube | Startup que nace en AWS |
 | Híbrido | Parte en la nube y parte on-premises, conectadas | Empresa que migra por etapas o tiene datos que deben quedarse en casa |
 | On-premises | Todo en el centro de datos propio | Organización que necesita recursos dedicados en sus instalaciones |
+
+## ¿Cuándo conviene cada modelo de despliegue?
+
+- **Nube:** aplicaciones nuevas o que pueden moverse por completo; quieres aprovechar al máximo el pago por uso, la elasticidad y el alcance global, sin mantener hardware.
+- **Híbrido:** migración por etapas, sistemas heredados que todavía no pueden moverse, datos que deben quedarse en las instalaciones por regulación, o cargas que necesitan baja latencia con equipos locales (por ejemplo, con AWS Outposts).
+- **On-premises:** la organización necesita recursos dedicados en sus propias instalaciones y acepta renunciar a muchos beneficios de la nube (pago por uso, escala global, menos mantenimiento).
 
 ## Cómo se combinan
 
@@ -60,6 +71,7 @@ Los dos conceptos son independientes. La farmacia de Guadalajara podría usar **
 - **Confundir híbrido con "usar varios servicios de AWS".** Híbrido significa conectar la nube con recursos **fuera** de la nube, normalmente on-premises.
 - **Pensar que IaaS da menos control que PaaS.** Es al revés: IaaS ofrece el mayor control y flexibilidad.
 - **Elegir PaaS cuando el usuario solo consume una aplicación lista.** Si no hay código propio que desplegar, es SaaS.
+- **Pensar que AWS Outposts es un despliegue 100 % en la nube.** Outposts lleva capacidad de AWS a tus instalaciones: es una pieza típica de un escenario híbrido.
 
 ## Resumen para el examen
 
@@ -69,4 +81,6 @@ Los dos conceptos son independientes. La farmacia de Guadalajara podría usar **
 - Nube: todo se ejecuta en la nube.
 - Híbrido: nube conectada con infraestructura que no está en la nube.
 - On-premises: centro de datos propio; a veces llamado nube privada.
+- AWS Elastic Beanstalk: subes el código y AWS aprovisiona, balancea y escala (enfoque PaaS).
+- AWS Outposts: infraestructura de AWS en tus instalaciones, para baja latencia o procesamiento local.
 - Servicio y despliegue son ejes distintos y se combinan.

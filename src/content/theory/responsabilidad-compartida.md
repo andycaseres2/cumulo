@@ -1,12 +1,17 @@
 ---
 title: "Modelo de responsabilidad compartida"
-summary: "Aprende qué protege AWS (seguridad de la nube), qué proteges tú (seguridad en la nube) y cómo cambia según el tipo de servicio."
+summary: "Aprende qué protege AWS (seguridad de la nube), qué proteges tú (seguridad en la nube) y cómo cambia la línea entre Amazon EC2, Amazon RDS y AWS Lambda."
 domain: "security-compliance"
 order: 1
-services: ["Amazon EC2", "Amazon S3", "Amazon DynamoDB", "AWS IAM"]
-readingMinutes: 4
+examTasks: ["2.1"]
+services: ["Amazon EC2", "Amazon RDS", "AWS Lambda", "Amazon S3", "Amazon DynamoDB", "AWS IAM"]
+readingMinutes: 6
 sources:
   - "https://aws.amazon.com/compliance/shared-responsibility-model/"
+  - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.html"
+  - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html"
+  - "https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html"
+  - "https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/the-shared-responsibility-model.html"
 ---
 
 ## ¿Por qué importa?
@@ -20,7 +25,7 @@ Este malentendido es tan común que AWS lo formaliza en el **modelo de responsab
 La idea central se resume en dos frases:
 
 - **AWS es responsable de la seguridad DE la nube** (*security OF the cloud*): protege la infraestructura que ejecuta todos sus servicios, es decir, el hardware, el software, las redes y las instalaciones, incluidas las Regiones, las Availability Zones (Zonas de Disponibilidad) y las ubicaciones de borde.
-- **El cliente es responsable de la seguridad EN la nube** (*security IN the cloud*): protege lo que construye y almacena en AWS, como sus datos, sus opciones de cifrado, el sistema operativo invitado, sus aplicaciones y la configuración de firewall.
+- **El cliente es responsable de la seguridad EN la nube** (*security IN the cloud*): protege lo que construye y almacena en AWS. Cuánto trabajo le toca **depende de los servicios que elija**.
 
 El **sistema operativo invitado** (*guest OS*) es el sistema operativo que corre dentro de tu servidor virtual. El **cifrado** es transformar los datos para que solo quien tenga la clave pueda leerlos.
 
@@ -29,37 +34,48 @@ El **sistema operativo invitado** (*guest OS*) es el sistema operativo que corre
 | Seguridad física de los centros de datos | Datos del cliente y su clasificación |
 | Hardware e infraestructura de red global | Cifrado de datos (elegir y configurar) |
 | Sistema operativo del host y capa de virtualización | Sistema operativo invitado de EC2 y sus parches |
-| Regiones, Availability Zones y ubicaciones de borde | Aplicaciones que instala |
+| Regiones, Availability Zones y ubicaciones de borde | Aplicaciones y código que despliega |
 | | Reglas de los security groups (firewall virtual) |
 | | Permisos de IAM (quién puede hacer qué) |
 
-## Controles compartidos
+## Los componentes del modelo: tres tipos de controles
 
-Algunos controles los operan **ambas partes**, cada una en su propio contexto. AWS menciona tres:
+AWS clasifica los **controles de TI** (medidas de seguridad) en tres grupos:
 
-- **Gestión de parches** (*patch management*): AWS corrige fallos en su infraestructura; el cliente parcha su sistema operativo invitado y sus aplicaciones.
-- **Gestión de configuración** (*configuration management*): AWS configura sus dispositivos de infraestructura; el cliente configura sus sistemas operativos, bases de datos y aplicaciones.
-- **Concientización y capacitación** (*awareness and training*): AWS capacita a sus empleados; el cliente capacita a los suyos.
+- **Controles heredados** (*inherited controls*): el cliente los hereda por completo de AWS. Ejemplo: los controles físicos y ambientales de los centros de datos.
+- **Controles compartidos** (*shared controls*): aplican tanto a la infraestructura como a lo que hace el cliente, cada uno en su contexto:
+  - **Gestión de parches**: AWS corrige su infraestructura; el cliente parcha su sistema operativo invitado y sus aplicaciones.
+  - **Gestión de configuración**: AWS configura sus dispositivos de infraestructura; el cliente configura sus sistemas operativos, bases de datos y aplicaciones.
+  - **Concientización y capacitación**: AWS capacita a sus empleados; el cliente capacita a los suyos.
+- **Controles específicos del cliente** (*customer-specific controls*): dependen solo del cliente y de su aplicación. Ejemplo: decidir en qué entornos de seguridad se enrutan o separan ciertos datos.
 
 ## La responsabilidad cambia según el servicio
 
-La línea divisoria no es fija: se mueve según cuánto administra AWS en cada servicio.
+La línea divisoria no es fija: se mueve según cuánto administra AWS.
 
-- **Amazon EC2 (IaaS):** el cliente asume casi toda la configuración y gestión de seguridad, incluidos el sistema operativo invitado, el software instalado y los security groups.
-- **Servicios abstraídos, como Amazon S3 o Amazon DynamoDB:** AWS administra la infraestructura, el sistema operativo y la plataforma. El cliente se enfoca en sus datos: opciones de cifrado, clasificación de activos y permisos de acceso mediante IAM.
+- **Amazon EC2 (IaaS, infraestructura como servicio):** recibes servidores virtuales. Tú instalas, configuras y **parchas el sistema operativo invitado**, el software y las reglas de red. Es el modelo donde más le toca al cliente.
+- **Amazon RDS (base de datos administrada):** AWS opera el hardware, el **sistema operativo** y el **motor de base de datos**, y realiza su mantenimiento (incluidos parches de seguridad) durante una **ventana de mantenimiento**. El cliente no administra el sistema operativo, pero sí decide la ventana, cuándo aplicar actualizaciones opcionales, los security groups que controlan quién se conecta, los usuarios de la base de datos, el cifrado y los permisos de IAM.
+- **AWS Lambda (serverless, sin servidores que administrar):** AWS administra la infraestructura, el sistema operativo y la plataforma donde corren las funciones, incluido el parcheo. El cliente es responsable de **su código**, de las **dependencias** que incluye, de los **permisos de IAM** de la función y de sus datos.
 
-| Tarea | Amazon EC2 | Amazon S3 / DynamoDB |
-| --- | --- | --- |
-| Parchar el sistema operativo | Cliente | AWS |
-| Proteger el hardware físico | AWS | AWS |
-| Configurar quién accede a los datos | Cliente | Cliente |
-| Decidir si se cifran los datos | Cliente | Cliente |
+| Tarea | Amazon EC2 | Amazon RDS | AWS Lambda |
+| --- | --- | --- | --- |
+| Seguridad física y hardware | AWS | AWS | AWS |
+| Parchar el sistema operativo | **Cliente** | AWS | AWS |
+| Parchar el software principal (motor o runtime) | Cliente | AWS (el cliente elige la ventana) | AWS |
+| Código de la aplicación | Cliente | Cliente (consultas y esquema) | **Cliente** |
+| Reglas de red (security groups) | Cliente | Cliente | Cliente (si la función se conecta a una VPC) |
+| Permisos de IAM | Cliente | Cliente | Cliente |
+| Cifrado y clasificación de datos | Cliente | Cliente | Cliente |
 
-Observa el patrón: **los datos y los permisos de acceso siempre son del cliente**, sin importar el servicio.
+En servicios aún más abstraídos, como **Amazon S3** o **Amazon DynamoDB**, AWS gestiona la infraestructura, el sistema operativo y la plataforma; el cliente se enfoca en sus datos: opciones de cifrado, clasificación y permisos de acceso mediante IAM.
+
+Observa el patrón: **cuanto más administrado es el servicio, menos tareas operativas tienes, pero los datos, el cifrado y los permisos de acceso siempre son tuyos**. Además, el cliente sigue siendo responsable de cumplir las leyes y normas que aplican a sus datos.
 
 ## Trampas típicas del examen
 
 - **"AWS parcha el sistema operativo de mis instancias EC2."** Falso: en EC2 el sistema operativo invitado lo parcha el cliente. AWS parcha el host y la virtualización.
+- **"En Amazon RDS yo parcho el sistema operativo de la base de datos."** Falso: AWS lo hace; tú eliges la ventana de mantenimiento.
+- **"Con AWS Lambda no tengo ninguna responsabilidad de seguridad."** Falso: tu código, sus dependencias y los permisos de IAM de la función son tuyos.
 - **"Si uso S3, AWS decide quién puede ver mis archivos."** Falso: los permisos y el cifrado de los datos siempre son responsabilidad del cliente.
 - **Confundir "de" y "en".** AWS = seguridad **de** la nube (infraestructura). Cliente = seguridad **en** la nube (lo que pone dentro).
 - **Olvidar los controles compartidos.** Parches, configuración y capacitación aparecen como respuesta cuando la pregunta pide algo que hacen "ambos".
@@ -67,8 +83,9 @@ Observa el patrón: **los datos y los permisos de acceso siempre son del cliente
 ## Resumen para el examen
 
 - AWS: seguridad DE la nube (hardware, instalaciones, red, virtualización).
-- Cliente: seguridad EN la nube (datos, cifrado, sistema operativo invitado, aplicaciones, security groups, IAM).
-- Controles compartidos: gestión de parches, gestión de configuración, capacitación.
-- En EC2 el cliente gestiona mucho más que en S3 o DynamoDB.
-- En servicios abstraídos, AWS gestiona sistema operativo y plataforma.
-- Los datos y los permisos siempre son del cliente.
+- Cliente: seguridad EN la nube (datos, cifrado, aplicaciones, IAM y, según el servicio, sistema operativo y red).
+- Controles heredados (físicos), compartidos (parches, configuración, capacitación) y específicos del cliente.
+- EC2: el cliente parcha el sistema operativo invitado.
+- RDS: AWS parcha sistema operativo y motor; el cliente gestiona acceso, usuarios, cifrado y la ventana de mantenimiento.
+- Lambda: AWS gestiona servidores y runtime; el cliente gestiona código, dependencias y permisos.
+- Más abstracción = menos tareas para el cliente, pero los datos y permisos siempre son suyos.

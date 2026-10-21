@@ -1,50 +1,91 @@
 ---
 title: "Modelos de compra de EC2"
-summary: "Elige entre On-Demand, Savings Plans, Reserved Instances, Spot y opciones dedicadas según la carga de trabajo y el compromiso que puedes asumir."
+summary: "Elige entre On-Demand, Savings Plans, Reserved Instances, Spot, opciones dedicadas y Capacity Reservations según la carga y el compromiso que puedes asumir."
 domain: "billing-pricing-support"
 order: 1
-services: ["Amazon EC2", "Savings Plans", "AWS Lambda", "AWS Fargate"]
-readingMinutes: 5
+examTasks: ["4.1"]
+services: ["Amazon EC2", "AWS Lambda", "AWS Fargate", "AWS Organizations"]
+readingMinutes: 6
 sources:
   - "https://aws.amazon.com/ec2/pricing/"
+  - "https://aws.amazon.com/ec2/spot/"
   - "https://docs.aws.amazon.com/savingsplans/latest/userguide/what-is-savings-plans.html"
+  - "https://docs.aws.amazon.com/savingsplans/latest/userguide/plan-types.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-reserved-instances.html"
+  - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html"
+  - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-convertible-exchange.html"
+  - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html"
+  - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ri-behavior.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-instance-termination-notices.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html"
+  - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html"
 ---
 
 ## ¿Por qué importa?
 
 Una tienda en línea de Medellín usa servidores de **Amazon EC2** (servidores virtuales en la nube). Tiene un servidor web que funciona las 24 horas todo el año, un proceso nocturno que genera reportes y que puede repetirse si se interrumpe, y una campaña de Black Friday de tres días cuya demanda nadie puede predecir. Si paga todo con la misma modalidad, probablemente gasta de más.
 
-AWS ofrece varias **opciones de compra** de EC2. Elegir bien según el tipo de carga es una de las habilidades más evaluadas en el dominio de facturación del examen.
+AWS ofrece varias **opciones de compra** de EC2, y elegir bien según la carga es una habilidad clave del examen.
 
 ## On-Demand: flexibilidad total
 
-Con **On-Demand Instances** pagas por hora o por segundo de uso, **sin pago inicial ni compromiso a largo plazo**. Es la opción más flexible y el precio de referencia contra el que se comparan los descuentos.
+Con **On-Demand Instances** pagas por hora o por segundo de uso, **sin pago inicial ni compromiso a largo plazo**. Es el precio de referencia para comparar descuentos.
 
-Ideal para: cargas de corto plazo, impredecibles o que no pueden interrumpirse, como la campaña de Black Friday o una aplicación nueva cuyo uso aún no conoces.
+Ideal para: cargas cortas, impredecibles o que no pueden interrumpirse, como la campaña de Black Friday.
 
 ## Savings Plans y Reserved Instances: descuento por compromiso
 
-- **Savings Plans:** te comprometes a un **monto constante de uso, medido en USD por hora**, durante **1 o 3 años**. A cambio, AWS indica que puedes ahorrar **hasta un 72 %** frente a On-Demand. Los **Compute Savings Plans** aplican a EC2 sin importar familia, tamaño, sistema operativo, tenencia o Región, y también a **AWS Fargate** y **AWS Lambda**. Se paga con *All Upfront*, *Partial Upfront* o *No Upfront*.
-- **Reserved Instances (RI):** no son instancias físicas, sino un **descuento de facturación** que se aplica a instancias que coinciden con ciertos atributos (tipo de instancia, Región, tenencia y plataforma). Se compran por **1 o 3 años**; el plazo de 3 años da más descuento, y pagar más por adelantado suele ahorrar más. Hay dos clases: **Standard** (mayor descuento, solo se puede modificar) y **Convertible** (menor descuento, pero se puede intercambiar por otra con atributos distintos). Una RI **no se puede cancelar**.
+**Savings Plans:** te comprometes a un **monto constante de uso, medido en USD por hora**, durante **1 o 3 años**. AWS indica que puedes ahorrar **hasta un 72 %** frente a On-Demand. Hay cuatro tipos:
+
+- **Compute Savings Plans:** los más flexibles (hasta 66 %). Aplican a EC2 sin importar familia, tamaño, sistema operativo, tenencia o Región, y también a **AWS Fargate** y **AWS Lambda**.
+- **EC2 Instance Savings Plans:** hasta 72 %, a cambio de comprometerte con una familia de instancias en una Región.
+- **Database Savings Plans** y **SageMaker AI Savings Plans:** para servicios de bases de datos y para Amazon SageMaker AI.
+
+**Reserved Instances (RI):** no son instancias físicas, sino un **descuento de facturación** que se aplica a instancias que coinciden con ciertos atributos (tipo de instancia, Región, tenencia y plataforma). Se compran por **1 o 3 años**; el plazo de 3 años da más descuento, y en general pagar más por adelantado (*All Upfront*, *Partial Upfront* o *No Upfront*) ahorra más. Una RI **no se puede cancelar** y **no se renueva sola**: al vencer, la instancia sigue funcionando a tarifa On-Demand.
 
 AWS **recomienda Savings Plans sobre Reserved Instances** porque ofrecen descuentos similares con más flexibilidad: con RI te comprometes a una configuración específica; con Savings Plans, a un monto de uso.
 
 Ideal para: cargas estables y predecibles, como el servidor web que funciona todo el año.
 
+## Flexibilidad de las Reserved Instances
+
+El examen pregunta qué tan "flexible" es una RI. Hay dos ejes: la **clase de oferta** y el **alcance** (*scope*).
+
+| Clase | Descuento | ¿Qué puedes cambiar? |
+| --- | --- | --- |
+| **Standard** | El mayor | Solo **modificar** algunos atributos; no se puede intercambiar. Puede venderse en el Reserved Instance Marketplace. |
+| **Convertible** | Menor | Se puede **intercambiar** por otra Convertible con distinta familia, sistema operativo o tenencia, siempre de igual o mayor valor y en la misma Región. |
+
+| Alcance | ¿Reserva capacidad? | Flexibilidad |
+| --- | --- | --- |
+| **Regional** | No | El descuento aplica en **cualquier AZ** de la Región y, en Linux/Unix con tenencia por defecto, a **cualquier tamaño** de la misma familia. |
+| **Zonal** | **Sí**, en la AZ elegida | Solo aplica a esa AZ y a ese tamaño exacto. |
+
+El alcance no cambia el precio de la RI.
+
+## RI y Savings Plans en AWS Organizations
+
+Con la **facturación consolidada** de **AWS Organizations**, todas las cuentas de la organización se tratan como **una sola cuenta para la facturación**. Por eso, el descuento de una RI o un Savings Plan comprado por una cuenta puede **aplicarse al uso de otra cuenta** de la organización que tenga instancias que coincidan. La cuenta de administración puede **desactivar el uso compartido** de descuentos desde la página *Preferences* de la consola de Billing and Cost Management.
+
 ## Spot Instances: capacidad sobrante con gran descuento
 
-Las **Spot Instances** usan **capacidad sobrante de EC2** con un descuento de **hasta el 90 %** frente a On-Demand. A cambio, AWS puede **recuperar la instancia** cuando necesita esa capacidad. Antes de detener o terminar una instancia Spot, EC2 emite un **aviso de interrupción dos minutos antes**.
+Las **Spot Instances** usan **capacidad sobrante de EC2** con un descuento de **hasta el 90 %** frente a On-Demand. A cambio, AWS puede **recuperar la instancia** cuando necesita esa capacidad, con un **aviso de interrupción dos minutos antes**.
 
-Ideal para: cargas **tolerantes a interrupciones** y flexibles en el tiempo, como el proceso nocturno de reportes, análisis por lotes o pruebas.
+Ideal para: cargas **tolerantes a interrupciones** o flexibles, como el proceso nocturno de reportes, CI/CD o pruebas.
 
 ## Opciones dedicadas y de capacidad
 
-- **Dedicated Hosts:** un **servidor físico completamente dedicado** a tu uso. Te da visibilidad de sockets y núcleos físicos, lo que permite usar **licencias de software existentes** ligadas al servidor (*Bring Your Own License*, BYOL). Útil por requisitos de licencias o cumplimiento.
-- **Dedicated Instances:** instancias en hardware dedicado a una sola cuenta, pero **sin** la visibilidad ni el control de ubicación de un Dedicated Host.
-- **On-Demand Capacity Reservations:** reservan capacidad de cómputo en una Availability Zone específica para eventos críticos. Garantizan capacidad, no un descuento.
+Ambas ejecutan tus instancias en **servidores físicos que no compartes con otros clientes**, sin diferencias de rendimiento ni de seguridad física.
+
+| | **Dedicated Hosts** | **Dedicated Instances** |
+| --- | --- | --- |
+| Qué obtienes | Un servidor físico completo dedicado a ti | Hardware dedicado a una sola cuenta |
+| Facturación | Por host | Por instancia |
+| Visibilidad de sockets y núcleos | Sí | No |
+| Control de ubicación y afinidad | Sí | No |
+| Licencias propias (BYOL) por socket o núcleo | Sí | Soporte parcial |
+
+**On-Demand Capacity Reservations** reservan capacidad de EC2 en una **Availability Zone específica** por el tiempo que quieras; las de uso inmediato no exigen compromiso de plazo. **No dan descuento** por sí mismas, pero puedes combinarlas con Savings Plans o RI regionales para obtenerlo.
 
 ## Comparación rápida
 
@@ -52,24 +93,28 @@ Ideal para: cargas **tolerantes a interrupciones** y flexibles en el tiempo, com
 | --- | --- | --- | --- | --- |
 | **On-Demand** | Ninguno | Precio base | No | Corta, impredecible, nueva |
 | **Savings Plans** | USD por hora, 1 o 3 años | Hasta 72 % | No | Uso constante con flexibilidad |
-| **Reserved Instances** | Configuración específica, 1 o 3 años | Significativo (más con 3 años y pago por adelantado) | No | Uso estable de una configuración conocida |
-| **Spot** | Ninguno | Hasta 90 % | Sí, con aviso de 2 minutos | Tolerante a fallos, flexible |
+| **Reserved Instances** | Configuración, 1 o 3 años | Significativo | No | Uso estable de una configuración conocida |
+| **Spot** | Ninguno | Hasta 90 % | Sí, aviso de 2 minutos | Tolerante a fallos, flexible |
 | **Dedicated Hosts** | Opcional | — | No | Licencias por socket o núcleo, cumplimiento |
+| **Capacity Reservations** | Opcional | Ninguno por sí solas | No | Capacidad garantizada para eventos críticos |
 
 ## Trampas típicas del examen
 
 - **Elegir Spot para una carga crítica que no puede detenerse.** Spot puede interrumpirse; usa On-Demand, Savings Plans o RI.
 - **Pensar que una Reserved Instance es un servidor.** Es un descuento de facturación aplicado a instancias que coinciden.
-- **Confundir Dedicated Hosts con Dedicated Instances.** La pista de "licencias por socket o núcleo" apunta a **Dedicated Hosts**.
-- **Creer que Savings Plans solo aplica a EC2.** Los Compute Savings Plans también cubren Fargate y Lambda.
-- **Pensar que una RI se renueva sola.** Al vencer, se paga la tarifa On-Demand.
+- **Confundir Dedicated Hosts con Dedicated Instances.** La pista de "licencias por socket o núcleo" o "visibilidad del servidor físico" apunta a **Dedicated Hosts**.
+- **Creer que una RI regional reserva capacidad.** Solo la **zonal** reserva capacidad; para garantizar capacidad sin plazo, usa Capacity Reservations.
+- **Pensar que el descuento de una RI solo sirve a la cuenta que la compró.** En una organización con facturación consolidada se comparte por defecto.
+- **Confundir Standard con Convertible.** Convertible = intercambiable; Standard = mayor descuento, solo modificable.
 
 ## Resumen para el examen
 
 - On-Demand: sin compromiso; corto plazo o impredecible.
-- Savings Plans: compromiso en USD/hora por 1 o 3 años; hasta 72 % de ahorro; recomendado por AWS.
-- Reserved Instances: descuento de facturación por 1 o 3 años; Standard vs. Convertible.
-- Spot: hasta 90 % de ahorro; interrumpible con aviso de 2 minutos.
-- Dedicated Hosts: servidor físico propio; BYOL por socket o núcleo.
+- Savings Plans: compromiso en USD/hora por 1 o 3 años; hasta 72 %; recomendado por AWS; Compute Savings Plans cubren EC2, Fargate y Lambda.
+- Reserved Instances: descuento de facturación por 1 o 3 años; no se cancelan ni se renuevan solas.
+- Standard = más descuento, solo se modifica; Convertible = se intercambia.
+- RI regional: flexible en AZ y tamaño, sin reserva de capacidad; RI zonal: reserva capacidad en una AZ.
+- En AWS Organizations, los descuentos de RI y Savings Plans se comparten entre cuentas (se puede desactivar).
+- Spot: hasta 90 %; interrumpible con aviso de 2 minutos.
+- Dedicated Hosts: servidor físico propio, BYOL por socket o núcleo; Dedicated Instances: hardware dedicado sin esa visibilidad.
 - Capacity Reservations: garantizan capacidad en una AZ, no descuento.
-- Une carga con modelo: estable → compromiso; interrumpible → Spot; incierta → On-Demand.
