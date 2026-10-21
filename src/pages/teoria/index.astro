@@ -1,0 +1,32 @@
+---
+import { theory } from '@/composition/theory';
+import DomainSection from '@/modules/theory/presentation/DomainSection.astro';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+
+const catalog = await theory.catalog();
+---
+
+<PageLayout
+  title="Teoría"
+  description="Los cuatro dominios del examen AWS Certified Cloud Practitioner (CLF-C02) explicados desde cero."
+>
+  <Container>
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Estudia"
+        title="Teoría del Cloud Practitioner"
+        description="Organizada según los cuatro dominios oficiales del examen CLF-C02. Empieza por el primero si nunca usaste la nube."
+      />
+      {catalog.map((section) => <DomainSection section={section} />)}
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-12);
+  }
+</style>

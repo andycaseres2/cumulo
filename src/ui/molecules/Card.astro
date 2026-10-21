@@ -1,0 +1,44 @@
+---
+/** Raised surface with an accent stripe. Content and actions come through the slots. */
+export interface Props {
+  accent?: string;
+  as?: 'article' | 'div' | 'li';
+}
+
+const { accent = 'var(--color-accent)', as: Tag = 'article' } = Astro.props;
+---
+
+<Tag class="card" style={`--card-accent: ${accent}`}>
+  <div class="body"><slot /></div>
+  {Astro.slots.has('footer') && <div class="footer"><slot name="footer" /></div>}
+</Tag>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-top: 6px solid var(--card-accent);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-pixel);
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+  }
+
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0 var(--space-6) var(--space-6);
+  }
+</style>

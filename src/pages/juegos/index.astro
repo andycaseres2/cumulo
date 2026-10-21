@@ -1,0 +1,29 @@
+---
+import { games } from '@/composition/games';
+import GameGrid from '@/modules/games/presentation/GameGrid.astro';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+
+const allGames = await games.list();
+---
+
+<PageLayout title="Juegos" description="Juegos de práctica para el examen AWS Certified Cloud Practitioner.">
+  <Container>
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Practica"
+        title="Juegos de práctica"
+        description="Aplica lo que estudias en situaciones reales. Cada decisión viene con su explicación, aciertes o no."
+      />
+      <GameGrid games={allGames} />
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-12);
+  }
+</style>

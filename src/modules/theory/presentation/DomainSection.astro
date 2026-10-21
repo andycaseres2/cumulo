@@ -1,0 +1,84 @@
+---
+import { domainColor } from '@/modules/exam/presentation/domainColor';
+import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
+import WeightBar from '@/ui/molecules/WeightBar.astro';
+import TopicCard from './TopicCard.astro';
+
+export interface Props {
+  section: DomainSection;
+}
+
+const { section } = Astro.props;
+const { domain, topics } = section;
+---
+
+<section class="domain" aria-labelledby={domain.id} style={`--domain-color: ${domainColor(domain.id)}`}>
+  <header class="header">
+    <p class="number">Dominio {domain.order}</p>
+    <h2 id={domain.id}>{domain.title}</h2>
+    <p class="description">{domain.description}</p>
+    <WeightBar label="Peso en el examen" value={domain.weight} color={domainColor(domain.id)} />
+  </header>
+  {
+    topics.length > 0 ? (
+      <ul class="topics">
+        {topics.map((topic) => (
+          <li>
+            <TopicCard topic={topic} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Muy pronto agregaremos temas de este dominio.</p>
+    )
+  }
+</section>
+
+<style>
+  .domain {
+    padding-block: var(--space-8);
+    border-top: var(--border-width) dashed var(--color-border);
+  }
+
+  .header {
+    display: grid;
+    gap: var(--space-3);
+    max-width: var(--reading-width);
+    margin-bottom: var(--space-8);
+  }
+
+  .number {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--domain-color);
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1.5;
+    scroll-margin-top: var(--space-16);
+  }
+
+  .description {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+  }
+</style>

@@ -18,7 +18,7 @@ Branch: `feat/astro-platform` · Delivery: ask-on-risk · Test runner: Vitest (d
 | --- | --- | --- | --- | --- |
 | T1 | S2, S4, S5, S6 | inline | done | `astro check` 0 errors; player tests RED→GREEN (3); headless walk + mouse-only checks pass on `/juegos/nimbus-city`, name tag "Invitado" injected |
 | T2 | S3, S4 | inline | done | 15 new tests RED→GREEN (exam, theory, games, city map); `astro check` 0/0/0; T1 commit assess: medium, under_budget |
-| T3 | S1, S3 | inline | pending | |
+| T3 | S1, S3 | inline | done | `astro check` 0/0/0; build 12 pages; desktop screenshots of `/`, `/juegos`, `/teoria`, a topic; CDP 390px phone emulation: no page overflow (only the comparison table scrolls inside its box) |
 | T4 | S1 (theory content) | delegated — parallel unit, disjoint surface `src/content/theory/**` | done | 8 topics, 717–893 words, 1–6 official sources each; validated by the Zod schema in `astro check`; writer stayed inside its surface |
 | T5 | S1–S6 | inline | pending | |
 
@@ -35,4 +35,5 @@ Branch: `feat/astro-platform` · Delivery: ask-on-risk · Test runner: Vitest (d
 - L4 T1: Astro pinned to 7.4.1 because 7.4.2 requires Node >=22.23.4 and the machine runs 22.23.2 (ServBay-managed; not changed). The player module landed in T1 because the game page needs the injected name (S4).
 - L5 T2: exam domains live in a shared-kernel module `exam` so `games` does not depend on `theory`. The game `config.ts` no longer imports Phaser so the world module is pure and testable.
 - L6 T4 writer notes: no exact Region/AZ/edge counts, prices or Reserved Instance discount (not on official pages); "price" as a Region selection factor and IAM implicit deny are standard facts not quoted by the cited pages.
+- L7 T3: "0 temas" and a 404 on a topic came from a dev server started before `content.config.ts` existed; the production build had all 8 topics. A 390px desktop-Chrome screenshot looked clipped because desktop Chrome enforces a minimum window width; real phone emulation over CDP showed no overflow.
 - L3 Engram mirror `odd/astro-platform/tasks`: pending — the Engram server resolves the Desktop as an ambiguous workspace and does not offer this repo.

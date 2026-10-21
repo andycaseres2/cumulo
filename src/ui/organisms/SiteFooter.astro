@@ -1,0 +1,27 @@
+---
+import Container from '@/ui/atoms/Container.astro';
+---
+
+<footer class="site-footer">
+  <Container>
+    <p>
+      Nimbus City es un proyecto independiente para preparar el examen AWS Certified Cloud Practitioner (CLF-C02). No está
+      afiliado ni respaldado por Amazon Web Services.
+    </p>
+  </Container>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-16);
+    padding-block: var(--space-8);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    border-top: var(--border-width) solid var(--color-border);
+  }
+
+  p {
+    max-width: var(--reading-width);
+    margin: 0;
+  }
+</style>

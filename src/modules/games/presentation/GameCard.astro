@@ -1,0 +1,97 @@
+---
+import { findExamDomain } from '@/modules/exam/domain/ExamDomain';
+import DomainBadge from '@/modules/exam/presentation/DomainBadge.astro';
+import { isPlayable, type Game } from '@/modules/games/domain/Game';
+import Badge from '@/ui/atoms/Badge.astro';
+import Button from '@/ui/atoms/Button.astro';
+import Card from '@/ui/molecules/Card.astro';
+import { routes } from '@/ui/routes';
+import { gameArt } from './gameArt';
+
+export interface Props {
+  game: Game;
+  headingLevel?: 2 | 3;
+}
+
+const { game, headingLevel = 3 } = Astro.props;
+const playable = isPlayable(game);
+const art = gameArt(game.slug);
+const domains = game.domains.map(findExamDomain).filter((d) => d !== undefined);
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+---
+
+<Card accent={playable ? 'var(--color-accent)' : 'var(--color-border)'}>
+  <div class="art" class:list={{ placeholder: !art }}>
+    {art ? <img src={art} alt={`Vista de ${game.title}`} loading="lazy" width="640" height="356" /> : <span>?</span>}
+  </div>
+  <div class="meta">
+    {playable ? <Badge variant="solid">Disponible</Badge> : <Badge color="var(--color-text-muted)">Próximamente</Badge>}
+    <Badge color="var(--color-text-muted)">Nivel Practitioner</Badge>
+  </div>
+  <Heading class="title">{game.title}</Heading>
+  <p class="tagline">{game.tagline}</p>
+  <p class="description">{game.description}</p>
+  <ul class="domains" aria-label="Dominios que practica">
+    {domains.map((domain) => <li><DomainBadge domain={domain} /></li>)}
+  </ul>
+  <Fragment slot="footer">
+    {playable && <Button href={routes.game(game.slug)}>Jugar ahora</Button>}
+  </Fragment>
+</Card>
+
+<style>
+  .art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    margin: calc(-1 * var(--space-6)) calc(-1 * var(--space-6)) 0;
+    overflow: hidden;
+    background: var(--color-bg);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .placeholder {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-border);
+    background: repeating-conic-gradient(var(--color-surface) 0 25%, var(--color-bg) 0 50%) 0 0 / 24px 24px;
+  }
+
+  .meta,
+  .domains {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .domains {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .tagline {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .description {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+</style>

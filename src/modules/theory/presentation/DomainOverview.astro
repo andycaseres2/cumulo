@@ -1,0 +1,77 @@
+---
+import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
+import { domainColor } from '@/modules/exam/presentation/domainColor';
+import WeightBar from '@/ui/molecules/WeightBar.astro';
+import { routes } from '@/ui/routes';
+
+export interface Props {
+  sections: DomainSection[];
+}
+
+const { sections } = Astro.props;
+---
+
+<ol class="overview">
+  {
+    sections.map(({ domain, topics }) => (
+      <li style={`--domain-color: ${domainColor(domain.id)}`}>
+        <a href={routes.theoryDomain(domain.id)}>
+          <span class="order">{domain.order}</span>
+          <span class="title">{domain.title}</span>
+          <span class="count">{topics.length} temas</span>
+        </a>
+        <WeightBar label="Peso" value={domain.weight} color={domainColor(domain.id)} />
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-left: 6px solid var(--domain-color);
+    border-radius: var(--radius);
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-1) var(--space-3);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  a:hover .title {
+    color: var(--domain-color);
+  }
+
+  .order {
+    grid-row: span 2;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--domain-color);
+  }
+
+  .title {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .count {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import type { ExamDomain } from '@/modules/exam/domain/ExamDomain';
+import DomainBadge from '@/modules/exam/presentation/DomainBadge.astro';
+import type { Topic } from '@/modules/theory/domain/Topic';
+import Badge from '@/ui/atoms/Badge.astro';
+
+export interface Props {
+  topic: Topic;
+  domain: ExamDomain;
+}
+
+const { topic, domain } = Astro.props;
+---
+
+<header class="topic-header">
+  <div class="meta">
+    <DomainBadge domain={domain} variant="solid" />
+    <span class="reading">{topic.readingMinutes} min de lectura</span>
+  </div>
+  <h1>{topic.title}</h1>
+  <p class="summary">{topic.summary}</p>
+  {
+    topic.services.length > 0 && (
+      <ul class="services" aria-label="Servicios de este tema">
+        {topic.services.map((service) => (
+          <li>
+            <Badge color="var(--color-text-muted)">{service}</Badge>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</header>
+
+<style>
+  .topic-header {
+    display: grid;
+    gap: var(--space-4);
+    padding-bottom: var(--space-8);
+    border-bottom: var(--border-width) dashed var(--color-border);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .reading {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 3.5vw, 1.6rem);
+    line-height: 1.5;
+  }
+
+  .summary {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+/** Page opener: message on one side, artwork on the other; actions and art come through slots. */
+import Container from '@/ui/atoms/Container.astro';
+
+export interface Props {
+  eyebrow: string;
+  title: string;
+  lead: string;
+}
+
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<section class="hero">
+  <Container>
+    <div class="layout">
+      <div class="copy">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p class="lead">{lead}</p>
+        <div class="actions"><slot name="actions" /></div>
+      </div>
+      {Astro.slots.has('art') && <div class="art"><slot name="art" /></div>}
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-12) var(--space-16);
+    background:
+      linear-gradient(180deg, transparent 60%, var(--color-bg)),
+      repeating-linear-gradient(0deg, rgb(255 255 255 / 3%) 0 2px, transparent 2px 24px),
+      var(--color-surface);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: center;
+    gap: var(--space-12);
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  h1 {
+    margin: 0 0 var(--space-6);
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 4.5vw, 2.4rem);
+    line-height: 1.4;
+  }
+
+  .lead {
+    max-width: 36rem;
+    margin: 0 0 var(--space-8);
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+</style>

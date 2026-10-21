@@ -1,0 +1,53 @@
+---
+import { domainColor } from '@/modules/exam/presentation/domainColor';
+import type { Topic } from '@/modules/theory/domain/Topic';
+import Card from '@/ui/molecules/Card.astro';
+import { routes } from '@/ui/routes';
+
+export interface Props {
+  topic: Topic;
+}
+
+const { topic } = Astro.props;
+---
+
+<Card accent={domainColor(topic.domainId)} as="div">
+  <h3 class="title"><a href={routes.topic(topic.slug)}>{topic.title}</a></h3>
+  <p class="summary">{topic.summary}</p>
+  <p class="meta">{topic.readingMinutes} min de lectura{topic.services.length > 0 && ` · ${topic.services.length} servicios`}</p>
+</Card>
+
+<style>
+  .title {
+    margin: 0;
+    font-size: var(--text-lg);
+    line-height: 1.35;
+  }
+
+  .title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  /* The whole card is clickable through the title link. */
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .title a:hover {
+    color: var(--color-accent);
+  }
+
+  .summary {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .meta {
+    margin: auto 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>

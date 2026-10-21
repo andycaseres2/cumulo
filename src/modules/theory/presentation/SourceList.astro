@@ -1,0 +1,47 @@
+---
+export interface Props {
+  sources: string[];
+}
+
+const { sources } = Astro.props;
+---
+
+<aside class="sources" aria-labelledby="fuentes">
+  <h2 id="fuentes">Fuentes oficiales</h2>
+  <ul>
+    {
+      sources.map((url) => (
+        <li>
+          <a href={url} rel="noopener noreferrer" target="_blank">
+            {url.replace(/^https?:\/\//, '')}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</aside>
+
+<style>
+  .sources {
+    margin-top: var(--space-12);
+    padding: var(--space-6);
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-md);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: var(--space-6);
+    font-size: var(--text-sm);
+  }
+
+  a {
+    overflow-wrap: anywhere;
+  }
+</style>

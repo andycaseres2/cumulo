@@ -1,0 +1,47 @@
+---
+import { theory } from '@/composition/theory';
+import SourceList from '@/modules/theory/presentation/SourceList.astro';
+import TopicHeader from '@/modules/theory/presentation/TopicHeader.astro';
+import TopicPager from '@/modules/theory/presentation/TopicPager.astro';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import Breadcrumbs from '@/ui/molecules/Breadcrumbs.astro';
+import Prose from '@/ui/molecules/Prose.astro';
+import { routes } from '@/ui/routes';
+
+export async function getStaticPaths() {
+  const catalog = await theory.catalog();
+  return catalog.flatMap((section) => section.topics.map((topic) => ({ params: { slug: topic.slug } })));
+}
+
+const { slug } = Astro.params;
+const navigation = await theory.navigation(slug);
+if (!navigation) throw new Error(`Unknown theory topic: ${slug}`);
+
+const { topic, domain, previous, next } = navigation;
+const { Content, sources } = await theory.renderBody(slug);
+---
+
+<PageLayout title={topic.title} description={topic.summary}>
+  <Container width="reading">
+    <article class="topic">
+      <Breadcrumbs
+        items={[
+          { label: 'Teoría', href: routes.theory },
+          { label: domain.title, href: routes.theoryDomain(domain.id) },
+          { label: topic.title },
+        ]}
+      />
+      <TopicHeader topic={topic} domain={domain} />
+      <Prose><Content /></Prose>
+      <SourceList sources={sources} />
+      <TopicPager previous={previous} next={next} />
+    </article>
+  </Container>
+</PageLayout>
+
+<style>
+  .topic {
+    padding-top: var(--space-8);
+  }
+</style>

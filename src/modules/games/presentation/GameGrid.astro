@@ -1,0 +1,31 @@
+---
+import type { Game } from '@/modules/games/domain/Game';
+import GameCard from './GameCard.astro';
+
+export interface Props {
+  games: Game[];
+}
+
+const { games } = Astro.props;
+---
+
+<ul class="grid">
+  {
+    games.map((game) => (
+      <li>
+        <GameCard game={game} />
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-8);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

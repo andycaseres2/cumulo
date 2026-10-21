@@ -1,0 +1,50 @@
+---
+/** Horizontal bar showing a percentage, e.g. a domain's weight in the exam. */
+export interface Props {
+  label: string;
+  value: number;
+  color?: string;
+}
+
+const { label, value, color = 'var(--color-accent)' } = Astro.props;
+---
+
+<div class="weight" style={`--weight-color: ${color}; --weight-value: ${value}%`}>
+  <span class="label">{label}</span>
+  <span class="track" role="img" aria-label={`${label}: ${value} %`}><span class="fill"></span></span>
+  <span class="value">{value} %</span>
+</div>
+
+<style>
+  .weight {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-sm);
+  }
+
+  .label {
+    color: var(--color-text-muted);
+  }
+
+  .track {
+    height: 0.75rem;
+    overflow: hidden;
+    background: var(--color-bg);
+    border: 2px solid var(--color-border);
+    border-radius: 3px;
+  }
+
+  .fill {
+    display: block;
+    width: var(--weight-value);
+    height: 100%;
+    background: var(--weight-color);
+  }
+
+  .value {
+    font-weight: 700;
+    color: var(--weight-color);
+  }
+</style>

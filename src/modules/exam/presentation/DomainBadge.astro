@@ -1,0 +1,14 @@
+---
+import type { ExamDomain } from '@/modules/exam/domain/ExamDomain';
+import Badge from '@/ui/atoms/Badge.astro';
+import { domainColor } from './domainColor';
+
+export interface Props {
+  domain: ExamDomain;
+  variant?: 'solid' | 'outline';
+}
+
+const { domain, variant = 'outline' } = Astro.props;
+---
+
+<Badge color={domainColor(domain.id)} variant={variant}>{domain.title}</Badge>

@@ -1,0 +1,39 @@
+---
+/** Shows who is playing. Renders the guest name, then the client fills in the session's player. */
+import { GUEST_NAME } from '@/modules/player/domain/Player';
+---
+
+<span class="player-chip" title="Tu jugador">
+  <span class="avatar" aria-hidden="true"></span>
+  <span class="visually-hidden">Jugando como </span>
+  <span data-player-name>{GUEST_NAME}</span>
+</span>
+
+<style>
+  .player-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    background: var(--color-surface-raised);
+    border: 2px solid var(--color-border);
+    border-radius: 999px;
+  }
+
+  .avatar {
+    width: 0.75rem;
+    height: 0.75rem;
+    background: var(--color-accent);
+    border: 2px solid var(--color-shadow);
+    border-radius: 2px;
+  }
+</style>
+
+<script>
+  import { currentPlayer } from '@/composition/player';
+
+  const player = await currentPlayer();
+  document.querySelectorAll('[data-player-name]').forEach((node) => (node.textContent = player.displayName));
+</script>

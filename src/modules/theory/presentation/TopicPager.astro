@@ -1,0 +1,68 @@
+---
+import type { Topic } from '@/modules/theory/domain/Topic';
+import { routes } from '@/ui/routes';
+
+export interface Props {
+  previous: Topic | null;
+  next: Topic | null;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="pager" aria-label="Temas">
+  {
+    previous && (
+      <a class="link previous" href={routes.topic(previous.slug)}>
+        <span class="direction">← Anterior</span>
+        <span class="title">{previous.title}</span>
+      </a>
+    )
+  }
+  {
+    next && (
+      <a class="link next" href={routes.topic(next.slug)}>
+        <span class="direction">Siguiente →</span>
+        <span class="title">{next.title}</span>
+      </a>
+    )
+  }
+</nav>
+
+<style>
+  .pager {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-12);
+  }
+
+  .link {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    background: var(--color-surface);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .link:hover {
+    border-color: var(--color-accent);
+  }
+
+  .next {
+    grid-column: -2;
+    text-align: right;
+  }
+
+  .direction {
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .title {
+    font-weight: 600;
+  }
+</style>
