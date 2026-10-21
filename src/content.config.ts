@@ -10,6 +10,7 @@ const theory = defineCollection({
     summary: z.string(),
     domain: z.enum(EXAM_DOMAIN_IDS),
     order: z.number().int().positive(),
+    examTasks: z.array(z.string().regex(/^[1-4]\.[1-8]$/)).min(1),
     services: z.array(z.string()).default([]),
     readingMinutes: z.number().int().positive(),
     sources: z.array(z.url()).min(1),

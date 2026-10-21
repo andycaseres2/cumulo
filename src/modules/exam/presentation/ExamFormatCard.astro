@@ -1,0 +1,75 @@
+---
+import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
+import Card from '@/ui/molecules/Card.astro';
+
+const facts = [
+  { value: String(EXAM_FORMAT.questions), label: `preguntas (${EXAM_FORMAT.scoredQuestions} puntúan, ${EXAM_FORMAT.unscoredQuestions} no)` },
+  { value: `${EXAM_FORMAT.durationMinutes} min`, label: 'de duración' },
+  { value: String(EXAM_FORMAT.passingScore), label: `para aprobar (escala ${EXAM_FORMAT.minScore}–${EXAM_FORMAT.maxScore})` },
+];
+---
+
+<Card as="div">
+  <h2 class="title">Cómo es el examen {EXAM_FORMAT.code}</h2>
+  <dl class="facts">
+    {
+      facts.map((fact) => (
+        <div>
+          <dt>{fact.label}</dt>
+          <dd>{fact.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  <ul class="types">
+    {EXAM_FORMAT.questionTypes.map((type) => <li>{type}</li>)}
+  </ul>
+  <p class="note">
+    Las preguntas sin puntaje no se identifican y las respuestas en blanco cuentan como incorrectas: responde todas.
+    <a href={EXAM_FORMAT.sourceUrl} rel="noopener noreferrer" target="_blank">Guía oficial del examen</a>
+  </p>
+</Card>
+
+<style>
+  .title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+  }
+
+  .facts div {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--color-accent);
+  }
+
+  dt {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .types {
+    margin: 0;
+    padding-left: var(--space-6);
+  }
+
+  .note {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,5 +1,6 @@
 ---
 import { theory } from '@/composition/theory';
+import ExamTaskList from '@/modules/theory/presentation/ExamTaskList.astro';
 import SourceList from '@/modules/theory/presentation/SourceList.astro';
 import TopicHeader from '@/modules/theory/presentation/TopicHeader.astro';
 import TopicPager from '@/modules/theory/presentation/TopicPager.astro';
@@ -33,6 +34,7 @@ const { Content, sources } = await theory.renderBody(slug);
         ]}
       />
       <TopicHeader topic={topic} domain={domain} />
+      <ExamTaskList taskIds={topic.examTasks} />
       <Prose><Content /></Prose>
       <SourceList sources={sources} />
       <TopicPager previous={previous} next={next} />

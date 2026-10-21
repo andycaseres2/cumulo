@@ -7,6 +7,8 @@ export interface Topic {
   domainId: ExamDomainId;
   /** Position inside its exam domain, starting at 1. */
   order: number;
+  /** Task statements of the exam guide this topic covers, e.g. ["3.6"]. */
+  examTasks: string[];
   services: string[];
   readingMinutes: number;
 }

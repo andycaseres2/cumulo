@@ -1,16 +1,18 @@
 ---
 import { theory } from '@/composition/theory';
+import ExamFormatCard from '@/modules/exam/presentation/ExamFormatCard.astro';
+import CoverageSummary from '@/modules/theory/presentation/CoverageSummary.astro';
 import DomainSection from '@/modules/theory/presentation/DomainSection.astro';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 
-const catalog = await theory.catalog();
+const [catalog, coverage] = await Promise.all([theory.catalog(), theory.coverage()]);
 ---
 
 <PageLayout
   title="Teoría"
-  description="Los cuatro dominios del examen AWS Certified Cloud Practitioner (CLF-C02) explicados desde cero."
+  description="Toda la teoría del examen AWS Certified Cloud Practitioner (CLF-C02), organizada por los cuatro dominios oficiales."
 >
   <Container>
     <div class="page">
@@ -20,6 +22,10 @@ const catalog = await theory.catalog();
         title="Teoría del Cloud Practitioner"
         description="Organizada según los cuatro dominios oficiales del examen CLF-C02. Empieza por el primero si nunca usaste la nube."
       />
+      <div class="overview">
+        <ExamFormatCard />
+        <CoverageSummary coverage={coverage} />
+      </div>
       {catalog.map((section) => <DomainSection section={section} />)}
     </div>
   </Container>
@@ -28,5 +34,12 @@ const catalog = await theory.catalog();
 <style>
   .page {
     padding-top: var(--space-12);
+  }
+
+  .overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
   }
 </style>

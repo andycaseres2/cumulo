@@ -1,0 +1,49 @@
+---
+import type { TheoryCoverage } from '@/modules/theory/application/getTheoryCoverage';
+import Card from '@/ui/molecules/Card.astro';
+import WeightBar from '@/ui/molecules/WeightBar.astro';
+
+export interface Props {
+  coverage: TheoryCoverage;
+}
+
+const { coverage } = Astro.props;
+const totalTasks = coverage.tasks.length;
+const coveredTasks = totalTasks - coverage.missingTasks.length;
+const percent = (part: number, total: number) => Math.round((part / total) * 100);
+---
+
+<Card as="div" accent={coverage.isComplete ? 'var(--color-domain-technology-services)' : 'var(--color-accent)'}>
+  <h2 class="title">Cobertura de la guía oficial</h2>
+  <p class="lead">
+    {
+      coverage.isComplete
+        ? 'Esta teoría cubre todas las tareas y todos los servicios que la guía oficial incluye en el examen.'
+        : 'Seguimos completando la teoría para cubrir toda la guía oficial del examen.'
+    }
+  </p>
+  <WeightBar
+    label={`${coveredTasks} de ${totalTasks} tareas`}
+    value={percent(coveredTasks, totalTasks)}
+    color="var(--color-domain-technology-services)"
+  />
+  <WeightBar
+    label={`${coverage.coveredServices} de ${coverage.totalServices} servicios`}
+    value={percent(coverage.coveredServices, coverage.totalServices)}
+    color="var(--color-domain-cloud-concepts)"
+  />
+</Card>
+
+<style>
+  .title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .lead {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+</style>

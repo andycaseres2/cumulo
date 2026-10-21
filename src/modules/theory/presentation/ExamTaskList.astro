@@ -1,0 +1,62 @@
+---
+import { findExamTask } from '@/modules/exam/domain/ExamTask';
+
+export interface Props {
+  taskIds: string[];
+}
+
+const tasks = Astro.props.taskIds.map(findExamTask).filter((task) => task !== undefined);
+---
+
+<section class="tasks" aria-labelledby="tareas-del-examen">
+  <h2 id="tareas-del-examen">Qué parte del examen cubre</h2>
+  <ul>
+    {
+      tasks.map((task) => (
+        <li>
+          <span class="id">{task.id}</span>
+          {task.title}
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .tasks {
+    margin-top: var(--space-6);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  ul {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: baseline;
+  }
+
+  .id {
+    flex-shrink: 0;
+    padding: 0.1rem 0.45rem;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    color: var(--color-accent-ink);
+    background: var(--color-accent);
+    border-radius: 4px;
+  }
+</style>

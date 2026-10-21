@@ -9,6 +9,7 @@ function toTopic(entry: CollectionEntry<'theory'>): Topic {
     summary: entry.data.summary,
     domainId: entry.data.domain,
     order: entry.data.order,
+    examTasks: entry.data.examTasks,
     services: entry.data.services,
     readingMinutes: entry.data.readingMinutes,
   };

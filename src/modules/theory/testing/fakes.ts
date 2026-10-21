@@ -7,6 +7,7 @@ export function topic(overrides: Partial<Topic> & Pick<Topic, 'slug'>): Topic {
     summary: 'Summary',
     domainId: 'cloud-concepts',
     order: 1,
+    examTasks: ['1.1'],
     services: [],
     readingMinutes: 5,
     ...overrides,

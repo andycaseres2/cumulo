@@ -67,13 +67,16 @@ title: "Topic title"
 summary: "One sentence about what the learner will understand."
 domain: "cloud-concepts" # cloud-concepts | security-compliance | technology-services | billing-pricing-support
 order: 3                 # position inside the domain
-services: ["Amazon S3"]
+examTasks: ["3.6"]       # task statements of the exam guide it covers
+services: ["Amazon S3"]  # canonical names from src/modules/exam/domain/inScopeServices.ts
 readingMinutes: 5
 sources:
   - "https://docs.aws.amazon.com/..."
 ---
 ```
 
-Start the body at `##`; the page renders the title. Every factual claim should be backed by an official AWS source listed in `sources`.
+Start the body at `##`; the page renders the title. Every factual claim should be backed by an official AWS source listed in `sources`. Keep `examTasks` and `services` as single-line JSON arrays.
+
+`pnpm test` includes a coverage contract (`src/modules/theory/infrastructure/contentCoverage.test.ts`): it fails if any task statement of the official guide or any in-scope service is not covered by at least one topic.
 
 Not affiliated with or endorsed by Amazon Web Services.
