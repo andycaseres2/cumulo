@@ -1,40 +1,16 @@
 import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
-import { npcLookKey } from '../art/characters';
-import {
-  EVENTS,
-  FONT,
-  INTERACT_RANGE,
-  MAP_H,
-  MAP_W,
-  minimapRect,
-  NPC_COUNT,
-  pickZoom,
-  PLAYER_RUN_SPEED,
-  PLAYER_SPEED,
-  REGISTRY,
-  TILE,
-  WORLD_H,
-  WORLD_W,
-} from '../../config';
+import { frameName, npcLookKey } from '../art/characters';
+import { EVENTS, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
+import { NameTag } from '../entities/NameTag';
 import { Npc } from '../entities/Npc';
 import { Walker } from '../entities/Walker';
 import { renderBuildings, renderGround, renderProps, renderRoadMarkings, type Door } from '../render/cityRenderer';
-import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type GroundGrid } from '../../world/cityMap';
+import { Interactions } from '../systems/Interactions';
+import { PlayerControls } from '../systems/PlayerControls';
+import { openAccess, type AccessPolicy } from '../../world/access';
+import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
 import { G } from '../../world/tileTypes';
-
-export interface DialogContent {
-  title: string;
-  text: string;
-}
-
-interface Interactable {
-  x: number;
-  y: number;
-  prompt: string;
-  open: () => DialogContent;
-  close?: () => void;
-}
 
 const NPC_LINES = [
   '¿Viste la Pastelería Dulce Nube? Dicen que su web se cae cada Navidad.',
@@ -47,22 +23,22 @@ const NPC_LINES = [
   'En la Clínica Vida dicen que sus sistemas no pueden caerse nunca.',
 ];
 
-const DOOR_TEXT: Record<string, string> = {
-  academy: 'Bienvenido a la Cloud Academy. Aquí empezará tu formación como consultor cloud. Muy pronto: tu primera clase.',
-};
+const FADE_MS = 250;
+
+/** Data passed when coming back from a building interior. */
+export interface CityWakeData {
+  exitBuildingId?: string;
+}
 
 export class CityScene extends Phaser.Scene {
   private player!: Walker;
-  private npcs: Npc[] = [];
-  private interactables: Interactable[] = [];
-  private keys!: Record<'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd' | 'shift' | 'e' | 'space', Phaser.Input.Keyboard.Key>;
+  private nameTag!: NameTag;
+  private controls!: PlayerControls;
+  private interactions!: Interactions;
   private minimap!: Phaser.Cameras.Scene2D.Camera;
   private marker!: Phaser.GameObjects.Arc;
-  private nameTag!: Phaser.GameObjects.Container;
-  private lastPrompt: string | null = null;
-  private active: Interactable | null = null;
-  /** Set by the HUD interaction button; consumed on the next update like a key press. */
-  private interactRequested = false;
+  private readonly access: AccessPolicy = openAccess;
+  private transitioning = false;
 
   constructor() {
     super('city');
@@ -77,17 +53,18 @@ export class CityScene extends Phaser.Scene {
 
     const ground = renderGround(this, cityGround);
     renderRoadMarkings(this, cityGround);
-    for (const door of renderBuildings(this, ground, addSolid)) this.addDoor(door);
+    const doors = renderBuildings(this, ground, addSolid);
     renderProps(this, cityGround, addSolid);
 
     const academy = doorTile(BUILDINGS.find((b) => b.id === 'academy')!);
-    const spawnX = (academy.x + 0.5) * TILE;
-    const spawnY = (academy.y + 1) * TILE - 2;
-    this.player = new Walker(this, spawnX, spawnY, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
-    this.nameTag = this.createNameTag(this.registry.get(REGISTRY.playerName));
-    this.spawnNpcs(cityGround, seededRandom(2024));
+    this.player = new Walker(this, (academy.x + 0.5) * TILE, (academy.y + 1) * TILE - 2, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
+    this.nameTag = new NameTag(this, this.registry.get(REGISTRY.playerName));
+    this.controls = new PlayerControls(this);
+    this.interactions = new Interactions(this, this.player);
+    for (const door of doors) this.addDoor(door);
+    const npcs = this.spawnNpcs(cityGround, seededRandom(2024));
 
-    const npcGroup = this.add.group(this.npcs, { runChildUpdate: true });
+    const npcGroup = this.add.group(npcs, { runChildUpdate: true });
     for (const obstacle of [solids, ground]) {
       this.physics.add.collider(this.player, obstacle);
       this.physics.add.collider(npcGroup, obstacle);
@@ -95,49 +72,62 @@ export class CityScene extends Phaser.Scene {
     this.physics.add.collider(this.player, npcGroup);
 
     this.setupCameras();
-    this.setupInput();
     this.scene.launch('hud');
-    const requestInteract = () => (this.interactRequested = true);
-    this.game.events.on(EVENTS.dialogClose, this.closeDialog, this);
-    this.game.events.on(EVENTS.interact, requestInteract);
-    this.events.once('shutdown', () => {
-      this.game.events.off(EVENTS.dialogClose, this.closeDialog, this);
-      this.game.events.off(EVENTS.interact, requestInteract);
-    });
+    this.events.on('wake', (_: unknown, data: CityWakeData) => this.returnFromBuilding(data));
+  }
+
+  update() {
+    this.marker.setPosition(this.player.x, this.player.y - 8);
+    this.nameTag.follow(this.player);
+    if (this.transitioning) return;
+
+    const interact = this.controls.consumeInteract();
+    if (this.interactions.busy) this.player.move(0, 0);
+    else this.controls.drive(this.player);
+    this.interactions.update(interact);
   }
 
   private addDoor({ building, x, y }: Door) {
-    this.interactables.push({
+    this.interactions.add({
       x,
       y,
       prompt: `[E] Entrar a ${building.name}`,
-      open: () => ({
-        title: building.name,
-        text: DOOR_TEXT[building.id] ?? 'Misión en construcción. Muy pronto podrás ayudar a este cliente con su problema en la nube.',
-      }),
+      open: () => {
+        const decision = this.access.canEnter(building);
+        if (!decision.allowed) return { title: building.name, text: decision.reason };
+        this.enterBuilding(building);
+        return null;
+      },
     });
   }
 
-  /** Name label with a pointer arrow, drawn above every other world object. */
-  private createNameTag(name: string): Phaser.GameObjects.Container {
-    const label = this.add
-      .text(0, 0, name, {
-        fontFamily: FONT,
-        fontSize: '5px',
-        color: '#1b1b2a',
-        backgroundColor: '#ffd166',
-        padding: { x: 2, y: 1.5 },
-        resolution: 4,
-      })
-      .setOrigin(0.5, 1);
-    label.texture.setFilter(Phaser.Textures.FilterMode.LINEAR);
-    const arrow = this.add.triangle(0, 0, 0, 0, 5, 0, 2.5, 3, 0xffd166).setOrigin(0.5, 0);
-    label.setY(-1);
-    return this.add.container(0, 0, [label, arrow]).setDepth(9_000);
+  private enterBuilding(building: BuildingDef) {
+    this.transitioning = true;
+    this.player.move(0, 0);
+    this.interactions.clearPrompt();
+    this.cameras.main.fadeOut(FADE_MS, 0, 0, 0);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      this.scene.sleep();
+      this.scene.run('interior', { buildingId: building.id });
+    });
+  }
+
+  private returnFromBuilding(data: CityWakeData) {
+    const building = BUILDINGS.find((b) => b.id === data?.exitBuildingId);
+    if (building) {
+      const door = doorTile(building);
+      this.player.setPosition((door.x + 0.5) * TILE, (door.y + 1) * TILE - 2);
+      this.player.facing = 'down';
+      this.player.move(0, 0);
+    }
+    this.controls.reset();
+    this.transitioning = false;
+    this.game.events.emit(EVENTS.location, { title: 'Nimbus City', subtitle: 'Objetivo: explora la ciudad', minimap: true });
+    this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
   }
 
   /** Citizens start on free pavement: not under a building and not on a prop. */
-  private spawnNpcs(ground: GroundGrid, rng: () => number) {
+  private spawnNpcs(ground: GroundGrid, rng: () => number): Npc[] {
     const taken = new Set(streetProps(ground).map((p) => `${p.x},${p.y}`));
     const underBuilding = (x: number, y: number) =>
       BUILDINGS.some((b) => x >= b.x && x < b.x + b.w && y >= buildingTop(b) && y <= b.bottom);
@@ -147,11 +137,10 @@ export class CityScene extends Phaser.Scene {
         if (ground[y][x] === G.PAVEMENT && !underBuilding(x, y) && !taken.has(`${x},${y}`)) free.push({ x, y });
       }
     }
-    for (let i = 0; i < NPC_COUNT; i++) {
+    return Array.from({ length: NPC_COUNT }, (_, i) => {
       const spot = free[Math.floor(rng() * free.length)];
       const npc = new Npc(this, (spot.x + 0.5) * TILE, (spot.y + 1) * TILE - 2, npcLookKey(i), NPC_LINES[i % NPC_LINES.length]);
-      this.npcs.push(npc);
-      this.interactables.push({
+      this.interactions.add({
         get x() {
           return npc.x;
         },
@@ -162,13 +151,14 @@ export class CityScene extends Phaser.Scene {
         open: () => {
           npc.frozen = true;
           npc.face(this.player.x, this.player.y);
-          return { title: 'Vecino', text: npc.line };
+          return { title: 'Vecino', text: npc.line, portrait: { key: npc.look, frame: frameName('down', 0) } };
         },
         close: () => {
           npc.frozen = false;
         },
       });
-    }
+      return npc;
+    });
   }
 
   private setupCameras() {
@@ -194,82 +184,5 @@ export class CityScene extends Phaser.Scene {
     };
     this.scale.on('resize', onResize);
     this.events.once('shutdown', () => this.scale.off('resize', onResize));
-  }
-
-  private setupInput() {
-    const K = Phaser.Input.Keyboard.KeyCodes;
-    this.keys = this.input.keyboard!.addKeys({
-      up: K.UP,
-      down: K.DOWN,
-      left: K.LEFT,
-      right: K.RIGHT,
-      w: K.W,
-      a: K.A,
-      s: K.S,
-      d: K.D,
-      shift: K.SHIFT,
-      e: K.E,
-      space: K.SPACE,
-    }) as CityScene['keys'];
-  }
-
-  update() {
-    const k = this.keys;
-    this.marker.setPosition(this.player.x, this.player.y - 8);
-    this.nameTag.setPosition(Math.round(this.player.x), Math.round(this.player.y) - 18);
-
-    const interact =
-      Phaser.Input.Keyboard.JustDown(k.e) || Phaser.Input.Keyboard.JustDown(k.space) || this.interactRequested;
-    this.interactRequested = false;
-    if (this.active) {
-      this.player.move(0, 0);
-      if (interact) this.closeDialog();
-      return;
-    }
-
-    let vx = (k.right.isDown || k.d.isDown ? 1 : 0) - (k.left.isDown || k.a.isDown ? 1 : 0);
-    let vy = (k.down.isDown || k.s.isDown ? 1 : 0) - (k.up.isDown || k.w.isDown ? 1 : 0);
-    const running = k.shift.isDown;
-    const speed = running ? PLAYER_RUN_SPEED : PLAYER_SPEED;
-    if (vx !== 0 && vy !== 0) {
-      vx *= Math.SQRT1_2;
-      vy *= Math.SQRT1_2;
-    }
-    this.player.move(vx * speed, vy * speed);
-    this.player.anims.timeScale = running ? 1.6 : 1;
-
-    const target = this.nearestInteractable();
-    this.setPrompt(target?.prompt ?? null);
-    if (target && interact) {
-      this.active = target;
-      this.setPrompt(null);
-      this.game.events.emit(EVENTS.dialog, target.open());
-    }
-  }
-
-  private nearestInteractable(): Interactable | null {
-    let best: Interactable | null = null;
-    let bestDistance = INTERACT_RANGE;
-    for (const item of this.interactables) {
-      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
-      if (distance < bestDistance) {
-        best = item;
-        bestDistance = distance;
-      }
-    }
-    return best;
-  }
-
-  private setPrompt(text: string | null) {
-    if (text === this.lastPrompt) return;
-    this.lastPrompt = text;
-    this.game.events.emit(EVENTS.prompt, text);
-  }
-
-  private closeDialog() {
-    if (!this.active) return;
-    this.active.close?.();
-    this.active = null;
-    this.game.events.emit(EVENTS.dialog, null);
   }
 }

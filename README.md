@@ -33,7 +33,7 @@ Restart the dev server after changing `src/content.config.ts`.
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
 
-Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact.
+Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it.
 
 ## Architecture
 
@@ -45,7 +45,7 @@ src/
 │   ├── exam/            Shared kernel: the four CLF-C02 domains and their weights
 │   ├── theory/          domain (Topic, TopicRepository port) → application (use cases) → infrastructure (content collection adapter) → presentation
 │   ├── games/           domain (Game, GameCatalog port) → application → infrastructure (static catalog) → presentation
-│   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots), engine (Kenney tile indices, renderer, entities, scenes, HUD), mount.ts (public entry point)
+│   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots, access rule, office layouts and pathfinding, office talk), engine (Kenney tile indices, office furniture drawn in the Kenney palette, renderers, entities, shared systems for input and interactions, scenes, HUD), mount.ts (public entry point)
 │   └── player/          domain (Player, PlayerSession port) → application → infrastructure (guest session) → presentation
 ├── composition/         Composition root: wires adapters into use cases. Pages only import from here.
 ├── content/theory/      Theory topics in Markdown, validated by src/content.config.ts
@@ -81,6 +81,6 @@ Start the body at `##`; the page renders the title. Every factual claim should b
 
 ## Credits
 
-Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/nimbus-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime.
+Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/nimbus-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime. Office furniture (desks, chairs, meeting table, counter, shelves, printer, cooler, sofa) is drawn in code with colors from the Kenney palette, because no free 16x16 office set matches the pack.
 
 Not affiliated with or endorsed by Amazon Web Services.

@@ -22,11 +22,19 @@ export const EVENTS = {
   prompt: 'hud:prompt',
   dialog: 'hud:dialog',
   dialogClose: 'hud:dialog-close',
+  /** Player pressed E/Space/Aceptar while a dialog is open: the HUD completes the text or closes it. */
+  dialogAdvance: 'hud:dialog-advance',
   interact: 'hud:interact',
+  location: 'hud:location',
 } as const;
 
 export function pickZoom(width: number, height: number): number {
   return Math.min(4, Math.max(2, Math.floor(Math.min(width / 480, height / 300))));
+}
+
+/** Largest whole zoom (2–4) at which content of the given size fits the view. */
+export function fitZoom(viewWidth: number, viewHeight: number, contentWidth: number, contentHeight: number): number {
+  return Math.min(4, Math.max(2, Math.floor(Math.min(viewWidth / contentWidth, viewHeight / contentHeight))));
 }
 
 export function minimapRect(screenWidth: number) {

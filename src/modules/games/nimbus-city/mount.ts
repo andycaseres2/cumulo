@@ -3,6 +3,7 @@ import { REGISTRY } from './config';
 import { BootScene } from './engine/scenes/BootScene';
 import { CityScene } from './engine/scenes/CityScene';
 import { HudScene } from './engine/scenes/HudScene';
+import { InteriorScene } from './engine/scenes/InteriorScene';
 import { SelectScene } from './engine/scenes/SelectScene';
 
 export interface NimbusCityOptions {
@@ -32,7 +33,7 @@ export async function mountNimbusCity(parent: HTMLElement, options: NimbusCityOp
     callbacks: {
       preBoot: (booting) => booting.registry.set(REGISTRY.playerName, options.playerName),
     },
-    scene: [BootScene, SelectScene, CityScene, HudScene],
+    scene: [BootScene, SelectScene, CityScene, InteriorScene, HudScene],
   });
 
   // Exposed in development only, for debugging from the browser console.

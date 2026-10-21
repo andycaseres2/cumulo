@@ -1,0 +1,148 @@
+import Phaser from 'phaser';
+import { seededRandom } from '../art/canvas';
+import { frameName, npcLookKey } from '../art/characters';
+import { EVENTS, fitZoom, REGISTRY, TILE } from '../../config';
+import { NameTag } from '../entities/NameTag';
+import { Walker } from '../entities/Walker';
+import { Worker } from '../entities/Worker';
+import { renderOffice } from '../render/officeRenderer';
+import { Interactions } from '../systems/Interactions';
+import { PlayerControls } from '../systems/PlayerControls';
+import { BUILDINGS, type BuildingDef } from '../../world/cityMap';
+import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
+import { workerLine, workerName } from '../../world/officeTalk';
+import type { CityWakeData } from './CityScene';
+
+export interface InteriorData {
+  buildingId: string;
+}
+
+const FADE_MS = 250;
+
+/** Inside a building: an office with workers; walking back over the doormat returns to the street. */
+export class InteriorScene extends Phaser.Scene {
+  private building!: BuildingDef;
+  private layout!: OfficeLayout;
+  private player!: Walker;
+  private nameTag!: NameTag;
+  private controls!: PlayerControls;
+  private interactions!: Interactions;
+  private leaving = false;
+
+  constructor() {
+    super('interior');
+  }
+
+  create(data: InteriorData) {
+    this.building = BUILDINGS.find((b) => b.id === data.buildingId)!;
+    this.layout = buildOfficeLayout(this.building);
+    this.leaving = false;
+    this.physics.world.setBounds(0, 0, this.layout.width * TILE, this.layout.height * TILE);
+
+    const solids = this.physics.add.staticGroup();
+    renderOffice(this, this.layout, this.building, (cx, cy, w, h) => solids.add(this.add.zone(cx, cy, w, h)));
+
+    const spawn = this.layout.spawn;
+    this.player = new Walker(this, (spawn.x + 0.5) * TILE, (spawn.y + 1) * TILE - 2, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
+    this.player.facing = 'up';
+    this.player.move(0, 0);
+    this.nameTag = new NameTag(this, this.registry.get(REGISTRY.playerName));
+    this.controls = new PlayerControls(this);
+    this.interactions = new Interactions(this, this.player);
+
+    const workers = this.spawnWorkers();
+    this.physics.add.collider(this.player, solids);
+    this.physics.add.collider(this.player, this.add.group(workers, { runChildUpdate: true }));
+
+    const camera = this.cameras.main.setBackgroundColor('#141c33');
+    this.frameRoom(this.scale.width, this.scale.height);
+    const onResize = (size: Phaser.Structs.Size) => this.frameRoom(size.width, size.height);
+    this.scale.on('resize', onResize);
+    this.events.once('shutdown', () => this.scale.off('resize', onResize));
+
+    this.game.events.emit(EVENTS.location, {
+      title: this.building.name,
+      subtitle: 'Sal por la puerta para volver a la calle',
+      minimap: false,
+    });
+    camera.fadeIn(FADE_MS, 0, 0, 0);
+  }
+
+  update() {
+    this.nameTag.follow(this.player);
+    if (this.leaving) return;
+
+    const interact = this.controls.consumeInteract();
+    if (this.interactions.busy) this.player.move(0, 0);
+    else this.controls.drive(this.player);
+    this.interactions.update(interact);
+
+    const doorX = (this.layout.door.x + 0.5) * TILE;
+    if (this.player.y >= this.layout.door.y * TILE + 8 && Math.abs(this.player.x - doorX) < TILE) this.leave();
+  }
+
+  /** Shows the whole room centered when it fits the screen; otherwise follows the player. */
+  private frameRoom(viewWidth: number, viewHeight: number) {
+    const camera = this.cameras.main;
+    const roomWidth = this.layout.width * TILE;
+    const roomHeight = this.layout.height * TILE;
+    const zoom = fitZoom(viewWidth, viewHeight, roomWidth, roomHeight);
+    camera.setZoom(zoom);
+    if (roomWidth * zoom <= viewWidth && roomHeight * zoom <= viewHeight) {
+      camera.stopFollow();
+      camera.centerOn(roomWidth / 2, roomHeight / 2);
+    } else {
+      camera.startFollow(this.player, true, 0.15, 0.15);
+    }
+  }
+
+  private spawnWorkers(): Worker[] {
+    const rng = seededRandom(this.building.id.length * 7919);
+    const walkable = walkableGrid(this.layout);
+    const lookOffset = BUILDINGS.indexOf(this.building);
+    const takenSpots = new Set<string>();
+    return this.layout.workstations.map((station, i) => {
+      const worker = new Worker(
+        this,
+        npcLookKey(i + lookOffset),
+        workerLine(this.building.id, i),
+        station,
+        this.layout.breakSpots,
+        walkable,
+        rng,
+        takenSpots,
+      );
+      const name = workerName(this.building.id, i);
+      this.interactions.add({
+        get x() {
+          return worker.x;
+        },
+        get y() {
+          return worker.y;
+        },
+        prompt: `[E] Hablar con ${name}`,
+        open: () => {
+          worker.frozen = true;
+          worker.face(this.player.x, this.player.y);
+          return { title: name, text: worker.line, portrait: { key: worker.look, frame: frameName('down', 0) } };
+        },
+        close: () => {
+          worker.frozen = false;
+        },
+      });
+      return worker;
+    });
+  }
+
+  private leave() {
+    this.leaving = true;
+    this.player.move(0, 0);
+    this.interactions.clearPrompt();
+    this.cameras.main.fadeOut(FADE_MS, 0, 0, 0);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      const data: CityWakeData = { exitBuildingId: this.building.id };
+      this.scene.stop();
+      this.scene.wake('city', data);
+    });
+  }
+}
