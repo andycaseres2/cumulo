@@ -1,0 +1,29 @@
+---
+import GameLayout from '@/ui/layouts/GameLayout.astro';
+---
+
+<GameLayout
+  title="Nimbus City"
+  description="Recorre Nimbus City como consultor cloud y ayuda a sus negocios con problemas reales de AWS."
+  exitHref="/juegos"
+>
+  <div class="game-root" data-nimbus-city></div>
+</GameLayout>
+
+<style>
+  .game-root {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  import { currentPlayer } from '@/composition/player';
+  import { mountNimbusCity } from '@/modules/games/nimbus-city/mount';
+
+  const root = document.querySelector<HTMLElement>('[data-nimbus-city]');
+  if (root) {
+    const player = await currentPlayer();
+    await mountNimbusCity(root, { playerName: player.displayName });
+  }
+</script>

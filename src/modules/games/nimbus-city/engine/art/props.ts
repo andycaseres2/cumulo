@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import { TILE } from '../config';
-import type { BuildingDef } from '../world/cityMap';
+import { TILE } from '../../config';
+import type { BuildingDef } from '../../world/cityMap';
 import { createCanvas, hashString, outline, painter, seededRandom, shade, type Painter } from './canvas';
 
 export function buildingLayout(def: BuildingDef) {

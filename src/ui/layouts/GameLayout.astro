@@ -1,0 +1,46 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  exitHref: string;
+}
+
+const { title, description, exitHref } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="stage">
+    <slot />
+    <a class="exit" href={exitHref}>← Salir</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .exit {
+    position: absolute;
+    right: var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    font-family: var(--font-display);
+    font-size: 0.625rem;
+    color: var(--color-text);
+    text-decoration: none;
+    background: rgb(27 27 42 / 85%);
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius);
+  }
+
+  .exit:hover {
+    color: var(--color-accent-ink);
+    background: var(--color-accent);
+  }
+</style>

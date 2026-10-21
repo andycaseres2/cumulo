@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT } from '../config';
+import { FONT } from '../../config';
 
 const COLORS = { idle: 0xffd166, hover: 0xffe29a, pressed: 0xe6b84f, border: 0x1b1b2a };
 const PADDING = { x: 14, y: 9 };

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { FONT } from '../config';
+import { FONT, REGISTRY } from '../../config';
 import { Button } from '../ui/Button';
 
 const OPTIONS = [
@@ -76,7 +76,7 @@ export class SelectScene extends Phaser.Scene {
   }
 
   private startGame() {
-    this.registry.set('playerKey', OPTIONS[this.selected].key);
+    this.registry.set(REGISTRY.playerKey, OPTIONS[this.selected].key);
     this.scene.start('city');
   }
 }

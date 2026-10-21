@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { NPC_SPEED } from '../config';
+import { NPC_SPEED } from '../../config';
 import { Walker } from './Walker';
 
 const HEADINGS = [

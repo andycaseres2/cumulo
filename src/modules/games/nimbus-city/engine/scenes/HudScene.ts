@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { EVENTS, FONT, minimapRect } from '../config';
+import { EVENTS, FONT, minimapRect } from '../../config';
 import { Button } from '../ui/Button';
 import type { DialogContent } from './CityScene';
 

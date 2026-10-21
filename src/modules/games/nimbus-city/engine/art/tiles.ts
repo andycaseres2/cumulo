@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
-import { TILE } from '../config';
-import { T, TILE_COUNT } from '../world/tileTypes';
+import { TILE } from '../../config';
+import { T, TILE_COUNT } from '../../world/tileTypes';
 import { createCanvas, painter, seededRandom, type Painter } from './canvas';
 
 type Rng = () => number;

@@ -14,6 +14,12 @@ export const NPC_SPEED = 32;
 export const NPC_COUNT = 12;
 export const INTERACT_RANGE = 20;
 
+/** Keys shared through the Phaser registry. */
+export const REGISTRY = {
+  playerKey: 'playerKey',
+  playerName: 'playerName',
+} as const;
+
 export const EVENTS = {
   prompt: 'hud:prompt',
   dialog: 'hud:dialog',

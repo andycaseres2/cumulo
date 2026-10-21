@@ -12,12 +12,12 @@ import {
   pickZoom,
   PLAYER_RUN_SPEED,
   PLAYER_SPEED,
+  REGISTRY,
   TILE,
   WORLD_H,
   WORLD_W,
-} from '../config';
+} from '../../config';
 import { Npc } from '../entities/Npc';
-import { getPlayerName } from '../session';
 import { Walker } from '../entities/Walker';
 import {
   BENCH_SPOTS,
@@ -28,8 +28,8 @@ import {
   treeSpots,
   type BuildingDef,
   type TileGrid,
-} from '../world/cityMap';
-import { T } from '../world/tileTypes';
+} from '../../world/cityMap';
+import { T } from '../../world/tileTypes';
 
 export interface DialogContent {
   title: string;
@@ -93,8 +93,8 @@ export class CityScene extends Phaser.Scene {
     const academy = BUILDINGS.find((b) => b.id === 'academy')!;
     const spawnX = (academy.x + academy.w / 2) * TILE;
     const spawnY = (academy.bottom + 2) * TILE - 2;
-    this.player = new Walker(this, spawnX, spawnY, this.registry.get('playerKey') ?? 'player-man');
-    this.nameTag = this.createNameTag(getPlayerName());
+    this.player = new Walker(this, spawnX, spawnY, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
+    this.nameTag = this.createNameTag(this.registry.get(REGISTRY.playerName));
     this.spawnNpcs(tiles, rng);
 
     const npcGroup = this.add.group(this.npcs, { runChildUpdate: true });

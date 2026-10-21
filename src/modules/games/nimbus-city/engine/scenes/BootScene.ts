@@ -3,8 +3,8 @@ import { createCharacter, PLAYER_LOOKS, randomLook } from '../art/characters';
 import { seededRandom } from '../art/canvas';
 import { generateProps } from '../art/props';
 import { generateTileset } from '../art/tiles';
-import { NPC_COUNT } from '../config';
-import { BUILDINGS } from '../world/cityMap';
+import { NPC_COUNT, REGISTRY } from '../../config';
+import { BUILDINGS } from '../../world/cityMap';
 
 /** Generates every texture and animation in code, then opens character selection. */
 export class BootScene extends Phaser.Scene {
@@ -22,7 +22,7 @@ export class BootScene extends Phaser.Scene {
     // Dev shortcut: ?play=man or ?play=woman skips character selection.
     const quickStart = new URLSearchParams(window.location.search).get('play');
     if (quickStart === 'man' || quickStart === 'woman') {
-      this.registry.set('playerKey', `player-${quickStart}`);
+      this.registry.set(REGISTRY.playerKey, `player-${quickStart}`);
       this.scene.start('city');
       return;
     }
