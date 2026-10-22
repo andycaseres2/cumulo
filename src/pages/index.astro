@@ -3,6 +3,7 @@ import { games } from '@/composition/games';
 import { theory } from '@/composition/theory';
 import GameCard from '@/modules/games/presentation/GameCard.astro';
 import { isPlayable } from '@/modules/games/domain/Game';
+import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
 import DomainOverview from '@/modules/theory/presentation/DomainOverview.astro';
 import Button from '@/ui/atoms/Button.astro';
 import Container from '@/ui/atoms/Container.astro';
@@ -48,9 +49,9 @@ const topicCount = catalog.reduce((sum, section) => sum + section.topics.length,
     <section class="section" aria-labelledby="como-prepararte">
       <SectionHeading
         id="como-prepararte"
-        eyebrow="Dos caminos, un objetivo"
+        eyebrow="Tres caminos, un objetivo"
         title="Elige cómo prepararte"
-        description="Practica con juegos cuando quieras aplicar lo aprendido y vuelve a la teoría cuando necesites entender un concepto a fondo."
+        description="Practica con juegos cuando quieras aplicar lo aprendido, vuelve a la teoría cuando necesites entender un concepto a fondo y mide tu preparación con un simulacro."
       />
       <ul class="paths">
         <li>
@@ -69,6 +70,14 @@ const topicCount = catalog.reduce((sum, section) => sum + section.topics.length,
             <p>Los cuatro dominios del examen explicados con casos de negocios, tablas comparativas y trampas típicas.</p>
             <p class="stat">{topicCount} temas · 4 dominios</p>
             <Fragment slot="footer"><Button href={routes.theory} variant="secondary">Ir a la teoría</Button></Fragment>
+          </Card>
+        </li>
+        <li>
+          <Card accent="var(--color-domain-security-compliance)">
+            <h3>Simulacro del examen</h3>
+            <p>Un examen como el real: preguntas de los cuatro dominios con tiempo, puntaje estimado y repaso de cada respuesta.</p>
+            <p class="stat">{EXAM_FORMAT.questions} preguntas · {EXAM_FORMAT.durationMinutes} minutos</p>
+            <Fragment slot="footer"><Button href={routes.practiceExam} variant="secondary">Hacer un simulacro</Button></Fragment>
           </Card>
         </li>
       </ul>

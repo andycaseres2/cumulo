@@ -8,4 +8,5 @@ export const routes = {
   theoryDomain: (domainId: string) => `/teoria#${domainId}`,
   topic: (slug: string) => `/teoria/${slug}`,
   profile: '/perfil',
+  practiceExam: '/simulacro',
 };

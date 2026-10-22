@@ -1,0 +1,334 @@
+.exam-simulator {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.es-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.es-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-accent);
+}
+
+.es-rules {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-6);
+}
+
+.es-note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.es-primary,
+.es-secondary {
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.es-primary {
+  justify-self: start;
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+  border: 2px solid var(--color-shadow);
+}
+
+.es-primary:hover,
+.es-primary:focus-visible {
+  background: var(--color-accent-strong);
+}
+
+.es-secondary {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border: 2px solid var(--color-border);
+}
+
+.es-secondary:hover:not(:disabled),
+.es-secondary:focus-visible {
+  border-color: var(--color-accent);
+}
+
+.es-secondary:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.es-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.es-timer-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.es-timer {
+  margin-left: var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-accent);
+}
+
+.es-confirm {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-raised);
+  border: 2px solid var(--color-domain-security-compliance);
+  border-radius: var(--radius);
+}
+
+.es-confirm[hidden] {
+  display: none;
+}
+
+.es-confirm p {
+  margin: 0;
+}
+
+.es-question {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.es-progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.es-domain {
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.es-prompt {
+  margin: 0;
+  font-weight: 600;
+}
+
+.es-options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.es-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  font: inherit;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.es-option:hover,
+.es-option:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.es-option[aria-pressed='true'] {
+  background: var(--color-surface-raised);
+  border-color: var(--color-accent);
+}
+
+.es-letter {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  color: var(--color-accent-ink);
+  background: var(--color-text-muted);
+  border-radius: 50%;
+}
+
+.es-option[aria-pressed='true'] .es-letter {
+  background: var(--color-accent);
+}
+
+.es-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.es-actions .es-primary {
+  margin-left: auto;
+}
+
+.es-nav-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.es-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.25rem, 1fr));
+  gap: var(--space-1);
+}
+
+.es-nav-cell {
+  padding: var(--space-1) 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.es-nav-cell[data-state='answered'] {
+  color: var(--color-accent-ink);
+  background: var(--color-domain-cloud-concepts);
+  border-color: var(--color-domain-cloud-concepts);
+}
+
+.es-nav-cell[data-state='flagged'] {
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.es-nav-cell[aria-current='step'] {
+  outline: 2px solid var(--color-text);
+  outline-offset: 1px;
+}
+
+.es-timeup {
+  margin: 0;
+  padding: var(--space-3);
+  font-weight: 700;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+}
+
+.es-score-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.es-score {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4);
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+}
+
+.es-score.is-pass {
+  color: var(--color-domain-technology-services);
+}
+
+.es-score.is-fail {
+  color: var(--color-domain-security-compliance);
+}
+
+.es-verdict {
+  font-size: var(--text-md);
+}
+
+.es-summary {
+  margin: 0;
+}
+
+.es-domains {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.es-domain-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+}
+
+.es-domain-score {
+  flex: none;
+  font-weight: 700;
+}
+
+.es-review-title {
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.es-review {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding-left: var(--space-6);
+}
+
+.es-review-item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.es-review-item[data-state='right'] {
+  border-color: var(--color-domain-technology-services);
+}
+
+.es-review-item[data-state='wrong'],
+.es-review-item[data-state='empty'] {
+  border-color: var(--color-domain-security-compliance);
+}
+
+.es-review-item p {
+  margin: 0;
+}
+
+.es-review-why {
+  color: var(--color-text-muted);
+}

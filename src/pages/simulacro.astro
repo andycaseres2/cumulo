@@ -1,0 +1,60 @@
+---
+import { theory } from '@/composition/theory';
+import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+
+// The bank is the reviewed quiz of every theory topic; each exam draws from it in the browser.
+const bank = await theory.quizBank();
+---
+
+<PageLayout
+  title="Simulacro del examen"
+  description={`Practica con un simulacro del examen ${EXAM_FORMAT.code}: ${EXAM_FORMAT.questions} preguntas, ${EXAM_FORMAT.durationMinutes} minutos y puntaje estimado.`}
+>
+  <Container width="reading">
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Practica"
+        title="Simulacro del examen"
+        description={`Pon a prueba todo lo que estudiaste con un examen como el ${EXAM_FORMAT.code}: preguntas de los cuatro dominios, con tiempo y puntaje. Cada intento trae preguntas distintas de un banco de ${bank.length}.`}
+      />
+      <div
+        data-practice-exam
+        data-bank={JSON.stringify(bank)}
+        data-questions={EXAM_FORMAT.questions}
+        data-minutes={EXAM_FORMAT.durationMinutes}
+      >
+      </div>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-12);
+  }
+</style>
+
+<script>
+  import { buildPracticeExam, type BankQuestion } from '@/modules/exam/domain/PracticeExam';
+  import { renderExamSimulator } from '@/modules/exam/presentation/examSimulator';
+  import { routes } from '@/ui/routes';
+
+  const host = document.querySelector<HTMLElement>('[data-practice-exam]');
+  if (host) {
+    const bank: BankQuestion[] = JSON.parse(host.dataset.bank ?? '[]');
+    const total = Number(host.dataset.questions);
+    const preview = buildPracticeExam(bank, { total });
+    renderExamSimulator(host, {
+      createExam: () => buildPracticeExam(bank, { total }),
+      questionCount: preview.questions.length,
+      theoryUrl: routes.topic,
+      durationMinutes: Number(host.dataset.minutes),
+    });
+  }
+</script>
