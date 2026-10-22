@@ -1,7 +1,7 @@
 ---
 import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
 import { domainColor } from '@/modules/exam/presentation/domainColor';
-import WeightBar from '@/ui/molecules/WeightBar.astro';
+import WeightStat from '@/ui/molecules/WeightStat.astro';
 import { routes } from '@/ui/routes';
 
 export interface Props {
@@ -20,7 +20,7 @@ const { sections } = Astro.props;
           <span class="title">{domain.title}</span>
           <span class="count">{topics.length} temas</span>
         </a>
-        <WeightBar label="Peso" value={domain.weight} color={domainColor(domain.id)} />
+        <WeightStat label="del examen" value={domain.weight} color={domainColor(domain.id)} />
       </li>
     ))
   }

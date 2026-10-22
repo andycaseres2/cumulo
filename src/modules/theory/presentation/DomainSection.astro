@@ -1,7 +1,7 @@
 ---
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
-import WeightBar from '@/ui/molecules/WeightBar.astro';
+import WeightStat from '@/ui/molecules/WeightStat.astro';
 import TopicCard from './TopicCard.astro';
 
 export interface Props {
@@ -17,7 +17,7 @@ const { domain, topics } = section;
     <p class="number">Dominio {domain.order}</p>
     <h2 id={domain.id}>{domain.title}</h2>
     <p class="description">{domain.description}</p>
-    <WeightBar label="Peso en el examen" value={domain.weight} color={domainColor(domain.id)} />
+    <WeightStat label="del examen" value={domain.weight} color={domainColor(domain.id)} />
     {/* Filled in the browser with the visitor's completed topics. */}
     {topics.some((t) => t.hasQuiz) && <p class="progress" data-domain-progress={domain.id} data-total={topics.length} hidden />}
   </header>

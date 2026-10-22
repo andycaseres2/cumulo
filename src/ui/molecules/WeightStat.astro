@@ -1,0 +1,36 @@
+---
+/** A percentage shown as a large, colored number with its label, e.g. a domain's weight in the exam. */
+export interface Props {
+  label: string;
+  value: number;
+  color?: string;
+}
+
+const { label, value, color = 'var(--color-accent)' } = Astro.props;
+---
+
+<p class="stat" style={`--stat-color: ${color}`}>
+  <span class="value">{value}%</span>
+  <span class="label">{label}</span>
+</p>
+
+<style>
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .value {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--stat-color);
+  }
+
+  .label {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>
