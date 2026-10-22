@@ -34,7 +34,7 @@ PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 ```
 
-- Use the **publishable key** (`sb_publishable_...`), which replaces the legacy `anon` key. The schema in `astro.config.mjs` rejects legacy JWT keys (`eyJ...`) and malformed URLs when the client is used.
+- Use the **publishable key** (`sb_publishable_...`) or, in projects that only show legacy keys, the **`anon` `public`** key. The client checks the key and refuses secret and `service_role` keys even if they are put here by mistake (`src/infrastructure/supabase/browserKey.ts`). Malformed URLs fail the build when the client is used.
 - Never add the **secret key** (`sb_secret_...`) or the legacy `service_role` key: they bypass Row Level Security and must not reach the browser or the repository.
 - The shared client lives in `src/infrastructure/supabase/client.ts`; it returns `null` while the variables are missing.
 - Restart `pnpm dev` after editing `.env`.
