@@ -46,6 +46,12 @@ Players sign up at `/ingresar` with their name, email and password, and confirm 
 1. **Authentication → Sign In / Providers → Email**: enabled (default), with "Confirm email" on.
 2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/ingresar` (and later the production URL + `/ingresar`) to **Redirect URLs**. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
 
+### Mission progress in the account
+
+Signed-in players keep their mission progress in their Supabase account, with a copy in the browser. To create the table, open **Supabase → SQL Editor**, paste [`supabase/migrations/20261021000000_mission_progress.sql`](supabase/migrations/20261021000000_mission_progress.sql) and run it. It creates `mission_progress` with Row Level Security: each player can read and change only their own rows.
+
+Until the table exists (or while offline), the game keeps working with the browser copy and uploads it as soon as the table answers. Progress played on a browser before accounts existed is added to the first account that signs in there. Scores are written by the browser, so they are a learning aid, not a tamper-proof record.
+
 Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
 
 ## Routes
