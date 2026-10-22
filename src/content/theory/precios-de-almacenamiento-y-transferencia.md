@@ -51,6 +51,73 @@ quiz:
         explanation: "El cobro por tipo de solicitud (PUT, GET, LIST) es una dimensión de precio de Amazon S3; en EBS se paga el almacenamiento aprovisionado."
       - label: "Solo por los snapshots que se creen del volumen"
         explanation: "Los snapshots se cobran aparte por el espacio que ocupan; el volumen en sí se cobra por su tamaño aprovisionado."
+practice:
+  - prompt: "Una empresa de streaming de música de Buenos Aires nota que, a medida que crece su almacenamiento en Amazon S3, el precio que paga por cada GB baja. ¿Qué principio de precios de AWS explica esto?"
+    options:
+      - label: "Paga menos por unidad al usar más"
+        explanation: "S3 tiene precios escalonados (tiered pricing): cuanto más almacenas, menos pagas por GB, que es justo lo que observa la empresa."
+        correct: true
+      - label: "Pago por uso (pay-as-you-go)"
+        explanation: "El pago por uso significa pagar solo lo que consumes sin contratos largos; no explica por qué baja el precio por GB al crecer."
+      - label: "Ahorra cuando te comprometes"
+        explanation: "Este principio baja el precio a cambio de un compromiso de 1 o 3 años, como Savings Plans; la empresa no firmó ningún compromiso."
+      - label: "Ofertas Always Free"
+        explanation: "Always Free son asignaciones mensuales permanentes en algunos servicios; no explican una baja del precio por GB a mayor volumen."
+  - prompt: "El gerente financiero de una cadena de farmacias de Asunción quiere saber en qué conceptos se concentra el costo en AWS. ¿Cuál de estos es uno de los tres impulsores fundamentales del costo que identifica AWS?"
+    options:
+      - label: "La transferencia de datos de entrada desde internet"
+        explanation: "La entrada de datos desde internet en general no se cobra, así que no es un impulsor fundamental del costo."
+      - label: "La transferencia de datos de salida"
+        explanation: "AWS identifica tres impulsores fundamentales del costo: cómputo, almacenamiento y transferencia de datos de salida."
+        correct: true
+      - label: "El número de usuarios de IAM de la cuenta"
+        explanation: "Los usuarios de IAM no están entre los impulsores fundamentales; los tres son cómputo, almacenamiento y transferencia de salida."
+      - label: "Los impuestos incluidos en los precios publicados"
+        explanation: "Los precios publicados de AWS no incluyen impuestos, y los impuestos no son uno de los tres impulsores del costo."
+  - prompt: "Una startup de Bogotá crea su cuenta de AWS con el Free account plan para una prueba de concepto. ¿Cuándo termina ese plan?"
+    options:
+      - label: "A los 12 meses de crear la cuenta"
+        explanation: "Esa duración corresponde a la descripción antigua de la capa gratuita; el plan gratuito actual dura hasta seis meses."
+      - label: "Solo cuando se agotan los créditos, sin importar el tiempo"
+        explanation: "El agotamiento de créditos es solo una de las dos condiciones; el plan también termina al cumplir seis meses."
+      - label: "Cuando la startup usa por primera vez un servicio con prueba de corto plazo"
+        explanation: "Las pruebas de corto plazo aplican a cuentas con el plan pagado; usarlas no es la regla que hace terminar el plan gratuito."
+      - label: "A los seis meses o cuando se agotan los créditos, lo que ocurra primero"
+        explanation: "El Free account plan termina a los seis meses o al agotar los créditos, lo que ocurra primero; para seguir, hay que pasar al plan pagado."
+        correct: true
+  - prompt: "Un laboratorio clínico de Montevideo guarda resultados en Amazon S3, pero no sabe con qué frecuencia se consultarán. Quiere que S3 mueva los objetos entre niveles de acceso automáticamente. ¿Qué clase de almacenamiento debe elegir?"
+    options:
+      - label: "S3 One Zone-IA"
+        explanation: "One Zone-IA tiene menor costo de almacenamiento con cargo por recuperación y mínimo de 30 días; no mueve objetos entre niveles por sí sola."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "Deep Archive es para archivo con el costo de almacenamiento más bajo y mínimo de 180 días; no reubica objetos según su uso."
+      - label: "S3 Intelligent-Tiering"
+        explanation: "Intelligent-Tiering mueve objetos entre niveles de acceso automáticamente, a cambio de un cargo de monitoreo por objeto."
+        correct: true
+      - label: "Snapshots de Amazon EBS"
+        explanation: "Los snapshots son copias incrementales de volúmenes EBS que se cobran por espacio; no son una clase de S3 ni mueven objetos entre niveles."
+  - prompt: "Un diario digital de Santiago guarda sus imágenes en Amazon S3. ¿Cuál de estos movimientos de datos de S3 genera un cargo por transferencia?"
+    options:
+      - label: "Enviar las imágenes desde S3 hacia Amazon CloudFront"
+        explanation: "En Amazon S3, la transferencia hacia Amazon CloudFront es gratis."
+      - label: "Copiar imágenes entre dos buckets de la misma Región"
+        explanation: "En S3, la transferencia entre buckets de la misma Región es gratis."
+      - label: "Leer las imágenes desde una instancia EC2 de la misma Región"
+        explanation: "En S3, la transferencia hacia otros servicios de AWS en la misma Región es gratis."
+      - label: "Servir las imágenes desde S3 directamente a los lectores por internet"
+        explanation: "La salida de datos de S3 hacia internet es una dimensión de precio de S3 y se cobra por GB."
+        correct: true
+  - prompt: "Una aseguradora de Guadalajara guarda un archivo en S3 Standard-IA y lo borra a los 10 días. ¿Cómo se cobra el almacenamiento de ese objeto?"
+    options:
+      - label: "Solo por los 10 días que estuvo almacenado"
+        explanation: "Standard-IA tiene una duración mínima de 30 días; borrar antes no limita el cobro a los días reales."
+      - label: "Se cobra el resto hasta la duración mínima de 30 días, de forma prorrateada"
+        explanation: "Si borras o mueves un objeto antes de su duración mínima, se cobra el resto prorrateado; en Standard-IA el mínimo es de 30 días."
+        correct: true
+      - label: "Se cobra hasta completar 180 días"
+        explanation: "La duración mínima de 180 días corresponde a S3 Glacier Deep Archive, no a Standard-IA."
+      - label: "Solo se cobra un cargo de monitoreo por objeto"
+        explanation: "El cargo de monitoreo por objeto es propio de S3 Intelligent-Tiering, no de Standard-IA."
 ---
 
 ## ¿Por qué importa?

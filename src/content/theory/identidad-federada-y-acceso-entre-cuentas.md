@@ -47,6 +47,73 @@ quiz:
         explanation: "Los identity pools dan credenciales temporales a usuarios de una app web o móvil, no a desarrolladores que trabajan entre cuentas de AWS."
       - label: "Un AD Connector"
         explanation: "AD Connector es un proxy que redirige inicios de sesión a un Active Directory local; no da acceso entre cuentas de AWS."
+practice:
+  - prompt: "Una minera de Antofagasta federa a sus empleados desde su proveedor de identidad corporativo hacia AWS con SAML 2.0. ¿Qué credenciales reciben los empleados en AWS?"
+    options:
+      - label: "Credenciales temporales"
+        explanation: "Con la federación, AWS confía en el IdP externo y la persona recibe credenciales temporales, sin claves de largo plazo."
+        correct: true
+      - label: "Access keys permanentes"
+        explanation: "Es la trampa típica del examen: la federación entrega credenciales temporales, no access keys permanentes."
+      - label: "Un usuario de IAM nuevo por empleado"
+        explanation: "La federación justamente evita crear un usuario de IAM por persona; la identidad sigue viviendo en el IdP."
+      - label: "La contraseña del usuario raíz de la cuenta"
+        explanation: "El usuario raíz tiene acceso total y no se reparte; la federación da a cada persona credenciales temporales."
+  - prompt: "Una universidad de Lima quiere que los inicios de sesión de sus aplicaciones en AWS se redirijan a su Active Directory local existente, sin sincronizar directorios. ¿Qué opción de AWS Directory Service debe usar?"
+    options:
+      - label: "AWS Managed Microsoft AD"
+        explanation: "AWS Managed Microsoft AD es un Active Directory real administrado por AWS, no un proxy que redirige al AD local."
+      - label: "Simple AD"
+        explanation: "Simple AD es un directorio aparte con funciones básicas de AD para casos pequeños; no redirige al AD local."
+      - label: "AD Connector"
+        explanation: "AD Connector es un proxy que redirige las solicitudes de inicio de sesión al AD local existente, sin sincronizar directorios."
+        correct: true
+      - label: "Amazon Cognito user pools"
+        explanation: "Los user pools de Cognito son un directorio para usuarios de apps web y móviles; no redirigen al Active Directory local."
+  - prompt: "Una app móvil de turismo de Cusco ya autentica a sus usuarios y ahora necesita que cada uno suba fotos directamente a Amazon S3 con credenciales temporales de AWS; también quiere dar acceso limitado a invitados. ¿Qué componente debe usar?"
+    options:
+      - label: "Amazon Cognito user pools"
+        explanation: "Los user pools son el directorio de registro e inicio de sesión que emite tokens; el intercambio por credenciales de AWS lo hacen los identity pools."
+      - label: "Amazon Cognito identity pools"
+        explanation: "Los identity pools intercambian un token de confianza por credenciales temporales de AWS y pueden dar acceso limitado a invitados."
+        correct: true
+      - label: "Conjuntos de permisos de IAM Identity Center"
+        explanation: "Los permission sets son para la fuerza laboral que entra a cuentas de AWS, no para los clientes de una app móvil."
+      - label: "Un usuario de IAM por cada cliente de la app"
+        explanation: "A los clientes de una app no se les crean usuarios de IAM; sus identidades se gestionan con Amazon Cognito."
+  - prompt: "Una empresa de retail de Bogotá usa IAM Identity Center y quiere crear plantillas como administrador y solo lectura que se aprovisionen en varias cuentas y se asignen a grupos de empleados. ¿Qué función debe usar?"
+    options:
+      - label: "Simple AD"
+        explanation: "Simple AD es un directorio con funciones básicas de AD; no define plantillas de permisos para varias cuentas."
+      - label: "Amazon Cognito identity pools"
+        explanation: "Los identity pools dan credenciales de AWS a usuarios de apps web y móviles, no permisos a empleados en varias cuentas."
+      - label: "La política de confianza de un rol entre cuentas"
+        explanation: "Una política de confianza indica quién puede asumir un rol concreto; no es una plantilla que se aprovisiona en varias cuentas."
+      - label: "Conjuntos de permisos (permission sets)"
+        explanation: "Los permission sets son plantillas de permisos que IAM Identity Center aprovisiona en varias cuentas y asigna a usuarios o grupos."
+        correct: true
+  - prompt: "La documentación antigua de una empresa de Panamá menciona el servicio AWS Single Sign-On. ¿A qué servicio actual corresponde ese nombre?"
+    options:
+      - label: "AWS IAM Identity Center"
+        explanation: "AWS Single Sign-On es el nombre anterior de IAM Identity Center, el acceso centralizado de la fuerza laboral."
+        correct: true
+      - label: "Amazon Cognito"
+        explanation: "Amazon Cognito es la plataforma de identidad para clientes de apps web y móviles; no es el antiguo AWS Single Sign-On."
+      - label: "AWS Directory Service"
+        explanation: "AWS Directory Service ofrece Active Directory en AWS; no es el antiguo AWS Single Sign-On."
+      - label: "AWS Organizations"
+        explanation: "AWS Organizations agrupa y gobierna cuentas; el antiguo AWS Single Sign-On es otro servicio."
+  - prompt: "En la cuenta de producción de una empresa de software de Santiago ya existe un rol cuya política de confianza nombra a la cuenta de desarrollo. ¿Qué falta para que ciertos desarrolladores de esa cuenta puedan usar el rol?"
+    options:
+      - label: "Crear usuarios de IAM duplicados en la cuenta de producción"
+        explanation: "El rol entre cuentas existe justamente para evitar usuarios duplicados en la cuenta destino."
+      - label: "Crear un identity pool de Amazon Cognito"
+        explanation: "Los identity pools dan credenciales a usuarios de apps web y móviles, no a desarrolladores que trabajan entre cuentas."
+      - label: "Darles en la cuenta de desarrollo permiso para ejecutar sts:AssumeRole sobre ese rol"
+        explanation: "En la cuenta origen se da permiso a ciertas identidades para ejecutar sts:AssumeRole; luego cambian de rol y reciben credenciales temporales."
+        correct: true
+      - label: "Conectar un AD Connector en la cuenta de producción"
+        explanation: "AD Connector redirige inicios de sesión a un Active Directory local; no habilita asumir un rol entre cuentas."
 ---
 
 ## ¿Por qué importa?

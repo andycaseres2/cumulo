@@ -48,6 +48,73 @@ quiz:
       - label: "Adquirir recursos cuando los necesitas y liberarlos cuando ya no, idealmente de forma automática"
         explanation: "Esa es la definición de elasticidad: crecer y también reducirse según la demanda, lo que evita pagar por capacidad ociosa."
         correct: true
+practice:
+  - prompt: "Una empresa de pagos de São Paulo procesa millones de conexiones TCP por segundo y necesita un balanceador con rendimiento extremo y una dirección IP estática. ¿Qué tipo de balanceador debe usar?"
+    options:
+      - label: "Application Load Balancer (ALB)"
+        explanation: "El ALB opera en capa 7 con enrutamiento flexible por contenido HTTP; el rendimiento extremo con IP estática es el caso típico del NLB."
+      - label: "Network Load Balancer (NLB)"
+        explanation: "El NLB opera en capa 4 (TCP/UDP) y se elige cuando se necesita rendimiento extremo o una dirección IP estática."
+        correct: true
+      - label: "Gateway Load Balancer (GWLB)"
+        explanation: "El GWLB sirve para desplegar y escalar appliances virtuales como firewalls, no para repartir conexiones TCP de una aplicación de pagos."
+      - label: "AWS Auto Scaling"
+        explanation: "AWS Auto Scaling coordina el escalado de varios recursos; no es un balanceador ni ofrece una IP estática."
+  - prompt: "Un proveedor de internet de Bogotá quiere desplegar y escalar firewalls virtuales y sistemas de detección y prevención de intrusos de terceros para inspeccionar el tráfico. ¿Qué tipo de balanceador debe usar?"
+    options:
+      - label: "Application Load Balancer (ALB)"
+        explanation: "El ALB reparte tráfico HTTP/HTTPS de aplicaciones web; no está pensado para desplegar appliances de inspección de red."
+      - label: "Network Load Balancer (NLB)"
+        explanation: "El NLB da rendimiento extremo en capa 4, pero el despliegue y escalado de firewalls virtuales es el caso del GWLB."
+      - label: "Amazon EC2 Auto Scaling"
+        explanation: "EC2 Auto Scaling ajusta el número de instancias; no es un balanceador para insertar appliances en el camino del tráfico."
+      - label: "Gateway Load Balancer (GWLB)"
+        explanation: "El GWLB combina un gateway de capa 3 con balanceo de capa 4 para desplegar y escalar firewalls y sistemas de detección y prevención de intrusos."
+        correct: true
+  - prompt: "Una app de delivery de Santiago quiere configurar desde un solo lugar el escalado de sus tareas de Amazon ECS, la capacidad de lectura y escritura de sus tablas de DynamoDB y sus réplicas de lectura de Aurora. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Auto Scaling"
+        explanation: "AWS Auto Scaling usa planes de escalado para ajustar varios recursos relacionados, como tareas de ECS, tablas de DynamoDB y réplicas de Aurora."
+        correct: true
+      - label: "Amazon EC2 Auto Scaling"
+        explanation: "EC2 Auto Scaling se enfoca en instancias EC2; coordinar ECS, DynamoDB y Aurora desde un solo lugar corresponde a AWS Auto Scaling."
+      - label: "Elastic Load Balancing"
+        explanation: "ELB reparte el tráfico entrante entre destinos; no ajusta la capacidad de tablas de DynamoDB ni réplicas de Aurora."
+      - label: "Application Load Balancer (ALB)"
+        explanation: "El ALB enruta solicitudes HTTP/HTTPS; no escala la capacidad de bases de datos ni de tareas de contenedores."
+  - prompt: "En un grupo de Auto Scaling de una aerolínea de Panamá con capacidad deseada de 4 instancias, una instancia falla su health check. ¿Qué ocurre?"
+    options:
+      - label: "El Application Load Balancer lanza una instancia nueva para reemplazarla"
+        explanation: "El balanceador deja de enviar tráfico a la instancia no saludable, pero no lanza instancias; eso lo hace Auto Scaling."
+      - label: "El grupo sube su capacidad máxima para compensar la falla"
+        explanation: "La capacidad máxima es un límite que tú defines; Auto Scaling no la cambia por una falla, solo mantiene la capacidad deseada."
+      - label: "EC2 Auto Scaling reemplaza la instancia para mantener la capacidad deseada"
+        explanation: "EC2 Auto Scaling monitorea la salud con health checks y reemplaza automáticamente las instancias que fallan para mantener la capacidad deseada."
+        correct: true
+      - label: "El grupo queda con 3 instancias hasta que un administrador lance otra a mano"
+        explanation: "Auto Scaling reemplaza automáticamente las instancias no saludables; no depende de que alguien lance una nueva."
+  - prompt: "Una plataforma educativa de Quito agrega más instancias EC2 iguales detrás de su balanceador cuando aumenta el número de estudiantes conectados. ¿Qué tipo de escalado está usando?"
+    options:
+      - label: "Escalado vertical (scale up)"
+        explanation: "El escalado vertical da más capacidad a una misma instancia, por ejemplo con un tipo más grande, en lugar de agregar instancias."
+      - label: "Escalado horizontal (scale out)"
+        explanation: "El escalado horizontal agrega o quita instancias; sumar instancias iguales detrás del balanceador es scale out."
+        correct: true
+      - label: "Escalado vertical (scale down)"
+        explanation: "Scale down reduce la capacidad de una misma instancia; aquí se agregan instancias nuevas."
+      - label: "Alta disponibilidad"
+        explanation: "La alta disponibilidad trata de seguir funcionando ante fallas; agregar instancias por más demanda es un tipo de escalado."
+  - prompt: "El área de finanzas de una tienda en línea de Arequipa pregunta cuánto cuesta usar Amazon EC2 Auto Scaling. ¿Qué respuesta es correcta?"
+    options:
+      - label: "Un cargo fijo mensual por cada grupo de Auto Scaling"
+        explanation: "No hay cargo adicional por EC2 Auto Scaling; los grupos no tienen una tarifa propia."
+      - label: "Un cargo por cada política de escalado que se ejecute"
+        explanation: "Las políticas de escalado no se cobran aparte; solo se pagan los recursos que se lanzan."
+      - label: "Un cargo por cada instancia reemplazada tras un health check"
+        explanation: "Reemplazar instancias no tiene un cobro extra; pagas las instancias que estén funcionando, como con cualquier instancia EC2."
+      - label: "No tiene costo adicional; pagas solo los recursos que usa, como instancias, volúmenes y alarmas"
+        explanation: "EC2 Auto Scaling no tiene costo adicional: solo pagas los recursos que usas, como instancias, volúmenes y alarmas."
+        correct: true
 ---
 
 ## ¿Por qué importa?

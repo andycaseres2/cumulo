@@ -9,4 +9,5 @@ export const routes = {
   topic: (slug: string) => `/teoria/${slug}`,
   profile: '/perfil',
   practiceExam: '/simulacro',
+  practiceExamBank: '/simulacro/banco.json',
 };

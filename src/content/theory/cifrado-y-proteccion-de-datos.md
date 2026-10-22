@@ -50,6 +50,73 @@ quiz:
       - label: "Solicitar un certificado público en ACM con validación por DNS"
         explanation: "ACM no cobra por los certificados públicos que usas con servicios integrados, como Elastic Load Balancing, y renueva automáticamente los que emitió con validación por DNS, como los asociados a Elastic Load Balancing."
         correct: true
+practice:
+  - prompt: "Una aseguradora de Montevideo quiere evitar que alguien intercepte los datos que viajan entre los navegadores de sus clientes y su portal web. ¿Qué tipo de protección necesita?"
+    options:
+      - label: "Cifrado en reposo con claves de AWS KMS"
+        explanation: "El cifrado en reposo protege datos guardados en discos, bases de datos o buckets; no protege los datos mientras viajan por la red."
+      - label: "Cifrado en tránsito con TLS (HTTPS)"
+        explanation: "El cifrado en tránsito con TLS, es decir HTTPS, protege los datos que viajan por la red contra la interceptación."
+        correct: true
+      - label: "Descubrimiento de datos sensibles con Amazon Macie"
+        explanation: "Amazon Macie descubre datos sensibles en Amazon S3; no cifra la comunicación entre los navegadores y el portal."
+      - label: "Cifrado SSE-S3 de los objetos del bucket"
+        explanation: "SSE-S3 cifra los objetos en reposo dentro de S3; no protege el tráfico entre los clientes y el portal."
+  - prompt: "Un desarrollador de Lima pregunta si debe activar algo para que los objetos nuevos que sube a Amazon S3 queden cifrados en reposo. ¿Qué debes responderle?"
+    options:
+      - label: "Sí, porque S3 guarda los objetos nuevos sin cifrar hasta que lo actives"
+        explanation: "Desde el 5 de enero de 2023, S3 cifra automáticamente todos los objetos nuevos con SSE-S3, sin que tengas que activarlo."
+      - label: "Sí, debe contratar un HSM dedicado en AWS CloudHSM"
+        explanation: "CloudHSM sirve cuando se exige un HSM dedicado de un solo inquilino; no hace falta para que S3 cifre los objetos nuevos."
+      - label: "Sí, debe solicitar un certificado en AWS Certificate Manager"
+        explanation: "ACM emite certificados SSL/TLS para el cifrado en tránsito; no es lo que cifra los objetos en reposo dentro de S3."
+      - label: "No hace falta: S3 cifra automáticamente los objetos nuevos con SSE-S3, sin costo adicional"
+        explanation: "Desde el 5 de enero de 2023, Amazon S3 cifra automáticamente todos los objetos nuevos con SSE-S3 sin costo adicional, y puedes elegir claves de KMS si lo prefieres."
+        correct: true
+  - prompt: "Una fintech de Bogotá quiere crear sus propias claves para cifrar datos en Amazon S3, Amazon EBS y Amazon RDS, controlar su política, rotación y eliminación, y auditar su uso en AWS CloudTrail. ¿Qué debe usar?"
+    options:
+      - label: "Claves de AWS KMS administradas por el cliente"
+        explanation: "Las claves administradas por el cliente las creas tú y controlas su política, rotación y eliminación; KMS se integra con S3, EBS y RDS, y su uso se audita en CloudTrail."
+        correct: true
+      - label: "Claves de AWS KMS administradas por AWS"
+        explanation: "Las claves administradas por AWS las crea un servicio en tu cuenta; puedes verlas, pero no administrar su política ni su eliminación."
+      - label: "Claves propiedad de AWS"
+        explanation: "Las claves propiedad de AWS las usa el servicio por ti para cifrar por defecto; no las ves ni las controlas."
+      - label: "AWS Certificate Manager"
+        explanation: "AWS Certificate Manager crea y renueva certificados SSL/TLS; no crea claves para cifrar datos en S3, EBS y RDS."
+  - prompt: "Un auditor de una minera de Antofagasta encuentra en la cuenta claves de AWS KMS que un servicio creó automáticamente. Puede verlas, pero no administrarlas, y rotan cada año. ¿Qué tipo de claves son?"
+    options:
+      - label: "Claves administradas por el cliente"
+        explanation: "Las claves administradas por el cliente las creas y controlas tú, incluida su política, rotación y eliminación."
+      - label: "Claves propiedad de AWS"
+        explanation: "Las claves propiedad de AWS las usa el servicio por ti y no las ves en tu cuenta, a diferencia de las que encontró el auditor."
+      - label: "Claves administradas por AWS"
+        explanation: "Las claves administradas por AWS las crea un servicio en tu cuenta; puedes verlas, pero no administrarlas, y rotan cada año."
+        correct: true
+      - label: "Claves guardadas en AWS CloudHSM"
+        explanation: "En AWS CloudHSM el cliente controla por completo las claves y los usuarios del HSM; no son claves creadas por un servicio que no puedes administrar."
+  - prompt: "Un medio digital de Guayaquil quiere usar un certificado de AWS Certificate Manager con Amazon CloudFront. ¿En qué Región debe estar ese certificado?"
+    options:
+      - label: "En la Región más cercana a sus lectores"
+        explanation: "Los certificados de ACM son regionales, y para usarlos con CloudFront deben estar en US East (N. Virginia), sin importar dónde estén los lectores."
+      - label: "En US East (N. Virginia)"
+        explanation: "Los certificados de ACM son regionales y, para usarlos con CloudFront, deben estar en la Región US East (N. Virginia)."
+        correct: true
+      - label: "En cualquier Región, porque los certificados de ACM son globales"
+        explanation: "Los certificados de ACM son regionales, no globales; para CloudFront deben estar en US East (N. Virginia)."
+      - label: "En la misma Región que su bucket de S3"
+        explanation: "Para CloudFront, el certificado de ACM debe estar en US East (N. Virginia), sin importar la Región del bucket."
+  - prompt: "Un hospital de Rosario usa Amazon RDS y debe cifrar en reposo la base de datos y sus snapshots, además de proteger las conexiones de la aplicación. ¿Qué ofrece Amazon RDS para eso?"
+    options:
+      - label: "Cifrado en reposo de instancias y snapshots con AES-256, y conexiones SSL/TLS"
+        explanation: "Amazon RDS permite cifrar instancias y snapshots en reposo con AES-256 y usar conexiones SSL/TLS para el tráfico."
+        correct: true
+      - label: "Escaneo con Amazon Macie, que cifra la base de datos"
+        explanation: "Amazon Macie descubre datos sensibles en Amazon S3; no cifra bases de datos de Amazon RDS."
+      - label: "Un certificado de AWS Certificate Manager que cifra los snapshots"
+        explanation: "ACM emite certificados SSL/TLS para identificar sitios y habilitar HTTPS; no cifra los snapshots en reposo."
+      - label: "Activar SSE-S3 en la instancia de RDS"
+        explanation: "SSE-S3 es el cifrado de Amazon S3 con claves administradas por S3; no es la forma de cifrar una instancia de RDS."
 ---
 
 ## ¿Por qué importa?

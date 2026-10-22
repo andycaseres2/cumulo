@@ -49,6 +49,73 @@ quiz:
       - label: "AWS Compute Optimizer"
         explanation: "AWS Compute Optimizer analiza la configuración y las métricas de uso para dar recomendaciones de rightsizing e identificar recursos ociosos, reduciendo costos."
         correct: true
+practice:
+  - prompt: "Una empresa de transporte de Córdoba pregunta por qué AWS puede cobrar precios de pago por uso más bajos que lo que le costaría comprar su propio hardware. La respuesta es que AWS agrupa el uso de cientos de miles de clientes. ¿Qué ventaja de la nube describe esto?"
+    options:
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja trata de pagar solo por lo que consumes en lugar de invertir por adelantado; no explica por qué el precio por unidad es más bajo."
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "Esta ventaja se refiere a dejar a AWS el trabajo de montar, cablear y alimentar servidores, no al volumen agregado de clientes."
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala bajan el costo por unidad cuando el volumen sube; el uso agregado de muchos clientes se traduce en precios de pago por uso más bajos."
+        correct: true
+      - label: "Rightsizing de los recursos"
+        explanation: "El rightsizing ajusta el tipo y tamaño de tus recursos al uso real; no explica por qué AWS ofrece precios más bajos."
+  - prompt: "El director financiero de una aseguradora de Panamá compara la nube con su centro de datos mirando solo el precio de los servidores. Para un análisis de costo total de propiedad (TCO), ¿qué otros costos debe sumar?"
+    options:
+      - label: "Energía, refrigeración, espacio físico y personal especializado"
+        explanation: "El TCO de un entorno propio incluye, además del hardware y las licencias, la energía, la refrigeración, el espacio físico y el personal que instala y repara."
+        correct: true
+      - label: "Solo las licencias de software, porque el hardware ya está en el precio"
+        explanation: "Las licencias son parte del TCO, pero dejan fuera la energía, la refrigeración, el espacio y el personal."
+      - label: "Únicamente el reemplazo periódico del hardware"
+        explanation: "El reemplazo del hardware es solo una parte; el TCO también suma energía, refrigeración, espacio físico y personal."
+      - label: "Los descuentos por volumen que ofrece AWS"
+        explanation: "Los descuentos por volumen son un beneficio de la nube, no un costo de operar un centro de datos propio."
+  - prompt: "Una startup de Medellín necesita una base de datos Amazon RDS for Oracle, no tiene licencias de Oracle y quiere la opción más simple, con el costo de la licencia dentro del precio del servicio. ¿Qué modelo de licenciamiento debe elegir?"
+    options:
+      - label: "BYOL (Bring Your Own License)"
+        explanation: "BYOL sirve para reutilizar licencias que ya compraste; la startup no tiene licencias de Oracle."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager administra licencias y ayuda a evitar incumplimientos; no es un modelo de licenciamiento que incluya la licencia en el precio."
+      - label: "Rightsizing de la instancia"
+        explanation: "El rightsizing ajusta el tipo y tamaño del recurso; no resuelve quién aporta la licencia de Oracle."
+      - label: "License included (licencia incluida)"
+        explanation: "Con licencia incluida la licencia es de AWS y su costo va dentro del precio del servicio, ideal cuando no tienes licencias y quieres simplicidad."
+        correct: true
+  - prompt: "Un grupo industrial de São Paulo usa licencias de Microsoft y Oracle en varias cuentas y Regiones de AWS. Quiere definir reglas con límites para evitar excesos de uso y tener paneles para auditorías. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer da recomendaciones de rightsizing a partir de métricas de uso; no controla límites de licencias."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager administra licencias de fabricantes como Microsoft y Oracle entre cuentas y Regiones, con reglas de límites y paneles para auditorías."
+        correct: true
+      - label: "Amazon RDS con licencia incluida"
+        explanation: "Es una opción de base de datos con la licencia dentro del precio; no permite definir reglas para controlar el uso de licencias en varias cuentas."
+      - label: "Rightsizing de las instancias"
+        explanation: "El rightsizing ajusta tipo y tamaño de los recursos; no evita el incumplimiento de las reglas de licenciamiento."
+  - prompt: "Los entornos de desarrollo y prueba de una software factory de Montevideo se usan unas ocho horas al día de lunes a viernes, pero quedan encendidos las 168 horas de la semana. ¿Qué práctica ataca directamente ese gasto?"
+    options:
+      - label: "Automatizar el apagado de los entornos fuera del horario de uso"
+        explanation: "Detener los entornos fuera de las 40 horas de uso semanal permite un ahorro potencial cercano al 75 %, según el ejemplo de AWS."
+        correct: true
+      - label: "Dimensionar los entornos para el pico de demanda y dejarlos encendidos"
+        explanation: "Dimensionar para el pico y dejarlo encendido es justamente pagar por capacidad ociosa, lo contrario de lo que se busca."
+      - label: "Moverlos a un centro de datos propio para convertir el gasto en CapEx"
+        explanation: "Comprar infraestructura propia convierte el gasto en fijo, que se paga aunque los entornos no se usen."
+      - label: "Usar AWS License Manager para controlar el horario de los entornos"
+        explanation: "AWS License Manager gestiona licencias y su cumplimiento; no apaga entornos fuera del horario de uso."
+  - prompt: "Una cadena de restaurantes de Lima quiere que su equipo de sistemas deje de montar, cablear y alimentar servidores, y se concentre en mejorar la experiencia de sus clientes. ¿Qué ventaja de la nube describe ese objetivo?"
+    options:
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja trata de cambiar pagos por adelantado por pagos según el consumo, no de liberar al equipo del trabajo físico del centro de datos."
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican precios más bajos por el volumen de AWS, no que el equipo deje de operar servidores."
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "AWS se encarga del trabajo pesado de operar centros de datos, como montar, cablear y alimentar servidores, para que tu equipo se concentre en tus clientes."
+        correct: true
+      - label: "BYOL (Bring Your Own License)"
+        explanation: "BYOL es una estrategia para reutilizar licencias existentes; no libera al equipo del trabajo de operar servidores."
 ---
 
 ## ¿Por qué importa?

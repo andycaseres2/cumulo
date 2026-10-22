@@ -51,6 +51,73 @@ quiz:
         explanation: "AWS aclara que una revisión Well-Architected es una conversación constructiva, no una auditoría."
       - label: "Escala automáticamente los recursos de la carga de trabajo según la demanda"
         explanation: "Escalar recursos según la demanda no es una función del AWS Well-Architected Tool; la herramienta sirve para revisar la arquitectura, no para escalarla."
+practice:
+  - prompt: "Un banco de Asunción aplica mínimo privilegio y separación de funciones a sus usuarios, y cifra los datos de sus clientes en tránsito y en reposo. ¿Qué pilar del AWS Well-Architected Framework sigue?"
+    options:
+      - label: "Operational excellence"
+        explanation: "Excelencia operativa trata de organizar equipos, observar, automatizar y hacer cambios pequeños y reversibles, no de identidad y cifrado."
+      - label: "Security"
+        explanation: "Seguridad incluye implementar una base sólida de identidad con mínimo privilegio y separación de funciones, y proteger los datos en tránsito y en reposo."
+        correct: true
+      - label: "Reliability"
+        explanation: "Confiabilidad se centra en recuperarse de fallas y probar la recuperación, no en controlar accesos ni cifrar datos."
+      - label: "Cost optimization"
+        explanation: "Optimización de costos busca entregar valor al menor precio; el escenario trata de proteger datos y accesos."
+  - prompt: "Un portal de trámites de Ciudad de México simula fallas de forma periódica para comprobar que su carga de trabajo se recupera automáticamente, y reparte el tráfico en varios recursos pequeños en lugar de uno grande. ¿Qué pilar aplica?"
+    options:
+      - label: "Performance efficiency"
+        explanation: "Eficiencia del rendimiento trata de elegir y usar los recursos adecuados; recuperarse de fallas corresponde a confiabilidad."
+      - label: "Security"
+        explanation: "Seguridad se enfoca en identidad, trazabilidad y protección de datos, no en probar la recuperación ante fallas."
+      - label: "Sustainability"
+        explanation: "Sostenibilidad busca reducir el impacto ambiental y el consumo de energía; el objetivo del escenario es no caerse."
+      - label: "Reliability"
+        explanation: "Recuperarse automáticamente de fallas, probar los procedimientos de recuperación y escalar horizontalmente son principios de confiabilidad."
+        correct: true
+  - prompt: "Una app de música de Bogotá quiere atender a usuarios de otros continentes con menor latencia: decide volverse global en minutos, usar arquitecturas serverless y experimentar más seguido. ¿Qué pilar del framework guía estas decisiones?"
+    options:
+      - label: "Performance efficiency"
+        explanation: "Volverse global en minutos, usar arquitecturas serverless y experimentar más seguido son principios de eficiencia del rendimiento."
+        correct: true
+      - label: "Reliability"
+        explanation: "Confiabilidad trata de cumplir la función de forma consistente y recuperarse de fallas; el escenario busca menor latencia y recursos eficientes."
+      - label: "Operational excellence"
+        explanation: "Excelencia operativa se centra en cómo operar y evolucionar la carga, con observabilidad y cambios reversibles, no en latencia."
+      - label: "Sustainability"
+        explanation: "Sostenibilidad apunta a reducir el impacto ambiental; la meta del escenario es el rendimiento para usuarios lejanos."
+  - prompt: "Para reducir su factura de AWS, una universidad de Córdoba apaga sus entornos de desarrollo fuera del horario laboral y atribuye el gasto de la nube a cada dueño de workload. ¿Qué pilar aplica?"
+    options:
+      - label: "Sustainability"
+        explanation: "Sostenibilidad busca reducir el impacto ambiental; aquí la meta declarada es gastar menos, lo que corresponde a costos."
+      - label: "Performance efficiency"
+        explanation: "Eficiencia del rendimiento trata de cumplir los requisitos de rendimiento con los recursos adecuados, no de atribuir el gasto."
+      - label: "Cost optimization"
+        explanation: "Adoptar un modelo de consumo, como apagar entornos de desarrollo fuera de horario, y analizar y atribuir el gasto son principios de optimización de costos."
+        correct: true
+      - label: "Reliability"
+        explanation: "Confiabilidad se centra en recuperarse de fallas; apagar entornos y atribuir gastos no busca evitar caídas."
+  - prompt: "En un curso de preparación de Lima, el instructor pregunta cuál de estos es uno de los seis pilares oficiales del AWS Well-Architected Framework. ¿Qué respondes?"
+    options:
+      - label: "Scalability"
+        explanation: "Scalability no es un pilar; escalar horizontalmente aparece como principio de diseño dentro del pilar de confiabilidad."
+      - label: "Sustainability"
+        explanation: "Sustainability es el sexto pilar oficial, junto a operational excellence, security, reliability, performance efficiency y cost optimization."
+        correct: true
+      - label: "Compliance"
+        explanation: "Compliance no es uno de los seis pilares; los pilares son operational excellence, security, reliability, performance efficiency, cost optimization y sustainability."
+      - label: "Automation"
+        explanation: "Automation no es un pilar; automatizar aparece como principio de diseño en varios pilares, como excelencia operativa y seguridad."
+  - prompt: "Una aseguradora de Valparaíso revisó su carga de trabajo con el AWS Well-Architected Tool y quiere guardar una foto del estado actual de la revisión para comparar su progreso más adelante. ¿Qué función de la herramienta usa?"
+    options:
+      - label: "Un high-risk issue (HRI)"
+        explanation: "Un HRI es un problema de alto riesgo que la herramienta identifica en la carga de trabajo, no una foto del estado de la revisión."
+      - label: "Una custom lens"
+        explanation: "Las custom lenses son lentes personalizadas para revisar la carga con preguntas propias; no guardan el estado para medir el progreso."
+      - label: "Un principio de diseño"
+        explanation: "Los principios de diseño son reglas generales de cada pilar para tomar buenas decisiones; no son una función para guardar el estado."
+      - label: "Un milestone"
+        explanation: "Los milestones son fotos de un momento dado que guarda el AWS WA Tool para medir tu progreso a lo largo del tiempo."
+        correct: true
 ---
 
 ## ¿Por qué importa?

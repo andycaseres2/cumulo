@@ -45,6 +45,73 @@ quiz:
         explanation: "Amazon Redshift es el data warehouse de AWS para consultas analíticas; no es un motor transaccional compatible con PostgreSQL como pide el escenario."
       - label: "Amazon DynamoDB"
         explanation: "DynamoDB es NoSQL y no admite JOIN; no es compatible con el código y las herramientas de PostgreSQL."
+practice:
+  - prompt: "Un e-commerce de Lima usa Amazon RDS y sus reportes saturan la instancia principal con consultas de solo lectura. Quiere escalar las lecturas sin cargar más la instancia principal. ¿Qué debe agregar?"
+    options:
+      - label: "Una instancia de reserva (standby) con Multi-AZ"
+        explanation: "En una instancia Multi-AZ la reserva no atiende lecturas; su objetivo principal es la alta disponibilidad y la conmutación por error."
+      - label: "Snapshots manuales"
+        explanation: "Los snapshots manuales sirven para restaurar la base de datos; no atienden consultas de solo lectura para los reportes."
+      - label: "Réplicas de lectura"
+        explanation: "Las réplicas de lectura copian los datos de forma asíncrona desde la instancia principal y atienden consultas de solo lectura, como los reportes."
+        correct: true
+      - label: "Migrar la base de datos a una instancia de Amazon EC2"
+        explanation: "Instalar la base en EC2 da control total, pero tú gestionas el escalado y el resto de tareas; no es la forma de escalar lecturas en RDS."
+  - prompt: "Una cadena de restaurantes de Arequipa migró su base de datos a Amazon RDS y ahora sus consultas son lentas porque están mal escritas. En una base de datos administrada, ¿quién debe optimizarlas?"
+    options:
+      - label: "El cliente, porque optimizar la aplicación y las consultas sigue siendo su responsabilidad"
+        explanation: "Con RDS, AWS gestiona tareas como parches y respaldos, pero diseñar el esquema y optimizar las consultas sigue siendo responsabilidad del cliente."
+        correct: true
+      - label: "AWS, porque RDS administra el motor de base de datos"
+        explanation: "Que AWS administre el motor no lo hace responsable de tus consultas; optimizarlas sigue siendo tarea del cliente."
+      - label: "AWS, como parte de los parches automáticos del software"
+        explanation: "Los parches actualizan el software de base de datos; no reescriben ni optimizan las consultas de la aplicación."
+      - label: "AWS, porque en RDS el escalado es responsabilidad de AWS"
+        explanation: "En RDS AWS se encarga del escalado, pero eso no incluye optimizar consultas mal escritas, que sigue siendo tarea del cliente."
+  - prompt: "Una empresa de Montevideo quiere llevar su base de datos Microsoft SQL Server a un servicio relacional administrado sin cambiar de motor, y un consultor propone Amazon Aurora. ¿Qué opción debe elegir?"
+    options:
+      - label: "Amazon Aurora"
+        explanation: "Amazon Aurora es compatible con MySQL y PostgreSQL; no ejecuta el motor Microsoft SQL Server que usa la empresa."
+      - label: "Amazon DynamoDB"
+        explanation: "Amazon DynamoDB es una base de datos NoSQL; no ejecuta el motor relacional Microsoft SQL Server."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse para analizar datos históricos; no es un servicio para ejecutar SQL Server sin cambiar de motor."
+      - label: "Amazon RDS for SQL Server"
+        explanation: "Amazon RDS es compatible con Microsoft SQL Server, así que la empresa obtiene una base administrada sin cambiar de motor."
+        correct: true
+  - prompt: "Un banco de Ciudad de Panamá necesita una configuración y una versión del motor de base de datos que Amazon RDS no ofrece, y acepta encargarse del sistema operativo, los parches y los respaldos. ¿Qué opción encaja?"
+    options:
+      - label: "Amazon RDS"
+        explanation: "Amazon RDS administra respaldos y parches, pero el escenario pide una configuración y versión que RDS no ofrece."
+      - label: "Una base de datos instalada en Amazon EC2"
+        explanation: "Una base de datos en EC2 da control total, por ejemplo para configuraciones o versiones que un servicio administrado no ofrece, a cambio de que tú la gestiones."
+        correct: true
+      - label: "Amazon Aurora"
+        explanation: "Amazon Aurora es un motor totalmente administrado que forma parte de RDS; no te da el control total sobre configuraciones fuera de lo que ofrece el servicio."
+      - label: "Amazon DynamoDB"
+        explanation: "Amazon DynamoDB es una base NoSQL serverless; no permite instalar la versión y configuración de motor relacional que necesita el banco."
+  - prompt: "Una aerolínea de Bogotá quiere una copia de su base de datos de Amazon RDS en otra Región, que pueda promover a instancia independiente si la Región principal sufre un desastre. ¿Qué característica debe usar?"
+    options:
+      - label: "Una réplica de lectura en otra Región"
+        explanation: "Las réplicas de lectura pueden estar en otra Región y pueden promoverse a instancia independiente para recuperación ante desastres."
+        correct: true
+      - label: "Multi-AZ"
+        explanation: "Multi-AZ mantiene una reserva síncrona en otra AZ dentro de la misma Región; no crea una copia en otra Región."
+      - label: "Las copias de Aurora en tres Availability Zones"
+        explanation: "Aurora guarda copias en tres AZ de una misma Región; eso no deja una copia de la base de RDS en otra Región."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse para analizar datos históricos; no es una copia promovible de la base de RDS."
+  - prompt: "Un grupo minorista de Guayaquil registra sus ventas diarias en Amazon RDS y ahora quiere analizar diez años de ventas históricas con consultas complejas sobre grandes volúmenes de datos. ¿Qué servicio está pensado para ese análisis?"
+    options:
+      - label: "Activar Multi-AZ en RDS"
+        explanation: "Multi-AZ da alta disponibilidad con una reserva síncrona; no convierte a RDS en un data warehouse para análisis histórico."
+      - label: "Amazon DynamoDB"
+        explanation: "Amazon DynamoDB es NoSQL de clave-valor y no admite JOIN; no es un data warehouse para consultas analíticas complejas."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es el data warehouse de AWS, optimizado para analizar grandes volúmenes de datos históricos con consultas complejas."
+        correct: true
+      - label: "Amazon Aurora"
+        explanation: "Amazon Aurora es una base relacional optimizada para transacciones del día a día; para data warehousing la respuesta es Redshift."
 ---
 
 ## ¿Por qué importa?

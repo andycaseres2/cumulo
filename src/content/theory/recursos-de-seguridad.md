@@ -50,6 +50,73 @@ quiz:
       - label: "AWS Knowledge Center (en AWS re:Post)"
         explanation: "El Knowledge Center reúne preguntas frecuentes de los clientes con soluciones paso a paso, por ejemplo cómo corregir una bucket policy de S3 que bloquea todo el acceso."
         correct: true
+practice:
+  - prompt: "El auditor externo de una aseguradora de Quito pide el informe SOC de AWS para revisar los controles del proveedor de nube. ¿Dónde lo descarga la empresa?"
+    options:
+      - label: "En el AWS Security Blog"
+        explanation: "El Security Blog publica guías técnicas, novedades y buenas prácticas; los informes SOC no se descargan ahí."
+      - label: "En AWS Artifact"
+        explanation: "AWS Artifact da acceso a los informes de cumplimiento de AWS, como SOC, ISO o PCI."
+        correct: true
+      - label: "En el AWS Trust & Safety Center"
+        explanation: "El Trust & Safety Center explica cómo reportar abusos y los usos prohibidos; no entrega informes de cumplimiento."
+      - label: "En AWS Marketplace"
+        explanation: "AWS Marketplace vende software, datos y servicios de terceros; no es donde AWS publica sus informes de cumplimiento."
+  - prompt: "Un desarrollador de una empresa de pagos de Lima necesita saber cómo configurar el cifrado, el control de acceso y el registro de Amazon S3. ¿Qué recurso le conviene consultar?"
+    options:
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact entrega informes de cumplimiento de AWS; no explica cómo configurar la seguridad de un servicio."
+      - label: "El AWS Trust & Safety Center"
+        explanation: "El Trust & Safety Center trata reportes de abuso y usos prohibidos; no documenta la configuración de seguridad de S3."
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace sirve para comprar y desplegar productos de terceros; no es la guía de configuración de S3."
+      - label: "El capítulo de seguridad de Amazon S3 en la AWS Security Documentation"
+        explanation: "La documentación de seguridad tiene un capítulo por servicio; el de S3 explica cifrado, control de acceso y registro."
+        correct: true
+  - prompt: "Un investigador de seguridad de Ciudad de México encuentra una posible vulnerabilidad en un servicio de AWS. ¿Por qué canal debe reportarla?"
+    options:
+      - label: "Por el programa de divulgación de vulnerabilidades de AWS"
+        explanation: "Las vulnerabilidades en servicios de AWS se reportan mediante el programa de divulgación de vulnerabilidades."
+        correct: true
+      - label: "Por el formulario de abuso de AWS Trust & Safety"
+        explanation: "Trust & Safety recibe reportes de recursos de AWS usados con fines abusivos, no de vulnerabilidades en los servicios."
+      - label: "Descargando un informe en AWS Artifact"
+        explanation: "AWS Artifact entrega informes de cumplimiento; no es un canal para reportar vulnerabilidades."
+      - label: "Comprando un producto de seguridad en AWS Marketplace"
+        explanation: "AWS Marketplace vende software de terceros; comprar un producto no reporta la vulnerabilidad a AWS."
+  - prompt: "La jefa de seguridad de una cadena de supermercados de Santiago quiere enterarse de novedades y leer ejemplos prácticos escritos por especialistas de AWS sobre detección de amenazas y criptografía. ¿Qué recurso debe seguir?"
+    options:
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact sirve para descargar informes de cumplimiento como SOC o ISO; no publica novedades ni ejemplos prácticos."
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace es un catálogo de software y servicios de terceros; no es una fuente de artículos de especialistas de AWS."
+      - label: "AWS Security Blog"
+        explanation: "El Security Blog publica novedades, guías técnicas y ejemplos prácticos de especialistas de AWS sobre identidades, detección de amenazas y criptografía."
+        correct: true
+      - label: "El formulario de abuso de AWS"
+        explanation: "El formulario de abuso sirve para reportar recursos de AWS usados con fines abusivos; no ofrece contenido de aprendizaje."
+  - prompt: "Una universidad de Bogotá ya pagó la licencia de un producto de seguridad de terceros y quiere desplegarlo en AWS desde AWS Marketplace usando esa misma licencia. ¿Qué modelo de precio de Marketplace le corresponde?"
+    options:
+      - label: "Prueba gratuita"
+        explanation: "La prueba gratuita permite evaluar un producto por un tiempo; no consiste en reutilizar una licencia ya pagada."
+      - label: "Por hora"
+        explanation: "El modelo por hora cobra según el tiempo de uso; la universidad pagaría de nuevo en lugar de usar su licencia."
+      - label: "Anual"
+        explanation: "El modelo anual es una suscripción nueva por un año; no aprovecha la licencia que la universidad ya tiene."
+      - label: "Trae tu propia licencia (BYOL)"
+        explanation: "BYOL es el modelo de AWS Marketplace para usar una licencia que ya tienes con el producto desplegado en AWS."
+        correct: true
+  - prompt: "Antes de comprar un producto de seguridad en AWS Marketplace, el área de compras de un banco de Panamá quiere revisar documentos de seguridad y cumplimiento del vendedor. ¿Qué función de Marketplace le ayuda?"
+    options:
+      - label: "AWS Security Blog"
+        explanation: "El Security Blog publica artículos de AWS sobre buenas prácticas; no reúne documentos de cumplimiento de vendedores de Marketplace."
+      - label: "AWS Trust & Safety Center"
+        explanation: "El Trust & Safety Center explica cómo reportar abusos; no muestra documentos de seguridad de vendedores."
+      - label: "AWS Marketplace Vendor Insights"
+        explanation: "Vendor Insights permite revisar documentos de seguridad y cumplimiento de algunos vendedores de AWS Marketplace."
+        correct: true
+      - label: "El formulario de abuso de AWS"
+        explanation: "El formulario de abuso sirve para reportar recursos de AWS usados con fines abusivos, no para evaluar a un vendedor."
 ---
 
 ## ¿Por qué importa?

@@ -44,6 +44,73 @@ quiz:
         explanation: "Amazon OpenSearch Service se usa para búsqueda de texto completo y análisis de logs; no es el catálogo de metadatos que usa Athena."
       - label: "Amazon Kinesis Video Streams"
         explanation: "Kinesis Video Streams captura video desde dispositivos conectados; no descubre datos en S3 ni guarda esquemas de tablas."
+practice:
+  - prompt: "La gerencia de una cadena de cines de Asunción quiere tableros interactivos con las ventas del día que pueda ver desde el navegador o el móvil. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight es el servicio de BI para crear tableros interactivos y visualizaciones que se ven desde el navegador o el móvil."
+        correct: true
+      - label: "AWS Glue"
+        explanation: "AWS Glue prepara y cataloga los datos con ETL; no crea los tableros que pide la gerencia."
+      - label: "Amazon EMR"
+        explanation: "Amazon EMR procesa grandes cantidades de datos con frameworks como Spark o Hive; no es un servicio de tableros de BI."
+      - label: "Amazon Kinesis Data Streams"
+        explanation: "Kinesis Data Streams captura flujos de datos en tiempo real; no ofrece tableros de BI para la gerencia."
+  - prompt: "Un banco de Santo Domingo necesita un data warehouse para ejecutar consultas analíticas complejas y recurrentes con SQL sobre grandes volúmenes de datos estructurados, usando sus herramientas de BI existentes. ¿Qué servicio corresponde?"
+    options:
+      - label: "Amazon Athena"
+        explanation: "Amazon Athena consulta archivos directamente en S3 sin cargar datos; no es el data warehouse para análisis complejos y recurrentes a gran escala."
+      - label: "Amazon Kinesis"
+        explanation: "Amazon Kinesis recopila y procesa datos en streaming en tiempo real; no es un data warehouse para consultas analíticas con SQL."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es el data warehouse de AWS para analizar grandes volúmenes de datos con SQL estándar y las herramientas de BI existentes."
+        correct: true
+      - label: "Amazon OpenSearch Service"
+        explanation: "Amazon OpenSearch Service se usa sobre todo para búsqueda de texto completo y análisis de logs; no es el data warehouse que pide el banco."
+  - prompt: "Un equipo de ciencia de datos de Rosario quiere ejecutar Apache Spark y Apache Hive en clústeres para procesar grandes cantidades de datos, dejando que AWS automatice el aprovisionamiento de capacidad y el ajuste de los clústeres. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse que se consulta con SQL; no es la plataforma para ejecutar Spark y Hive en clústeres."
+      - label: "Amazon EMR"
+        explanation: "Amazon EMR es la plataforma de big data para ejecutar Spark, Hive y otros frameworks de código abierto, y automatiza el aprovisionamiento y ajuste de clústeres."
+        correct: true
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight crea tableros de BI; no ejecuta frameworks de big data como Spark o Hive."
+      - label: "Amazon Data Firehose"
+        explanation: "Amazon Data Firehose carga datos en streaming en destinos como S3 o Redshift; no ejecuta Spark ni Hive en clústeres."
+  - prompt: "El equipo de TI de una aerolínea de Cartagena quiere buscar errores en los logs de sus aplicaciones con búsqueda de texto completo y visualizarlos casi en tiempo real. ¿Qué servicio corresponde?"
+    options:
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse para consultas analíticas con SQL; no es el servicio de búsqueda de texto completo en logs."
+      - label: "AWS Glue"
+        explanation: "AWS Glue prepara y cataloga datos con ETL; no busca texto completo en los logs ni los visualiza."
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight crea tableros de BI para el negocio; no es el servicio para buscar errores con texto completo en los logs."
+      - label: "Amazon OpenSearch Service"
+        explanation: "Amazon OpenSearch Service sirve para buscar, analizar y visualizar datos en tiempo real, con casos típicos como análisis de logs y búsqueda de texto completo."
+        correct: true
+  - prompt: "Una empresa de IoT de Montevideo ya captura telemetría en streaming y necesita cargar esos datos de forma continua en destinos como Amazon S3 y Amazon Redshift. ¿Qué servicio está pensado para esa carga?"
+    options:
+      - label: "Amazon Kinesis Video Streams"
+        explanation: "Kinesis Video Streams captura video desde dispositivos conectados; no es el servicio para cargar telemetría en S3 o Redshift."
+      - label: "Amazon Managed Service for Apache Flink"
+        explanation: "Amazon Managed Service for Apache Flink se usa para analizar streams; la carga de datos en destinos como S3 o Redshift corresponde a Data Firehose."
+      - label: "Amazon Data Firehose"
+        explanation: "Amazon Data Firehose carga datos en streaming en destinos como Amazon S3, Amazon Redshift u OpenSearch Service."
+        correct: true
+      - label: "Amazon Kinesis Data Streams"
+        explanation: "Kinesis Data Streams captura flujos de datos en tiempo real, y la empresa ya los captura; la carga en S3 o Redshift corresponde a Data Firehose."
+  - prompt: "Una consultora de Lima explica a un cliente los conceptos básicos de analítica. ¿Cuál de estas definiciones corresponde a un data lake?"
+    options:
+      - label: "Un repositorio central, normalmente en Amazon S3, donde se guardan datos en su formato original"
+        explanation: "Un data lake es un repositorio central, normalmente en S3, que guarda los datos en su formato original para analizarlos después."
+        correct: true
+      - label: "Una base de datos optimizada para consultas analíticas complejas sobre datos estructurados"
+        explanation: "Esa es la definición de un data warehouse, como Amazon Redshift, no de un data lake."
+      - label: "Un proceso para extraer, transformar y cargar datos en un destino"
+        explanation: "Ese proceso es ETL, que en AWS ofrece AWS Glue; no es un repositorio de datos."
+      - label: "Un conjunto de tableros y reportes para tomar decisiones de negocio"
+        explanation: "Eso describe la inteligencia de negocio (BI), que en AWS ofrece Amazon Quick Sight, no un data lake."
 ---
 
 ## ¿Por qué importa?

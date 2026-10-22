@@ -47,6 +47,73 @@ quiz:
         explanation: "API Gateway es la puerta de entrada para APIs hacia backends como Lambda; no es una CDN para cachear imágenes y videos."
       - label: "Amazon Route 53"
         explanation: "Route 53 traduce nombres de dominio y enruta tráfico, pero no guarda copias del contenido cerca de los usuarios."
+practice:
+  - prompt: "Un banco digital de Ciudad de México lanzó una nueva versión de su sitio y quiere que Amazon Route 53 envíe solo el 10 % del tráfico a la versión nueva y el 90 % a la actual para probarla. ¿Qué routing policy debe usar?"
+    options:
+      - label: "Latency"
+        explanation: "Latency envía a cada usuario a la Región con menor latencia; no permite fijar un reparto de 90 % / 10 % entre versiones."
+      - label: "Weighted"
+        explanation: "Weighted reparte el tráfico en proporciones definidas, como 90 % / 10 %, ideal para probar una versión nueva."
+        correct: true
+      - label: "Geolocation"
+        explanation: "Geolocation decide según la ubicación del usuario, no según un porcentaje de tráfico entre dos versiones."
+      - label: "Simple"
+        explanation: "Simple se usa cuando un solo recurso atiende el dominio; no reparte el tráfico en proporciones."
+  - prompt: "Una plataforma de streaming de Santiago despliega su aplicación en varias Regiones de AWS y quiere que Route 53 envíe a cada usuario a la Región que le responda con el menor tiempo de respuesta. ¿Qué routing policy debe usar?"
+    options:
+      - label: "Geolocation"
+        explanation: "Geolocation decide por el país o la ubicación del usuario, no por cuál Región responde más rápido."
+      - label: "Multivalue answer"
+        explanation: "Multivalue answer responde con varios registros saludables elegidos al azar, sin considerar la latencia hacia cada Región."
+      - label: "Failover"
+        explanation: "Failover arma un esquema activo-pasivo para cuando falla el recurso principal; no elige la Región más rápida para cada usuario."
+      - label: "Latency"
+        explanation: "Latency envía al usuario a la Región con menor latencia cuando tienes recursos en varias Regiones."
+        correct: true
+  - prompt: "Una agencia de marketing de Guayaquil quiere comprar el dominio de su nuevo cliente, conectar ese dominio con su sitio web y recibir aviso si el servidor web deja de responder. ¿Qué servicio cubre las tres necesidades?"
+    options:
+      - label: "Amazon Route 53"
+        explanation: "Route 53 combina registro de dominios, enrutamiento DNS y health checks que comprueban si un recurso responde y pueden avisar cuando falla."
+        correct: true
+      - label: "Amazon CloudFront"
+        explanation: "CloudFront es una CDN que cachea contenido en edge locations; no registra nombres de dominio."
+      - label: "AWS Global Accelerator"
+        explanation: "Global Accelerator entrega IP estáticas y acelera tráfico TCP/UDP; no compra ni administra nombres de dominio."
+      - label: "Amazon API Gateway"
+        explanation: "API Gateway administra APIs REST, HTTP y WebSocket; no registra dominios ni conecta un nombre con un sitio web por DNS."
+  - prompt: "Una aseguradora de Asunción quiere exponer una API REST para su app móvil, con funciones de AWS Lambda como backend, control de acceso con Amazon Cognito y control del tráfico de solicitudes. ¿Qué servicio debe poner como puerta de entrada?"
+    options:
+      - label: "Amazon CloudFront"
+        explanation: "CloudFront es una CDN para cachear contenido cerca del usuario; no es el servicio administrado para crear, publicar y autorizar APIs."
+      - label: "AWS Global Accelerator"
+        explanation: "Global Accelerator acelera tráfico TCP/UDP con IP estáticas; no gestiona la autorización ni el versionado de una API."
+      - label: "Amazon API Gateway"
+        explanation: "API Gateway es la puerta de entrada administrada para APIs REST, HTTP y WebSocket: gestiona tráfico, autorización con IAM o Cognito y versiones, y se integra con Lambda."
+        correct: true
+      - label: "Amazon Route 53"
+        explanation: "Route 53 resuelve el nombre de dominio, pero no autoriza ni controla las llamadas que recibe la API."
+  - prompt: "Una tienda de artesanías de Oaxaca tiene un sitio principal y un sitio de respaldo. Quiere que Route 53 envíe todo el tráfico al principal y solo lo mande al respaldo si el principal falla. ¿Qué routing policy debe usar?"
+    options:
+      - label: "Weighted"
+        explanation: "Weighted reparte el tráfico en proporciones fijas entre los recursos; no espera a que el principal falle para usar el respaldo."
+      - label: "Failover"
+        explanation: "Failover arma un esquema activo-pasivo: el tráfico va al principal y, si falla, pasa al de respaldo."
+        correct: true
+      - label: "Latency"
+        explanation: "Latency elige la Región con menor latencia para cada usuario; no define un recurso principal y otro de respaldo."
+      - label: "Multivalue answer"
+        explanation: "Multivalue answer devuelve varios registros saludables al azar, en lugar de reservar uno solo para cuando el principal falle."
+  - prompt: "Un usuario de Rosario pide una imagen a una distribución de Amazon CloudFront y esa imagen todavía no está en caché en la edge location más cercana. ¿Qué hace CloudFront?"
+    options:
+      - label: "La obtiene del origen, se la entrega al usuario y la guarda en caché"
+        explanation: "Cuando el archivo no está en caché, CloudFront lo trae del origen, como un bucket de S3, lo entrega y lo guarda en caché para las siguientes solicitudes."
+        correct: true
+      - label: "Devuelve un error hasta que el administrador copie la imagen a la edge location"
+        explanation: "CloudFront trae el contenido del origen definido en la distribución; no hace falta copiar archivos a mano a cada edge location."
+      - label: "Envía la solicitud a AWS Global Accelerator para que cachee la imagen"
+        explanation: "Global Accelerator no cachea contenido; la caché en edge locations es propia de CloudFront."
+      - label: "Usa Route 53 para redirigir al usuario directamente a otra Región"
+        explanation: "Route 53 enruta por DNS, pero la solicitud de un archivo en una distribución la resuelve CloudFront trayéndolo del origen."
 ---
 
 ## ¿Por qué importa?

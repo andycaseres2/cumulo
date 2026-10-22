@@ -44,6 +44,73 @@ quiz:
         explanation: "La familia de instancia solo define el hardware; no cambia quién es responsable de parchar el sistema operativo."
       - label: "AWS, porque la AMI se actualiza sola en cada instancia"
         explanation: "La AMI es una plantilla para lanzar instancias; una vez lanzada la instancia, mantener el sistema operativo es tu responsabilidad."
+practice:
+  - prompt: "Una distribuidora de alimentos de Barranquilla usa una base de datos que mantiene en memoria el inventario completo de todas sus bodegas para responder consultas al instante. ¿Qué familia de instancias EC2 conviene?"
+    options:
+      - label: "Optimizadas para cómputo"
+        explanation: "Las instancias optimizadas para cómputo priorizan procesadores de alto rendimiento para cargas intensivas de CPU; la pista aquí es la base de datos en memoria."
+      - label: "Optimizadas para almacenamiento"
+        explanation: "Las instancias optimizadas para almacenamiento priorizan la E/S rápida sobre almacenamiento local; el escenario destaca datos que viven en memoria."
+      - label: "Optimizadas para memoria"
+        explanation: "Las instancias optimizadas para memoria dan rendimiento rápido con grandes conjuntos de datos en memoria, como las bases de datos en memoria."
+        correct: true
+      - label: "Uso general"
+        explanation: "La familia de uso general equilibra cómputo, memoria y red; se elige cuando no se destaca un recurso, y aquí se destaca la memoria."
+  - prompt: "El equipo de ciencia de datos de una fintech de São Paulo quiere entrenar un modelo de aprendizaje automático usando GPU. ¿Qué familia de instancias EC2 debe elegir?"
+    options:
+      - label: "Cómputo acelerado"
+        explanation: "La familia de cómputo acelerado usa aceleradores de hardware como GPU y es la indicada para aprendizaje automático y procesamiento gráfico."
+        correct: true
+      - label: "Optimizadas para memoria"
+        explanation: "Las instancias optimizadas para memoria son para grandes conjuntos de datos en memoria; no aportan las GPU que pide el escenario."
+      - label: "Optimizadas para almacenamiento"
+        explanation: "Las instancias optimizadas para almacenamiento ofrecen E/S de baja latencia sobre almacenamiento local; no se eligen por sus GPU."
+      - label: "Uso general"
+        explanation: "La familia de uso general equilibra cómputo, memoria y red; la pista de GPU apunta a una familia con aceleradores de hardware."
+  - prompt: "Un hospital de Rosario guarda los datos de su aplicación clínica en el almacenamiento de una instancia EC2. Necesita que esos datos sigan disponibles aunque la instancia se detenga. ¿Qué tipo de almacenamiento debe usar?"
+    options:
+      - label: "Volúmenes de instance store"
+        explanation: "El instance store es almacenamiento temporal que se borra al detener, hibernar o terminar la instancia; no sirve para datos importantes."
+      - label: "Volúmenes de Amazon EBS"
+        explanation: "Los volúmenes de Amazon EBS son almacenamiento persistente para los datos de la instancia, así que conservan la información al detenerla."
+        correct: true
+      - label: "El par de claves (key pair)"
+        explanation: "El par de claves son credenciales para iniciar sesión de forma segura en la instancia; no almacena datos de la aplicación."
+      - label: "La AMI (Amazon Machine Image)"
+        explanation: "La AMI es una plantilla con el sistema operativo y el software para lanzar instancias; no es el lugar donde guardar los datos que cambian a diario."
+  - prompt: "Una tienda en línea de Tegucigalpa nota que su única instancia EC2 se queda corta de CPU y memoria, y decide cambiarla a un tipo de instancia más grande. ¿Cómo se llama este tipo de escalado?"
+    options:
+      - label: "Escalado horizontal"
+        explanation: "El escalado horizontal consiste en agregar o quitar instancias; aquí se cambia la capacidad de una misma instancia."
+      - label: "Cambio de AMI"
+        explanation: "Cambiar la AMI modifica el sistema operativo y el software de la instancia; no le da más CPU ni memoria."
+      - label: "Ampliar el security group"
+        explanation: "El security group es un firewall virtual que controla el tráfico hacia la instancia; no cambia su capacidad de cómputo."
+      - label: "Escalado vertical"
+        explanation: "Cambiar el tipo de instancia para darle más o menos capacidad a una misma instancia es escalado vertical (scale up/down)."
+        correct: true
+  - prompt: "Una empresa de telecomunicaciones de Caracas procesa streaming de datos con muchísimas lecturas y escrituras sobre almacenamiento local, y necesita E/S de baja latencia y alto rendimiento. ¿Qué familia de instancias EC2 le conviene?"
+    options:
+      - label: "Cómputo acelerado"
+        explanation: "El cómputo acelerado usa GPU y otros aceleradores para cálculos y gráficos; la pista del escenario es la E/S sobre almacenamiento local."
+      - label: "Optimizadas para almacenamiento"
+        explanation: "Las instancias optimizadas para almacenamiento ofrecen E/S de baja latencia y alto rendimiento sobre grandes conjuntos de datos locales, como el procesamiento y streaming de datos."
+        correct: true
+      - label: "Optimizadas para cómputo"
+        explanation: "Las optimizadas para cómputo priorizan procesadores de alto rendimiento; el cuello de botella aquí son las lecturas y escrituras locales."
+      - label: "Uso general"
+        explanation: "Uso general equilibra cómputo, memoria y red; el escenario destaca claramente la E/S sobre almacenamiento local."
+  - prompt: "Un centro de investigación climática de Mendoza ejecuta simulaciones complejas a gran escala y busca la mejor relación precio-rendimiento para computación de alto rendimiento. ¿Qué familia de instancias EC2 debe elegir?"
+    options:
+      - label: "Uso general"
+        explanation: "Uso general equilibra cómputo, memoria y red para cargas como servidores web; no está orientada a simulaciones de alto rendimiento a escala."
+      - label: "Optimizadas para almacenamiento"
+        explanation: "Las optimizadas para almacenamiento se centran en E/S sobre datos locales; el escenario pide computación de alto rendimiento para simulaciones."
+      - label: "Optimizadas para memoria"
+        explanation: "Las optimizadas para memoria sirven para grandes conjuntos de datos en memoria; las simulaciones a gran escala apuntan a otra familia."
+      - label: "Optimizadas para HPC"
+        explanation: "Las instancias optimizadas para HPC ofrecen la mejor relación precio-rendimiento para computación de alto rendimiento a escala, como simulaciones complejas."
+        correct: true
 ---
 
 ## ¿Por qué importa?

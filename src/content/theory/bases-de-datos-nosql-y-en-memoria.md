@@ -46,6 +46,73 @@ quiz:
       - label: "Amazon DocumentDB (with MongoDB compatibility)"
         explanation: "Amazon DocumentDB es una base de datos de documentos totalmente administrada y compatible con MongoDB, así que permite usar el mismo código y herramientas."
         correct: true
+practice:
+  - prompt: "Una fintech de Lima quiere detectar fraude analizando las relaciones entre cuentas, dispositivos y transferencias, con miles de millones de relaciones consultadas en milisegundos. ¿Qué base de datos debe elegir?"
+    options:
+      - label: "Amazon DynamoDB"
+        explanation: "Amazon DynamoDB es NoSQL de clave-valor y documentos; para datos altamente conectados y detección de fraude, la pista apunta a una base de grafos."
+      - label: "Amazon Neptune"
+        explanation: "Amazon Neptune es una base de datos de grafos optimizada para miles de millones de relaciones con latencia de milisegundos; la detección de fraude es un caso típico."
+        correct: true
+      - label: "Amazon ElastiCache"
+        explanation: "Amazon ElastiCache es un almacén en memoria que se usa como caché; no es una base de datos de grafos para analizar relaciones."
+      - label: "Amazon RDS"
+        explanation: "Amazon RDS es relacional, con tablas de esquema fijo; las relaciones muy conectadas, como en la detección de fraude, apuntan a Neptune."
+  - prompt: "Una aseguradora de Caracas migrará su base de datos de Oracle a PostgreSQL y primero necesita una herramienta descargable que convierta el esquema de origen al formato del nuevo motor. ¿Cuál debe usar?"
+    options:
+      - label: "Amazon DocumentDB"
+        explanation: "Amazon DocumentDB es una base de datos de documentos compatible con MongoDB; no convierte esquemas de Oracle a PostgreSQL."
+      - label: "DynamoDB Accelerator (DAX)"
+        explanation: "DAX es una caché en memoria administrada específica para DynamoDB; no convierte esquemas entre motores."
+      - label: "Amazon Neptune"
+        explanation: "Amazon Neptune es una base de datos de grafos; no es una herramienta para convertir el esquema de una base relacional."
+      - label: "AWS Schema Conversion Tool (AWS SCT)"
+        explanation: "AWS SCT es una herramienta descargable que convierte el esquema de la base de origen al formato de un motor distinto, por ejemplo de Oracle a PostgreSQL."
+        correct: true
+  - prompt: "Una cadena hotelera de Cancún quiere migrar su base MySQL on-premises a MySQL en AWS y mantener origen y destino sincronizados, replicando los cambios en curso hasta el día del corte. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Database Migration Service (AWS DMS)"
+        explanation: "AWS DMS migra bases de datos hacia AWS, entre el mismo motor o motores distintos, y puede replicar los cambios en curso para mantener origen y destino sincronizados."
+        correct: true
+      - label: "AWS Schema Conversion Tool (AWS SCT)"
+        explanation: "AWS SCT convierte el esquema cuando cambias de motor; no mueve los datos ni replica los cambios en curso."
+      - label: "Amazon ElastiCache"
+        explanation: "Amazon ElastiCache es un almacén en memoria para caché; no migra bases de datos ni replica cambios desde on-premises."
+      - label: "DynamoDB global tables"
+        explanation: "Las global tables replican tablas de DynamoDB entre Regiones; no migran una base MySQL on-premises hacia AWS."
+  - prompt: "Un juego en línea de Santiago usa Amazon DynamoDB y ahora necesita replicación multi-Región y multi-activa para atender a jugadores en América y Europa. ¿Qué característica debe usar?"
+    options:
+      - label: "DynamoDB Accelerator (DAX)"
+        explanation: "DAX es una caché en memoria administrada para DynamoDB; no replica las tablas entre Regiones."
+      - label: "Modo bajo demanda (on-demand)"
+        explanation: "El modo bajo demanda cobra por lecturas y escrituras y escala la tabla automáticamente; no replica los datos en otras Regiones."
+      - label: "DynamoDB global tables"
+        explanation: "Las global tables ofrecen replicación multi-Región y multi-activa para aplicaciones globales, justo lo que necesita el juego."
+        correct: true
+      - label: "Réplicas de lectura de Amazon RDS"
+        explanation: "Las réplicas de lectura son una característica de Amazon RDS relacional; no replican tablas de DynamoDB."
+  - prompt: "Un desarrollador de Ciudad de Guatemala diseña tablas en Amazon DynamoDB y planea combinar datos de dos tablas con JOIN, como hacía en SQL. ¿Qué debes recomendarle?"
+    options:
+      - label: "Usar JOIN con normalidad, porque DynamoDB es una base relacional"
+        explanation: "DynamoDB es NoSQL de clave-valor y documentos, no relacional, y no admite JOIN."
+      - label: "Diseñar los datos para responder cada consulta sin uniones, porque DynamoDB no admite JOIN"
+        explanation: "DynamoDB no admite JOIN, así que se recomienda diseñar los datos para responder cada consulta sin uniones."
+        correct: true
+      - label: "Activar DynamoDB Accelerator (DAX) para habilitar JOIN"
+        explanation: "DAX es una caché en memoria administrada, específica para DynamoDB; no agrega soporte para JOIN."
+      - label: "Usar Amazon Neptune para ejecutar los JOIN en SQL"
+        explanation: "Amazon Neptune es una base de datos de grafos que usa Gremlin, openCypher y SPARQL; no ejecuta JOIN de SQL sobre tablas de DynamoDB."
+  - prompt: "Una startup de eventos de Medellín tiene tráfico muy irregular en Amazon DynamoDB y quiere pagar solo por las lecturas y escrituras que hace, con una tabla que escale automáticamente, incluso a cero. ¿Qué debe configurar?"
+    options:
+      - label: "DynamoDB global tables"
+        explanation: "Las global tables replican datos entre Regiones; no definen el pago por lecturas y escrituras ni el escalado a cero."
+      - label: "DynamoDB Accelerator (DAX)"
+        explanation: "DAX agrega una caché en memoria delante de DynamoDB; no cambia el modelo de cobro de la tabla."
+      - label: "Un clúster de Amazon ElastiCache basado en nodos"
+        explanation: "Un clúster de ElastiCache basado en nodos es una caché en memoria con más control; no hace que la tabla de DynamoDB cobre por lectura y escritura."
+      - label: "El modo bajo demanda (on-demand) de DynamoDB"
+        explanation: "En modo bajo demanda pagas por las lecturas y escrituras que haces, y la tabla escala automáticamente, incluso a cero."
+        correct: true
 ---
 
 ## ¿Por qué importa?

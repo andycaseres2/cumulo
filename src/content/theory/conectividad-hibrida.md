@@ -47,6 +47,73 @@ quiz:
         explanation: "Client VPN da acceso a usuarios remotos individuales; no funciona como punto central para interconectar muchas VPC y redes."
       - label: "AWS Direct Connect"
         explanation: "Direct Connect ofrece una conexión física dedicada entre tu red y AWS, pero por sí solo no es un hub que interconecte muchas VPC entre sí."
+practice:
+  - prompt: "Una consultora contable de Córdoba tiene cientos de empleados que trabajan desde sus casas y necesitan acceder de forma segura, desde sus laptops, a sistemas internos en AWS y en la red on-premises. ¿Qué servicio conviene?"
+    options:
+      - label: "AWS Site-to-Site VPN"
+        explanation: "Site-to-Site VPN une redes completas, como un centro de datos u oficina, con las VPC; no conecta laptops individuales desde cualquier lugar."
+      - label: "AWS Direct Connect"
+        explanation: "Direct Connect es una conexión física dedicada entre una red interna y AWS; no sirve para que cada empleado se conecte desde su casa."
+      - label: "AWS Client VPN"
+        explanation: "Client VPN es una VPN administrada y basada en cliente que permite a usuarios individuales acceder de forma segura a AWS y a la red on-premises desde cualquier lugar."
+        correct: true
+      - label: "AWS Transit Gateway"
+        explanation: "Transit Gateway es un hub para interconectar VPC y redes; no es el servicio que usan las personas para conectarse desde sus dispositivos."
+  - prompt: "Una aseguradora de Panamá tiene aplicaciones en subredes privadas de su VPC que deben consumir un producto de un socio de AWS Marketplace, sin usar internet gateway, NAT ni IP públicas. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS PrivateLink"
+        explanation: "PrivateLink conecta de forma privada tu VPC con servicios de AWS, de otras cuentas o de socios de AWS Marketplace mediante VPC endpoints, sin internet gateway, NAT ni IP pública."
+        correct: true
+      - label: "AWS Transit Gateway"
+        explanation: "Transit Gateway interconecta VPC y redes on-premises como un hub; no da acceso privado a un servicio específico de un socio."
+      - label: "AWS Direct Connect"
+        explanation: "Direct Connect une una red interna con AWS mediante una conexión física; no resuelve el acceso privado desde la VPC a un servicio de un socio."
+      - label: "AWS Client VPN"
+        explanation: "Client VPN conecta a usuarios individuales desde sus dispositivos; no conecta aplicaciones de subredes privadas con un servicio."
+  - prompt: "Un banco de Bogotá ya usa AWS Direct Connect y su área de cumplimiento exige que el tráfico entre su centro de datos y AWS viaje cifrado. ¿Qué debe hacer?"
+    options:
+      - label: "Nada, porque Direct Connect cifra el tráfico por defecto"
+        explanation: "Direct Connect no está cifrado por defecto; es una trampa típica del examen asumir que sí."
+      - label: "Crear túneles VPN sobre la conexión de Direct Connect"
+        explanation: "Para cifrar el tráfico de Direct Connect puedes crear túneles VPN sobre la conexión, o usar MACsec en ciertas conexiones dedicadas."
+        correct: true
+      - label: "Reemplazar Direct Connect por AWS Transit Gateway"
+        explanation: "Transit Gateway es un hub que interconecta redes; no es una forma de cifrar el tráfico de Direct Connect."
+      - label: "Agregar un VPC endpoint de AWS PrivateLink"
+        explanation: "PrivateLink da acceso privado a servicios específicos desde la VPC; no cifra el enlace entre el centro de datos y AWS."
+  - prompt: "Una empresa minera de Arequipa configura AWS Site-to-Site VPN entre su oficina y una VPC. ¿Cómo se llama el componente donde termina la conexión del lado de la oficina?"
+    options:
+      - label: "Virtual private gateway"
+        explanation: "El virtual private gateway es el extremo del lado de AWS, asociado a una VPC; no está en la oficina de la empresa."
+      - label: "VPC endpoint de interfaz"
+        explanation: "Un VPC endpoint de interfaz es la forma de usar AWS PrivateLink para acceder a servicios; no es parte de una conexión Site-to-Site VPN."
+      - label: "Ubicación de Direct Connect"
+        explanation: "Una ubicación de Direct Connect es donde se conecta físicamente la red interna para usar Direct Connect; no participa en Site-to-Site VPN."
+      - label: "Customer gateway device"
+        explanation: "Del lado on-premises, la conexión Site-to-Site VPN termina en un customer gateway device, que puede ser un equipo físico o una aplicación de software."
+        correct: true
+  - prompt: "Una cadena hotelera de Cancún usa AWS Transit Gateway en dos Regiones distintas y quiere conectar ambos transit gateways usando la infraestructura global de AWS. ¿Qué función debe usar?"
+    options:
+      - label: "Peering entre Regiones de Transit Gateway"
+        explanation: "Con el peering entre Regiones conectas transit gateways de distintas Regiones usando la infraestructura global de AWS."
+        correct: true
+      - label: "AWS PrivateLink"
+        explanation: "PrivateLink da acceso privado a servicios específicos mediante VPC endpoints; no conecta transit gateways entre sí."
+      - label: "AWS Client VPN"
+        explanation: "Client VPN conecta a usuarios individuales desde sus dispositivos; no une transit gateways de distintas Regiones."
+      - label: "Una interfaz virtual pública de Direct Connect"
+        explanation: "La interfaz virtual pública de Direct Connect da acceso a servicios públicos de AWS como Amazon S3; no conecta transit gateways entre Regiones."
+  - prompt: "Una cooperativa agrícola de Uruguay quiere AWS Direct Connect, pero no necesita un puerto físico propio y prefiere que la conexión se la provea un socio de AWS Direct Connect. ¿Qué tipo de conexión debe pedir?"
+    options:
+      - label: "Una conexión dedicada"
+        explanation: "La conexión dedicada es un puerto físico para un solo cliente; la cooperativa justamente no quiere un puerto propio."
+      - label: "Una conexión de AWS Client VPN"
+        explanation: "Client VPN es para usuarios individuales que se conectan por internet; no es un tipo de conexión de Direct Connect."
+      - label: "Una conexión hospedada"
+        explanation: "Las conexiones hospedadas de Direct Connect las provee un socio de AWS Direct Connect, sin que el cliente tenga un puerto físico propio."
+        correct: true
+      - label: "Un VPC endpoint de interfaz"
+        explanation: "Un VPC endpoint de interfaz se usa con PrivateLink para acceder a servicios desde la VPC; no es una forma de contratar Direct Connect."
 ---
 
 ## ¿Por qué importa?

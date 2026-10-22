@@ -49,6 +49,73 @@ quiz:
       - label: "Una política administrada por el cliente (customer managed)"
         explanation: "Las políticas administradas por el cliente son personalizadas: las escribes para tu caso exacto, puedes editarlas y reutilizarlas en varias identidades."
         correct: true
+practice:
+  - prompt: "Una constructora de Arequipa tiene 15 contadores que necesitan los mismos permisos. ¿Cuál es la forma más práctica de asignárselos con IAM?"
+    options:
+      - label: "Adjuntar una política en línea a cada contador"
+        explanation: "Una política en línea vive dentro de una sola identidad, así que habría que repetirla 15 veces y mantener cada copia por separado."
+      - label: "Crear un grupo de IAM con los permisos y agregar a los contadores"
+        explanation: "Un grupo de usuarios sirve para asignar permisos a varios usuarios a la vez; cada contador hereda los permisos del grupo."
+        correct: true
+      - label: "Compartir con ellos las credenciales del usuario raíz"
+        explanation: "El usuario raíz tiene acceso completo y AWS recomienda no usarlo en el día a día; compartirlo contradice el mínimo privilegio."
+      - label: "Crear un rol de IAM por contador con access keys de largo plazo"
+        explanation: "Un rol no tiene credenciales de largo plazo; entrega credenciales temporales a quien lo asume."
+  - prompt: "Un ingeniero de una aseguradora de Caracas quiere crear el grupo de IAM TI dentro del grupo Empleados para que TI herede sus permisos. ¿Qué ocurre?"
+    options:
+      - label: "Funciona, y TI hereda los permisos de Empleados"
+        explanation: "Los grupos de IAM solo contienen usuarios; no admiten otros grupos dentro, así que no hay herencia entre grupos."
+      - label: "Funciona solo si ambos grupos usan políticas administradas por AWS"
+        explanation: "El tipo de política no cambia la regla: los grupos de IAM no se pueden anidar."
+      - label: "Funciona si el grupo TI aparece como Principal en una política"
+        explanation: "Un grupo no puede ser Principal en una política, porque los grupos asignan permisos y no se autentican."
+      - label: "No es posible, porque los grupos de IAM no se pueden anidar"
+        explanation: "Un grupo solo contiene usuarios; un usuario puede estar en varios grupos, pero un grupo no puede estar dentro de otro."
+        correct: true
+  - prompt: "Un usuario de IAM recién creado en una distribuidora de Barranquilla no tiene ninguna política adjunta e intenta listar los buckets de Amazon S3. ¿Qué ocurre?"
+    options:
+      - label: "Se deniega, porque por defecto todo está denegado de forma implícita"
+        explanation: "Sin una política que lo permita, la solicitud queda denegada de forma implícita."
+        correct: true
+      - label: "Se permite, porque los usuarios nuevos tienen solo lectura por defecto"
+        explanation: "Un usuario nuevo no tiene permisos hasta que una política lo permita; ReadOnlyAccess es una política que habría que adjuntar."
+      - label: "Se permite, porque pertenece al grupo predeterminado con todos los usuarios"
+        explanation: "En IAM no existe un grupo predeterminado que contenga a todos los usuarios."
+      - label: "Se deniega solo si alguna política tiene un Deny explícito"
+        explanation: "No hace falta un Deny explícito: sin ningún Allow, la denegación implícita ya impide la acción."
+  - prompt: "Una empresa de telecomunicaciones de Santo Domingo aplica el mínimo privilegio y quiere descubrir qué servicios permitidos a un rol nunca se usan, para quitarlos. ¿Qué función de IAM le ayuda?"
+    options:
+      - label: "Exigir MFA en el rol"
+        explanation: "MFA protege el inicio de sesión con un segundo factor; no muestra qué servicios se usan o no."
+      - label: "Adjuntar la política AdministratorAccess"
+        explanation: "AdministratorAccess da acceso total, lo contrario de recortar permisos según el mínimo privilegio."
+      - label: "La información de último acceso (last accessed information)"
+        explanation: "La información de último acceso de IAM muestra qué servicios y acciones no se usan para poder quitarlos."
+        correct: true
+      - label: "Convertir sus permisos en una política en línea"
+        explanation: "Una política en línea cambia cómo se adjunta el permiso, no informa qué servicios se usan."
+  - prompt: "El administrador de una startup de Guatemala quiere quitarle algunos servicios a la política ReadOnlyAccess, que es administrada por AWS. ¿Qué debe hacer?"
+    options:
+      - label: "Editarla directamente en la consola de IAM"
+        explanation: "Las políticas administradas por AWS las mantiene AWS y no se pueden editar."
+      - label: "Copiar su contenido en una política administrada por el cliente y recortarla"
+        explanation: "La buena práctica es partir de la política de AWS, copiarla en una política personalizada y quitarle lo que no se necesita."
+        correct: true
+      - label: "Adjuntarla a un grupo para que se vuelva editable"
+        explanation: "Adjuntarla a un grupo no cambia que una política administrada por AWS no se puede editar."
+      - label: "Agregarle un Allow en una política en línea"
+        explanation: "Un Allow adicional suma permisos en vez de quitarlos, y no modifica la política administrada por AWS."
+  - prompt: "El desarrollador líder de una empresa de Quito necesita acceso total a los servicios de AWS, pero acceso limitado a IAM y a AWS Organizations. ¿Qué política de función laboral administrada por AWS se ajusta a ese perfil?"
+    options:
+      - label: "AdministratorAccess"
+        explanation: "AdministratorAccess da acceso total, incluido IAM, y está pensada solo para administradores."
+      - label: "ReadOnlyAccess"
+        explanation: "ReadOnlyAccess da solo lectura en todos los servicios; el desarrollador necesita acceso total a los servicios."
+      - label: "PowerUserAccess"
+        explanation: "PowerUserAccess da acceso total a los servicios, pero acceso limitado a IAM y a AWS Organizations."
+        correct: true
+      - label: "Una bucket policy de Amazon S3"
+        explanation: "Una bucket policy es una política basada en recursos adjunta a un bucket; no es una política de función laboral para una persona."
 ---
 
 ## ¿Por qué importa?

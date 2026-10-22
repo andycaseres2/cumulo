@@ -25,7 +25,7 @@ export const astroContentTopicRepository: TopicRepository = {
 /** Every topic quiz question, tagged with its domain and topic, as the bank for practice exams. */
 export async function quizBank(): Promise<BankQuestion[]> {
   return (await getCollection('theory')).flatMap((entry) =>
-    (entry.data.quiz ?? []).map((question, i) => ({
+    [...(entry.data.quiz ?? []), ...(entry.data.practice ?? [])].map((question, i) => ({
       id: `${entry.id}#${i + 1}`,
       domainId: entry.data.domain,
       topicSlug: entry.id,

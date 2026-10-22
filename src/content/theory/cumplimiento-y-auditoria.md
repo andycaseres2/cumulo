@@ -50,6 +50,73 @@ quiz:
       - label: "El credential report de IAM"
         explanation: "El credential report es un archivo CSV con todos los usuarios de la cuenta y el estado de sus contraseñas, access keys y dispositivos MFA, listo para entregar a un auditor."
         correct: true
+practice:
+  - prompt: "Una empresa de salud de Montevideo quiere evaluar de forma continua si todos sus volúmenes están cifrados y que se marquen automáticamente los recursos no conformes. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra quién hizo cada llamada a la API y cuándo; no evalúa si la configuración de los recursos cumple una regla."
+      - label: "AWS Config"
+        explanation: "Con las reglas de AWS Config se evalúa de forma continua si cada recurso cumple lo definido, como volúmenes cifrados, y se marcan los no conformes."
+        correct: true
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch monitorea métricas, logs y alarmas para saber cómo está funcionando algo; no evalúa la conformidad de la configuración."
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact entrega informes y acuerdos de cumplimiento de AWS; no revisa la configuración de tus recursos."
+  - prompt: "Un e-commerce de Lima ya usa varias reglas de AWS Config y ahora quiere desplegar juntas, como un solo paquete, todas las reglas que exige su marco de cumplimiento. ¿Qué debe usar?"
+    options:
+      - label: "Un trail de AWS CloudTrail"
+        explanation: "Un trail de CloudTrail guarda el registro de las llamadas a la API; no agrupa ni despliega reglas de configuración."
+      - label: "El credential report de IAM"
+        explanation: "El credential report de IAM lista los usuarios y el estado de sus credenciales; no evalúa la configuración de los recursos."
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact entrega los informes y acuerdos de cumplimiento de AWS; no despliega reglas sobre tus recursos."
+      - label: "Un conformance pack de AWS Config"
+        explanation: "Los conformance packs agrupan reglas de AWS Config para desplegarlas juntas y evaluar de forma continua si los recursos cumplen; también se puede configurar remediación."
+        correct: true
+  - prompt: "Una fintech de Bogotá quiere aplicar el mínimo privilegio: necesita saber qué servicios y acciones usó realmente cada identidad para retirar los permisos sobrantes. ¿Qué herramienta de IAM debe consultar?"
+    options:
+      - label: "La información de último acceso de IAM"
+        explanation: "La información de último acceso muestra qué servicios (y, en algunos, qué acciones) usó realmente cada identidad, para retirar permisos sobrantes y aplicar el mínimo privilegio."
+        correct: true
+      - label: "El credential report de IAM"
+        explanation: "El credential report es un CSV con el estado de contraseñas, access keys y MFA de los usuarios; no detalla qué servicios y acciones usó cada identidad."
+      - label: "Un informe SOC de AWS Artifact"
+        explanation: "Los informes SOC de AWS Artifact son evidencia de auditoría de la parte de AWS; no analizan los permisos de tus identidades."
+      - label: "Un conformance pack de AWS Config"
+        explanation: "Un conformance pack agrupa reglas de Config para evaluar la configuración de los recursos; no muestra qué acciones usó cada identidad."
+  - prompt: "Una pasarela de pagos de Santiago va a migrar a AWS y su gerente afirma: \"Como AWS tiene certificación PCI DSS, nuestra aplicación ya cumple PCI DSS\". ¿Qué es lo correcto?"
+    options:
+      - label: "Es cierto, porque la certificación de AWS cubre automáticamente las aplicaciones de sus clientes"
+        explanation: "Que AWS esté certificado no certifica automáticamente tu aplicación; esta es una trampa típica del examen."
+      - label: "Es cierto, siempre que descargue el informe PCI desde AWS Artifact"
+        explanation: "El informe PCI de AWS Artifact es evidencia de auditoría de la parte de AWS; descargarlo no demuestra el cumplimiento de la aplicación del cliente."
+      - label: "Es falso: la empresa sigue siendo responsable de demostrar el cumplimiento de su propia aplicación y cargas de trabajo"
+        explanation: "Según el modelo de responsabilidad compartida, el cliente sigue siendo responsable de demostrar el cumplimiento de su empresa y sus cargas de trabajo."
+        correct: true
+      - label: "Es cierto, siempre que active AWS CloudTrail en todas las Regiones"
+        explanation: "CloudTrail registra la actividad de la API, pero activarlo no convierte a la aplicación en conforme con PCI DSS."
+  - prompt: "Una empresa de software médico de Medellín que atiende hospitales de EE. UU. diseñará una solución sujeta a HIPAA y quiere confirmar antes que cada servicio de AWS elegido esté cubierto por ese programa. ¿Qué debe consultar?"
+    options:
+      - label: "El historial de eventos de AWS CloudTrail"
+        explanation: "El historial de eventos de CloudTrail muestra la actividad reciente de la API en la cuenta; no indica qué servicios cubre un programa de cumplimiento."
+      - label: "La página AWS Services in Scope by Compliance Program"
+        explanation: "La página Services in Scope muestra, para cada programa de cumplimiento, qué servicios están cubiertos por los informes vigentes."
+        correct: true
+      - label: "Un dashboard de Amazon CloudWatch"
+        explanation: "Los dashboards de CloudWatch muestran métricas y logs de tus recursos; no informan el alcance de los programas de cumplimiento."
+      - label: "El credential report de IAM"
+        explanation: "El credential report lista el estado de las credenciales de los usuarios; no dice qué servicios están en el alcance de HIPAA."
+  - prompt: "Una distribuidora de energía de Quito debe conservar durante varios años el registro de quién hizo cada llamada a la API en su cuenta, más allá de lo que muestra el historial de eventos de CloudTrail. ¿Qué debe configurar?"
+    options:
+      - label: "Nada, porque el historial de eventos conserva los eventos indefinidamente"
+        explanation: "El historial de eventos de CloudTrail muestra solo los últimos 90 días de eventos de administración por Región."
+      - label: "VPC Flow Logs hacia Amazon S3"
+        explanation: "VPC Flow Logs registra el tráfico IP de las interfaces de red de la VPC; no registra quién hizo cada llamada a la API."
+      - label: "Una regla de AWS Config"
+        explanation: "Una regla de AWS Config evalúa si los recursos cumplen una configuración; no conserva el registro de llamadas a la API."
+      - label: "Un trail de CloudTrail que entregue los eventos a un bucket de Amazon S3"
+        explanation: "Para guardar los eventos más allá del historial de 90 días se crea un trail que los entrega a un bucket de Amazon S3."
+        correct: true
 ---
 
 ## ¿Por qué importa?
@@ -107,7 +174,7 @@ Pregunta clave: "¿quién hizo qué y cuándo?".
 ### Reportar: informes de acceso de IAM
 
 - **Credential report** (informe de credenciales): un archivo **CSV** con todos los usuarios de la cuenta y el estado de sus contraseñas, access keys y dispositivos MFA (por ejemplo, cuándo se rotó o usó por última vez cada clave). Se puede generar como máximo cada cuatro horas y entregarse a un auditor.
-- **Información de último acceso** (*last accessed information*): muestra qué servicios y acciones usó realmente cada identidad, para retirar permisos sobrantes y aplicar el mínimo privilegio.
+- **Información de último acceso** (*last accessed information*): muestra qué servicios (y, en algunos, qué acciones) usó realmente cada identidad, para retirar permisos sobrantes y aplicar el mínimo privilegio.
 
 ## Trampas típicas del examen
 

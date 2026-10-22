@@ -47,6 +47,73 @@ quiz:
       - label: "Híbrido"
         explanation: "El modelo híbrido conecta recursos en la nube con infraestructura existente fuera de ella, normalmente un centro de datos propio."
         correct: true
+practice:
+  - prompt: "El administrador de sistemas de una universidad de Córdoba quiere un script en bash que, cada noche, liste y detenga recursos de AWS mediante comandos en la terminal. ¿Qué herramienta debe usar?"
+    options:
+      - label: "AWS CLI"
+        explanation: "La AWS CLI permite interactuar con los servicios mediante comandos en la terminal y escribir scripts para automatizar tareas repetitivas."
+        correct: true
+      - label: "AWS Management Console"
+        explanation: "La consola es una interfaz web para usar a mano; los clics no se pueden programar como un script nocturno."
+      - label: "AWS CloudFormation"
+        explanation: "CloudFormation aprovisiona infraestructura a partir de plantillas; no es una herramienta de comandos para listar y detener recursos cada noche."
+      - label: "AWS CDK"
+        explanation: "El CDK define infraestructura con lenguajes de programación y la aprovisiona mediante CloudFormation; no es una herramienta de comandos para tareas administrativas nocturnas."
+  - prompt: "Una practicante de una agencia digital de Valparaíso quiere explorar un servicio de AWS que no conoce, de forma visual, sin programar, y hacer una prueba rápida una sola vez. ¿Qué debe usar?"
+    options:
+      - label: "AWS CLI"
+        explanation: "La CLI requiere escribir comandos en la terminal; para explorar un servicio de forma visual es mejor la consola."
+      - label: "AWS CloudFormation"
+        explanation: "CloudFormation sirve para procesos repetibles con plantillas; para una prueba puntual y visual no hace falta escribir una plantilla."
+      - label: "AWS Management Console"
+        explanation: "La consola es la interfaz web: visual, sin programar e ideal para aprender, explorar servicios y hacer tareas puntuales."
+        correct: true
+      - label: "Query API directa"
+        explanation: "La Query API son llamadas HTTPS de bajo nivel que hay que firmar; no es visual ni apta para alguien que no programa."
+  - prompt: "El regulador exige a un banco de Guatemala que pueda reconstruir rápidamente toda su infraestructura en otra Región de AWS si ocurre un desastre. ¿Qué enfoque recomienda AWS?"
+    options:
+      - label: "Documentar los pasos para recrear todo a mano desde la AWS Management Console"
+        explanation: "Repetir clics en la consola es lento, propenso a errores humanos y difícil de auditar; no es un proceso repetible para una recuperación rápida."
+      - label: "Usar los AWS SDKs dentro del código de la aplicación"
+        explanation: "Los SDK permiten que una aplicación use servicios de AWS desde su código; no son el enfoque de infraestructura como código que AWS recomienda para reconstruir todo de forma repetible."
+      - label: "Hacer llamadas directas a la Query API"
+        explanation: "La Query API es el acceso de más bajo nivel, en el que debes firmar solicitudes y manejar errores; no es un proceso repetible para reconstruir infraestructura."
+      - label: "Desplegar con infraestructura como código usando AWS CloudFormation"
+        explanation: "AWS recomienda desplegar con IaC para poder reconstruir rápidamente una carga de trabajo en una Región de recuperación ante desastres; las plantillas se reutilizan en otras Regiones."
+        correct: true
+  - prompt: "El equipo de desarrollo de una fintech de San José prefiere definir su infraestructura con TypeScript, un lenguaje de programación que ya conoce, en lugar de escribir plantillas JSON o YAML, y que se aprovisione mediante CloudFormation. ¿Qué debe usar?"
+    options:
+      - label: "AWS CLI"
+        explanation: "La CLI ejecuta comandos en la terminal; no define infraestructura en TypeScript para aprovisionarla mediante CloudFormation."
+      - label: "AWS CDK"
+        explanation: "El AWS CDK permite definir la infraestructura con lenguajes de programación conocidos y la aprovisiona a través de CloudFormation."
+        correct: true
+      - label: "AWS Management Console"
+        explanation: "La consola es una interfaz web para tareas manuales; no permite definir la infraestructura como código en TypeScript."
+      - label: "Query API directa"
+        explanation: "La Query API son llamadas HTTPS de bajo nivel; no genera stacks de CloudFormation a partir de código TypeScript."
+  - prompt: "Un nuevo integrante del equipo de una logística de Monterrey cree que algunas acciones de AWS solo se pueden hacer desde la consola. ¿Qué afirmación es correcta?"
+    options:
+      - label: "La CLI usa una API distinta y privada, diferente de la que usan los SDK"
+        explanation: "La CLI y los SDK usan las mismas APIs públicas de los servicios; son solo formas distintas de hacer esas llamadas."
+      - label: "Toda acción termina siendo una llamada a la API del servicio, que la consola, la CLI y los SDK usan por debajo"
+        explanation: "En AWS toda acción es una llamada a la API pública del servicio por HTTPS, firmada con credenciales; las herramientas son formas más cómodas de hacerla."
+        correct: true
+      - label: "La consola tiene funciones de administración de IaaS que no existen en la API"
+        explanation: "AWS indica que las funciones de administración de IaaS de la consola también están disponibles en la API y en la CLI."
+      - label: "Fuera de la consola, CloudFormation es la única forma de crear recursos"
+        explanation: "La CLI, los SDK y la Query API también crean recursos, porque todos usan las APIs del servicio."
+  - prompt: "En AWS CloudFormation, ¿qué es un stack?"
+    options:
+      - label: "El archivo JSON o YAML que describe los recursos y sus propiedades"
+        explanation: "Ese archivo es la plantilla (template); el stack es lo que CloudFormation crea al usarla."
+      - label: "Una librería por lenguaje para usar AWS desde el código de una aplicación"
+        explanation: "Eso describe un SDK, como Boto3 para Python; no tiene relación con los stacks de CloudFormation."
+      - label: "El conjunto de recursos creado a partir de una plantilla, gestionado como una sola unidad"
+        explanation: "Un stack agrupa los recursos de una plantilla: se crean, actualizan y eliminan juntos como una unidad."
+        correct: true
+      - label: "Un registro de las llamadas a la API para auditar quién hizo cada cambio"
+        explanation: "Un stack no es un registro de auditoría; es el conjunto de recursos que CloudFormation gestiona como unidad."
 ---
 
 ## ¿Por qué importa?

@@ -46,6 +46,73 @@ quiz:
         explanation: "Amazon Polly es un servicio preentrenado que convierte texto en voz; no predice comportamiento de clientes."
       - label: "Amazon Q Developer"
         explanation: "Amazon Q Developer es un asistente de IA generativa que ayuda a desarrolladores a escribir y entender código; no es el servicio para entrenar un modelo propio de predicción."
+practice:
+  - prompt: "Un call center de Guadalajara guarda miles de grabaciones de llamadas con clientes y quiere convertirlas en texto para poder buscarlas. ¿Qué servicio de AWS debe usar?"
+    options:
+      - label: "Amazon Polly"
+        explanation: "Amazon Polly hace lo contrario: convierte texto en voz con sonido natural, no transcribe grabaciones."
+      - label: "Amazon Transcribe"
+        explanation: "Amazon Transcribe convierte voz en texto, tanto en archivos de audio como en tiempo real, justo lo que piden las grabaciones."
+        correct: true
+      - label: "Amazon Comprehend"
+        explanation: "Amazon Comprehend analiza el significado de un texto que ya existe; primero habría que tener las llamadas transcritas."
+      - label: "Amazon Lex"
+        explanation: "Amazon Lex sirve para crear chatbots e interfaces conversacionales, no para transcribir un archivo de grabaciones."
+  - prompt: "Una aerolínea de Ciudad de Panamá quiere un IVR telefónico que converse con los pasajeros por voz para consultar el estado de su vuelo. ¿Qué servicio de AWS debe usar para construir esa interfaz conversacional?"
+    options:
+      - label: "Amazon Translate"
+        explanation: "Amazon Translate traduce texto entre idiomas; no construye una interfaz que converse con el pasajero."
+      - label: "Amazon Textract"
+        explanation: "Amazon Textract extrae texto y datos de documentos escaneados; no atiende conversaciones telefónicas."
+      - label: "Amazon Lex"
+        explanation: "Amazon Lex crea chatbots e interfaces conversacionales por voz o texto, incluido un IVR telefónico como el de la aerolínea."
+        correct: true
+      - label: "Amazon Rekognition"
+        explanation: "Amazon Rekognition analiza imágenes y videos; no sirve para conversar por teléfono con los pasajeros."
+  - prompt: "Una app de noticias de Quito quiere que sus artículos se lean en voz alta, con sonido natural, para usuarios con discapacidad visual. ¿Qué servicio preentrenado debe usar?"
+    options:
+      - label: "Amazon Polly"
+        explanation: "Amazon Polly convierte texto en voz con sonido natural, ideal para leer los artículos en voz alta."
+        correct: true
+      - label: "Amazon Transcribe"
+        explanation: "Amazon Transcribe convierte voz en texto; aquí se necesita el camino inverso, de texto a voz."
+      - label: "Amazon Comprehend"
+        explanation: "Amazon Comprehend analiza el texto (idioma, entidades, sentimiento), pero no lo convierte en audio."
+      - label: "Amazon Translate"
+        explanation: "Amazon Translate cambia el idioma del texto; no genera la voz que escucharían los usuarios."
+  - prompt: "Una red social de fotos de Bogotá quiere detectar automáticamente contenido inapropiado en las imágenes que suben sus usuarios, sin experiencia en ML. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Textract"
+        explanation: "Amazon Textract está pensado para extraer texto, formularios y tablas de documentos, no para moderar fotos."
+      - label: "Amazon Comprehend"
+        explanation: "Amazon Comprehend analiza texto escrito; no examina el contenido visual de las imágenes."
+      - label: "Amazon Transcribe"
+        explanation: "Amazon Transcribe convierte audio en texto; las fotos no tienen audio que transcribir."
+      - label: "Amazon Rekognition"
+        explanation: "Amazon Rekognition analiza imágenes y videos, incluida la detección de contenido inapropiado, como servicio preentrenado."
+        correct: true
+  - prompt: "Una fintech de Montevideo quiere crear su propia aplicación de IA generativa usando modelos fundacionales de Amazon y de otras empresas de IA, accesibles a través de una API. ¿Qué servicio de AWS encaja?"
+    options:
+      - label: "Amazon Q Business"
+        explanation: "Amazon Q Business es un asistente listo para usar con el contenido de la empresa; la fintech quiere construir su propia aplicación con modelos fundacionales."
+      - label: "Amazon Bedrock"
+        explanation: "Amazon Bedrock es el servicio administrado que ofrece modelos fundacionales de Amazon y de otras empresas líderes de IA a través de una API para crear aplicaciones de IA generativa."
+        correct: true
+      - label: "Amazon Rekognition"
+        explanation: "Amazon Rekognition es un servicio preentrenado de análisis de imágenes y videos, no un acceso a modelos fundacionales para crear contenido."
+      - label: "Amazon Polly"
+        explanation: "Amazon Polly convierte texto en voz; no ofrece modelos fundacionales para construir una aplicación de IA generativa."
+  - prompt: "Una constructora de Buenos Aires quiere que sus empleados usen IA generativa de forma segura para hacer preguntas sobre los documentos y sistemas internos de la empresa, con un asistente listo para usar. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon Q Developer"
+        explanation: "Amazon Q Developer está orientado a desarrolladores y profesionales de TI que construyen y operan aplicaciones; no es el asistente para los empleados sobre el contenido de la empresa."
+      - label: "Amazon Transcribe"
+        explanation: "Amazon Transcribe convierte voz en texto; no responde preguntas de los empleados sobre los documentos internos."
+      - label: "Amazon Q Business"
+        explanation: "Amazon Q Business hace que la IA generativa sea accesible de forma segura para los empleados, usando el contenido y los sistemas de la empresa."
+        correct: true
+      - label: "Amazon Translate"
+        explanation: "Amazon Translate traduce texto entre idiomas; no es un asistente que responda preguntas sobre información interna."
 ---
 
 ## ¿Por qué importa?

@@ -47,6 +47,73 @@ quiz:
       - label: "AWS Resource Access Manager (AWS RAM)"
         explanation: "AWS RAM comparte recursos entre cuentas, como subredes de Amazon VPC desde una cuenta de red central, sin duplicarlos y sin cargo adicional."
         correct: true
+practice:
+  - prompt: "Una distribuidora de Guadalajara adjuntó a la OU Desarrollo una SCP que permite todas las acciones de Amazon S3. Un usuario de IAM de una cuenta miembro de esa OU no tiene ninguna política de IAM adjunta. ¿Puede usar Amazon S3?"
+    options:
+      - label: "No, porque la SCP no otorga permisos; también necesita una política de IAM que lo permita"
+        explanation: "Una SCP solo fija el máximo de permisos; el permiso efectivo es la intersección entre la SCP y la política de IAM, y este usuario no tiene ninguna."
+        correct: true
+      - label: "Sí, porque la SCP le otorga acceso a Amazon S3"
+        explanation: "Es la trampa típica del examen: una SCP solo limita el máximo de permisos; los permisos los da IAM, y este usuario no tiene ninguna política."
+      - label: "Sí, siempre que la organización tenga la factura consolidada"
+        explanation: "La factura consolidada agrupa los costos de las cuentas; no otorga permisos ni cambia cómo se combinan la SCP y la política de IAM."
+      - label: "Sí, si la cuenta de administración le comparte permisos con AWS RAM"
+        explanation: "AWS RAM comparte recursos entre cuentas, no permisos; el usuario sigue necesitando una política de IAM que le permita usar Amazon S3."
+  - prompt: "Una empresa de logística de Monterrey adjuntó a la raíz de su organización una SCP que deniega un servicio. Luego nota que un administrador de la cuenta de administración todavía puede usar ese servicio. ¿Por qué?"
+    options:
+      - label: "Porque una SCP adjunta a la raíz solo aplica a las OUs anidadas"
+        explanation: "Una SCP en la raíz se hereda hacia abajo y limita a las cuentas miembro de toda la jerarquía; el motivo aquí es otro."
+      - label: "Porque el administrador tiene la política AdministratorAccess"
+        explanation: "En una cuenta miembro, una SCP limita incluso a quien tiene AdministratorAccess; lo que cambia aquí es que se trata de la cuenta de administración."
+      - label: "Porque las SCP no afectan a la cuenta de administración"
+        explanation: "Las SCP solo afectan a las identidades de las cuentas miembro; la cuenta de administración queda fuera de su alcance."
+        correct: true
+      - label: "Porque falta activar la factura consolidada"
+        explanation: "Las SCP requieren tener todas las funciones (all features) de Organizations activadas, y aun así no afectan a la cuenta de administración."
+  - prompt: "Una universidad de Córdoba usa AWS Control Tower y quiere identificar los recursos que ya existen en sus cuentas y no cumplen sus políticas, sin bloquear ninguna acción. ¿Qué tipo de control necesita?"
+    options:
+      - label: "Un control preventivo"
+        explanation: "Los controles preventivos impiden acciones; el escenario pide encontrar incumplimientos sin bloquear nada."
+      - label: "Un control detectivo"
+        explanation: "Los controles detectivos de Control Tower detectan incumplimientos, como recursos existentes que no cumplen las políticas."
+        correct: true
+      - label: "Un control proactivo"
+        explanation: "Los controles proactivos revisan los recursos antes de crearlos; el escenario habla de recursos que ya existen."
+      - label: "Account Factory"
+        explanation: "Account Factory es una plantilla para crear cuentas nuevas ya configuradas; no es un control que detecte incumplimientos."
+  - prompt: "Un grupo hotelero de Cancún crea una cuenta de AWS cada vez que abre un hotel y quiere que cada cuenta nazca ya configurada y aprobada según sus estándares, dentro de su landing zone de AWS Control Tower. ¿Qué función debe usar?"
+    options:
+      - label: "AWS RAM"
+        explanation: "AWS RAM comparte recursos entre cuentas que ya existen; no crea cuentas nuevas configuradas."
+      - label: "Una SCP adjunta a la raíz"
+        explanation: "Una SCP limita el máximo de permisos de las cuentas miembro; no crea cuentas ni las configura."
+      - label: "El dashboard de Control Tower"
+        explanation: "El dashboard muestra cuentas, controles activos y recursos no conformes; no es la plantilla para crear cuentas."
+      - label: "Account Factory"
+        explanation: "Account Factory es la plantilla de Control Tower para crear cuentas nuevas ya configuradas y aprobadas."
+        correct: true
+  - prompt: "Una cadena de supermercados de Santiago tiene desarrollo, pruebas y producción en una sola cuenta de AWS. ¿Qué beneficio obtiene al separar esos entornos en varias cuentas?"
+    options:
+      - label: "Limitar el impacto de un incidente o de un error a una sola cuenta"
+        explanation: "Una cuenta es un límite natural de seguridad y cargas de trabajo, así que un error en pruebas queda aislado de producción."
+        correct: true
+      - label: "Dejar de necesitar políticas de IAM para dar permisos"
+        explanation: "Separar en varias cuentas no cambia de dónde vienen los permisos: siguen viniendo de las políticas de IAM de cada cuenta."
+      - label: "Que los datos se compartan automáticamente entre todas las cuentas"
+        explanation: "Separar cuentas sirve para aislar y restringir el acceso a datos sensibles; para compartir recursos se usa AWS RAM."
+      - label: "Que las SCP pasen a aplicarse también a la cuenta de administración"
+        explanation: "Las SCP afectan solo a las cuentas miembro; tener más cuentas no cambia que la cuenta de administración queda fuera."
+  - prompt: "Una aseguradora de La Paz tiene la OU Producción y, dentro de ella, la OU anidada Pagos. Adjunta a Producción una SCP que deniega usar Regiones no aprobadas. ¿Qué pasa con las cuentas de la OU Pagos?"
+    options:
+      - label: "No se ven afectadas, porque la SCP solo aplica a las cuentas directas de Producción"
+        explanation: "Las políticas aplicadas a una OU se heredan hacia abajo, así que también alcanzan a las OUs anidadas y sus cuentas."
+      - label: "Quedan restringidas solo si el usuario raíz de cada cuenta acepta la SCP"
+        explanation: "Las SCP afectan a todas las identidades de las cuentas miembro, incluido su usuario raíz, sin que nadie tenga que aceptarlas."
+      - label: "También quedan restringidas, porque las políticas de una OU se heredan hacia las OUs anidadas"
+        explanation: "Una cuenta solo tiene lo que permite cada nivel superior; la SCP de Producción alcanza a las cuentas de Pagos."
+        correct: true
+      - label: "Quedan restringidas solo si la SCP se comparte con AWS RAM"
+        explanation: "AWS RAM comparte recursos entre cuentas; las SCP se heredan por la jerarquía de la organización sin usar RAM."
 ---
 
 ## ¿Por qué importa?

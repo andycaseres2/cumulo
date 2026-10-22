@@ -45,6 +45,73 @@ quiz:
       - label: "Una S3 Lifecycle configuration con acciones de transición y expiración"
         explanation: "Las transition actions mueven los logs a una clase más barata tras cierto tiempo y las expiration actions los eliminan al cumplir el año."
         correct: true
+practice:
+  - prompt: "Un estudio de videojuegos de Santiago tiene una aplicación muy sensible a la latencia que lee datos de S3 constantemente. Necesita latencia de un solo dígito de milisegundos y acepta guardar los datos en una sola AZ que elige su equipo. ¿Qué clase de S3 conviene?"
+    options:
+      - label: "S3 Glacier Flexible Retrieval"
+        explanation: "S3 Glacier Flexible Retrieval guarda objetos archivados que primero hay que restaurar, con esperas de minutos a horas; no sirve para lecturas constantes."
+      - label: "S3 Express One Zone"
+        explanation: "S3 Express One Zone está pensada para aplicaciones muy sensibles a la latencia: ofrece un solo dígito de milisegundos en una AZ que tú eliges."
+        correct: true
+      - label: "S3 One Zone-IA"
+        explanation: "S3 One Zone-IA también usa una sola AZ, pero es para acceso poco frecuente a datos recreables y cobra por GB recuperado; no apunta a lecturas constantes de baja latencia."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "S3 Glacier Deep Archive es para datos consultados menos de una vez al año y su recuperación tarda horas; no encaja con una aplicación sensible a la latencia."
+  - prompt: "Una constructora de Medellín guardó respaldos en S3 Glacier Deep Archive y decidió borrarlos a los 30 días porque ya no los necesitaba. ¿Por cuántos días de almacenamiento le cobrará S3 esos objetos?"
+    options:
+      - label: "Solo por los 30 días que estuvieron guardados"
+        explanation: "Deep Archive tiene una duración mínima: si borras un objeto antes de ese plazo, igual pagas el resto del período, no solo los días reales."
+      - label: "Por 90 días"
+        explanation: "90 días es la duración mínima de S3 Glacier Instant Retrieval y Flexible Retrieval; Deep Archive tiene un mínimo mayor."
+      - label: "Por 180 días"
+        explanation: "La duración mínima de S3 Glacier Deep Archive es de 180 días, así que borrar a los 30 días igual cobra los 180 días completos."
+        correct: true
+      - label: "Por 0 días, porque borrar objetos anula el cargo de almacenamiento"
+        explanation: "Borrar un objeto antes de la duración mínima de su clase genera el cargo del período restante; el borrado no anula lo ya comprometido."
+  - prompt: "Una aseguradora de Ciudad de Guatemala necesita restaurar un gran volumen de respaldos guardados en S3 Glacier Flexible Retrieval. Puede esperar entre 5 y 12 horas y quiere evitar el cargo por recuperación. ¿Qué opción de recuperación debe elegir?"
+    options:
+      - label: "Expedited"
+        explanation: "Expedited restaura normalmente en 1 a 5 minutos; sirve cuando hay urgencia, no cuando se puede esperar horas para ahorrar."
+      - label: "Standard"
+        explanation: "Standard restaura normalmente en 3 a 5 horas; la opción pensada para grandes volúmenes sin cargo de recuperación es otra."
+      - label: "Bulk"
+        explanation: "Bulk restaura normalmente en 5 a 12 horas y no tiene cargo de recuperación en Glacier Flexible Retrieval, justo lo que busca la aseguradora."
+        correct: true
+      - label: "Leer los objetos directamente en tiempo real, sin restaurar"
+        explanation: "Los objetos de Glacier Flexible Retrieval están archivados y no se leen en tiempo real; primero se pide una restauración que crea una copia temporal."
+  - prompt: "Una productora audiovisual de Montevideo sube varios terabytes de video desde internet a un bucket de S3 y luego los distribuye a sus clientes. ¿Qué parte de este flujo NO genera ningún cargo en S3?"
+    options:
+      - label: "El almacenamiento de los videos en el bucket"
+        explanation: "El almacenamiento se cobra según el tamaño de los objetos, el tiempo que se guardan y la clase; sí genera costo."
+      - label: "Las solicitudes PUT para subir cada archivo"
+        explanation: "S3 cobra por tipo de solicitud, incluidas las PUT; subir los archivos genera cargos de solicitudes."
+      - label: "La salida de los videos hacia los clientes"
+        explanation: "La transferencia de salida de datos desde S3 se cobra; distribuir los videos a los clientes genera ese cargo."
+      - label: "La entrada de los datos desde internet hacia S3"
+        explanation: "La transferencia de entrada desde internet hacia S3 no tiene costo; lo que se cobra es la salida de datos."
+        correct: true
+  - prompt: "Una app de fotos de Cali genera miniaturas que puede volver a crear en cualquier momento a partir de las imágenes originales. Las miniaturas se consultan cerca de una vez al mes y la empresa acepta guardarlas en una sola AZ para ahorrar. ¿Qué clase de S3 conviene?"
+    options:
+      - label: "S3 One Zone-IA"
+        explanation: "S3 One Zone-IA es para acceso poco frecuente y datos que se pueden recrear, en una sola AZ; AWS la recomienda justamente para este tipo de datos."
+        correct: true
+      - label: "S3 Standard"
+        explanation: "S3 Standard es para acceso frecuente, más de una vez al mes; no aprovecha el ahorro de una clase de acceso poco frecuente."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "S3 Glacier Deep Archive requiere restaurar los objetos y tarda horas; no sirve para miniaturas que la app muestra cuando se consultan."
+      - label: "S3 Express One Zone"
+        explanation: "S3 Express One Zone es para aplicaciones muy sensibles a la latencia; no está orientada a datos de acceso poco frecuente."
+  - prompt: "Una cooperativa de ahorro de La Paz debe conservar sus registros financieros durante diez años por regulación. Casi nunca los consulta, menos de una vez al año, y puede esperar horas para recuperarlos. Busca el menor costo de almacenamiento posible. ¿Qué clase de S3 debe usar?"
+    options:
+      - label: "S3 Standard"
+        explanation: "S3 Standard es la clase por defecto para acceso frecuente; pagar ese nivel por registros que casi nadie abre desperdicia dinero."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "S3 Glacier Deep Archive es la opción de almacenamiento de menor costo de AWS, pensada para retener datos durante años por cumplimiento y consultados menos de una vez al año."
+        correct: true
+      - label: "S3 Glacier Instant Retrieval"
+        explanation: "S3 Glacier Instant Retrieval es para archivo consultado cerca de una vez por trimestre con acceso en milisegundos; la cooperativa no necesita esa velocidad y existe una clase más barata para guardar."
+      - label: "S3 Express One Zone"
+        explanation: "S3 Express One Zone es para aplicaciones muy sensibles a la latencia en una sola AZ; no es una clase de archivo de largo plazo."
 ---
 
 ## ¿Por qué importa?

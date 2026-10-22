@@ -45,6 +45,73 @@ quiz:
       - label: "Despliegue híbrido con AWS Outposts"
         explanation: "Híbrido conecta la nube con infraestructura on-premises, y AWS Outposts lleva infraestructura de AWS a tus instalaciones para baja latencia o procesamiento local de datos."
         correct: true
+practice:
+  - prompt: "Una clínica dental de Cali contrata un servicio de correo electrónico basado en web. El proveedor ejecuta y administra todo, y el personal solo lo usa para escribir a sus pacientes. ¿Qué modelo de servicio es?"
+    options:
+      - label: "IaaS (Infrastructure as a Service)"
+        explanation: "En IaaS la clínica recibiría cómputo, red y almacenamiento y tendría que administrar el sistema operativo; aquí no administra nada."
+      - label: "PaaS (Platform as a Service)"
+        explanation: "PaaS sirve para desplegar código propio; la clínica no tiene ninguna aplicación que desplegar, solo usa un producto terminado."
+      - label: "SaaS (Software as a Service)"
+        explanation: "En SaaS el proveedor entrega una aplicación completa que él ejecuta y administra, y AWS da el correo web como ejemplo común."
+        correct: true
+      - label: "Despliegue on-premises"
+        explanation: "On-premises describe recursos en el centro de datos propio de la empresa; el correo lo ejecuta el proveedor, no la clínica."
+  - prompt: "Una startup de Rosario construyó su plataforma de reservas desde cero en AWS, y todas las partes de la aplicación se ejecutan en la nube. ¿Qué modelo de despliegue usa?"
+    options:
+      - label: "Despliegue en la nube"
+        explanation: "En el modelo de nube la aplicación está completamente desplegada en la nube; es el caso típico de una startup que nace en AWS."
+        correct: true
+      - label: "Despliegue híbrido"
+        explanation: "Híbrido conecta la nube con recursos que no están en la nube; usar varios servicios de AWS no lo convierte en híbrido."
+      - label: "Despliegue on-premises"
+        explanation: "On-premises significa que los servidores están en un centro de datos propio, y la startup no tiene ninguno."
+      - label: "PaaS (Platform as a Service)"
+        explanation: "PaaS es un modelo de servicio (cuánto administras), no un modelo de despliegue (dónde vive la aplicación)."
+  - prompt: "Una entidad pública de Sucre decide desplegar sus recursos en sus propias instalaciones con virtualización y herramientas de gestión, sin conectarlos con la nube, porque busca recursos dedicados. ¿Qué modelo de despliegue es?"
+    options:
+      - label: "Despliegue híbrido con AWS Outposts"
+        explanation: "Híbrido conecta recursos locales con la nube, y Outposts es capacidad de AWS operada como parte de una Región; la entidad no quiere conectarse con la nube."
+      - label: "Despliegue en la nube"
+        explanation: "En el modelo de nube todo se ejecuta en la nube; aquí todo se queda en las instalaciones de la entidad."
+      - label: "SaaS (Software as a Service)"
+        explanation: "SaaS es un modelo de servicio en el que usas una aplicación del proveedor; no describe recursos virtualizados en tus propias instalaciones."
+      - label: "On-premises (nube privada)"
+        explanation: "On-premises es desplegar recursos en tus instalaciones con virtualización y herramientas de gestión; a veces se le llama nube privada y da recursos dedicados."
+        correct: true
+  - prompt: "¿Qué modelo de servicio contiene los bloques básicos de la TI en la nube (redes, cómputo y almacenamiento) y ofrece la mayor flexibilidad y control sobre los recursos?"
+    options:
+      - label: "PaaS (Platform as a Service)"
+        explanation: "PaaS da un control medio: el proveedor administra el hardware y el sistema operativo, y tú solo tu aplicación."
+      - label: "IaaS (Infrastructure as a Service)"
+        explanation: "IaaS entrega redes, cómputo y almacenamiento con la mayor flexibilidad y control; tú administras incluso el sistema operativo."
+        correct: true
+      - label: "SaaS (Software as a Service)"
+        explanation: "SaaS da el mínimo control: el proveedor administra toda la aplicación y tú solo la usas."
+      - label: "Despliegue en la nube"
+        explanation: "El despliegue en la nube describe dónde vive la aplicación, no cuánto control tienes sobre los recursos."
+  - prompt: "Una cadena de tiendas de Lima renta servidores virtuales en Amazon EC2 y parcha su sistema operativo, mientras su sistema heredado de inventario sigue en su centro de datos, conectado a esas apps en AWS. ¿Qué combinación describe su situación?"
+    options:
+      - label: "PaaS con despliegue en la nube"
+        explanation: "Parchar el sistema operativo indica IaaS, no PaaS; y con un sistema en el centro de datos propio no todo está en la nube."
+      - label: "SaaS con despliegue on-premises"
+        explanation: "La cadena administra servidores, así que no es SaaS; y tiene recursos en AWS, por lo que no todo está on-premises."
+      - label: "IaaS con despliegue híbrido"
+        explanation: "Servidores en EC2 con sistema operativo propio es IaaS, y conectar la nube con el centro de datos propio es un despliegue híbrido; ambos ejes se combinan."
+        correct: true
+      - label: "IaaS con despliegue en la nube"
+        explanation: "El modelo de servicio es IaaS, pero el sistema de inventario sigue en el centro de datos propio, así que el despliegue no es solo en la nube."
+  - prompt: "Una agencia de viajes de Arequipa evalúa AWS Elastic Beanstalk para su sitio web y pregunta cómo se cobra el servicio. ¿Qué le respondes?"
+    options:
+      - label: "Una tarifa fija mensual por cada aplicación desplegada"
+        explanation: "Elastic Beanstalk no cobra una tarifa propia por aplicación; el costo viene de los recursos que usa la app."
+      - label: "Un cargo por hora de uso de la plataforma, además de los recursos"
+        explanation: "La plataforma en sí no tiene un cargo por hora; solo pagas los recursos que aprovisiona tu aplicación, como las instancias EC2."
+      - label: "Una licencia anual que se compra en AWS Marketplace"
+        explanation: "Elastic Beanstalk es un servicio de AWS, no un producto de terceros con licencia anual."
+      - label: "No tiene costo adicional; pagas los recursos que usa tu aplicación"
+        explanation: "Elastic Beanstalk no tiene costo adicional: pagas los recursos, como las instancias EC2, que usa tu aplicación."
+        correct: true
 ---
 
 ## ¿Por qué importa?

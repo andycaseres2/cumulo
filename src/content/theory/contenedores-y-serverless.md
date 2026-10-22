@@ -48,6 +48,73 @@ quiz:
       - label: "AWS Fargate"
         explanation: "Fargate es un motor de cómputo serverless para contenedores de ECS y EKS: indicas CPU y memoria y no aprovisionas ni escalas máquinas virtuales."
         correct: true
+practice:
+  - prompt: "Una empresa de software de Rosario necesita un lugar administrado para guardar, gestionar y compartir sus imágenes de contenedor en repositorios privados, y que además las escanee en busca de vulnerabilidades. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon ECS"
+        explanation: "Amazon ECS ejecuta y orquesta contenedores; no es el registro donde se guardan y escanean las imágenes."
+      - label: "Amazon ECR"
+        explanation: "Amazon ECR es un registro administrado de imágenes de contenedor con repositorios privados o públicos, y puede escanear las imágenes en busca de vulnerabilidades."
+        correct: true
+      - label: "AWS Fargate"
+        explanation: "AWS Fargate es el motor de cómputo serverless donde corren los contenedores; no guarda ni comparte imágenes."
+      - label: "AWS Lambda"
+        explanation: "AWS Lambda ejecuta funciones basadas en eventos; no es un repositorio de imágenes de contenedor."
+  - prompt: "Una cadena de cines de San Salvador quiere orquestar sus contenedores en AWS. Su equipo no usa Kubernetes y busca la forma más simple e integrada, con un orquestador propio de AWS y sin gestionar un plano de control. ¿Qué servicio conviene?"
+    options:
+      - label: "Amazon ECR"
+        explanation: "Amazon ECR solo guarda imágenes de contenedor; no decide dónde se ejecutan los contenedores ni los reinicia."
+      - label: "AWS Fargate"
+        explanation: "AWS Fargate es un motor de cómputo serverless para contenedores, no un orquestador; necesita trabajar junto con ECS o EKS."
+      - label: "Amazon ECS"
+        explanation: "Amazon ECS es el servicio de orquestación de contenedores totalmente administrado y propio de AWS, la opción más simple e integrada, sin plano de control que gestionar."
+        correct: true
+      - label: "AWS Lambda"
+        explanation: "AWS Lambda ejecuta funciones basadas en eventos; no es un orquestador de contenedores."
+  - prompt: "Un laboratorio de genómica de Lima quiere ejecutar con AWS Lambda un proceso de análisis que tarda unas tres horas en cada ejecución. ¿Por qué Lambda no es la opción adecuada para esta tarea?"
+    options:
+      - label: "Porque Lambda no escala automáticamente según el tráfico"
+        explanation: "Lambda sí escala automáticamente, creando y destruyendo entornos de ejecución según el tráfico; ese no es el problema aquí."
+      - label: "Porque Lambda obliga a aprovisionar y parchar servidores"
+        explanation: "Lambda ejecuta código sin aprovisionar ni administrar servidores; AWS se encarga del aprovisionamiento y los parches."
+      - label: "Porque Lambda solo se puede disparar con subidas a Amazon S3"
+        explanation: "Lambda acepta varios disparadores, como Amazon SQS, Amazon EventBridge o Amazon API Gateway, además de Amazon S3."
+      - label: "Porque una invocación de una función de eventos puede durar como máximo 15 minutos"
+        explanation: "Una invocación de una función de eventos de Lambda dura como máximo 15 minutos (900 segundos); para procesos de horas conviene usar contenedores o AWS Batch."
+        correct: true
+  - prompt: "El gerente de una empresa de transporte de Santa Cruz de la Sierra cree que \"serverless\" significa que la aplicación corre sin ningún servidor físico. ¿Qué significa realmente serverless?"
+    options:
+      - label: "Que los servidores existen, pero AWS se encarga de aprovisionarlos, escalarlos, parcharlos y mantenerlos"
+        explanation: "Serverless no elimina los servidores: AWS los administra y tú pagas solo por lo que usas, enfocándote en el código."
+        correct: true
+      - label: "Que la aplicación se ejecuta sin servidores físicos en ninguna parte"
+        explanation: "Creer que serverless significa \"sin servidores físicos\" es una trampa típica; los servidores existen, pero no los administras tú."
+      - label: "Que tú administras el sistema operativo, pero AWS paga el hardware"
+        explanation: "Administrar el sistema operativo corresponde a un modelo como Amazon EC2; en serverless no gestionas los servidores."
+      - label: "Que pagas una tarifa fija mensual sin importar el uso"
+        explanation: "En serverless pagas por uso, por ejemplo por solicitud y tiempo de ejecución en Lambda, no una tarifa fija."
+  - prompt: "Los desarrolladores de una agencia de viajes de Cusco sufren el problema de \"en mi máquina funciona\": en producción fallan las versiones de librerías. ¿Qué concepto empaqueta el código junto con sus dependencias para que la aplicación se ejecute igual de un entorno a otro?"
+    options:
+      - label: "Un orquestador"
+        explanation: "Un orquestador decide dónde se ejecutan los contenedores, los reinicia si fallan y los escala; no empaqueta el código con sus dependencias."
+      - label: "Un contenedor"
+        explanation: "Un contenedor es una unidad estándar de software que empaqueta el código y sus dependencias para ejecutarse de forma rápida y confiable entre entornos."
+        correct: true
+      - label: "Un plano de control"
+        explanation: "El plano de control es la parte que gestiona el orquestador, como el de Kubernetes en EKS; no empaqueta aplicaciones."
+      - label: "Un disparador (trigger) de Lambda"
+        explanation: "Un disparador conecta un evento, como una subida a S3, con una función de Lambda; no resuelve las diferencias de librerías entre entornos."
+  - prompt: "En una reunión de arquitectura de una aseguradora de Valparaíso, alguien propone \"reemplazar Amazon EKS por AWS Fargate como orquestador\". ¿Qué rol cumple realmente Fargate?"
+    options:
+      - label: "Es un registro de imágenes de contenedor, como Amazon ECR"
+        explanation: "El registro de imágenes es Amazon ECR; Fargate aporta la capacidad de cómputo donde corren los contenedores."
+      - label: "Es un servicio de funciones basadas en eventos, como AWS Lambda"
+        explanation: "Lambda es el servicio de funciones basadas en eventos; Fargate ejecuta contenedores de ECS y EKS."
+      - label: "Es el motor de cómputo serverless donde corren los contenedores; el orquestador sigue siendo ECS o EKS"
+        explanation: "Fargate es un motor de cómputo serverless para contenedores que funciona con ECS y EKS; pensar que es un orquestador es una trampa típica."
+        correct: true
+      - label: "Es un orquestador de Kubernetes que reemplaza el plano de control de EKS"
+        explanation: "Fargate no es un orquestador; en EKS, AWS administra el plano de control de Kubernetes y Fargate solo aporta el cómputo."
 ---
 
 ## ¿Por qué importa?

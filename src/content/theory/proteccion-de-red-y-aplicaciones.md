@@ -49,6 +49,73 @@ quiz:
         explanation: "Un security group controla tráfico a nivel de instancia por IP y puertos; no aplica reglas de WAF en toda la organización."
       - label: "Una web ACL de AWS WAF en una sola cuenta"
         explanation: "Una web ACL se asocia a recursos concretos; elegir solo WAF cuando se piden reglas en todas las cuentas es una trampa típica del examen."
+practice:
+  - prompt: "Una startup de La Paz acaba de crear su cuenta de AWS y pregunta qué debe hacer para tener AWS Shield Standard en su sitio web. ¿Qué le respondes?"
+    options:
+      - label: "Contratar la suscripción de pago y elegir los recursos a proteger"
+        explanation: "La suscripción de pago en la que eliges recursos describe a Shield Advanced, no a Shield Standard."
+      - label: "Configurarlo desde AWS Firewall Manager"
+        explanation: "Firewall Manager centraliza políticas en una organización de AWS Organizations; no es el paso para obtener Shield Standard."
+      - label: "Nada: Shield Standard es automático y sin cargo adicional"
+        explanation: "Shield Standard está activo automáticamente para todos los clientes y no tiene cargo adicional."
+        correct: true
+      - label: "Contratar un plan de AWS Support de nivel Business"
+        explanation: "Un plan de AWS Support de pago se pide para trabajar con el Shield Response Team de Shield Advanced, no para tener Shield Standard."
+  - prompt: "Una API de reservas de un hotel de Cartagena, expuesta con Amazon API Gateway, recibe ráfagas de miles de solicitudes HTTP desde unas pocas IP. Quieres bloquear automáticamente cualquier IP que supere cierto número de solicitudes. ¿Qué usas?"
+    options:
+      - label: "Un security group"
+        explanation: "Los security groups solo admiten reglas de permitir por IP y puertos; no cuentan solicitudes ni bloquean IP que superan un umbral."
+      - label: "Una regla basada en tasa de AWS WAF"
+        explanation: "Las reglas basadas en tasa de AWS WAF bloquean o cuentan las IP que superan cierto número de solicitudes, y WAF se asocia a API Gateway."
+        correct: true
+      - label: "AWS Shield Standard"
+        explanation: "Shield Standard protege contra los ataques DDoS más comunes de capas 3 y 4; no aplica límites de solicitudes HTTP por IP."
+      - label: "Una network ACL"
+        explanation: "Una network ACL filtra por IP y puertos en una subred en orden numérico; no cuenta solicitudes HTTP para bloquear IP automáticamente."
+  - prompt: "Una tienda de artesanías de Cusco solo vende dentro de Perú y quiere que su sitio, servido con Amazon CloudFront, bloquee las solicitudes web que lleguen desde otros países. ¿Qué debe usar?"
+    options:
+      - label: "AWS Shield Standard"
+        explanation: "Shield Standard protege contra los ataques DDoS más comunes de capas 3 y 4; no filtra solicitudes por país de origen."
+      - label: "Un security group"
+        explanation: "Los security groups controlan tráfico de instancias por IP y puertos con reglas de permitir; no filtran por país de origen."
+      - label: "Una network ACL"
+        explanation: "Las network ACLs filtran por IP y puertos a nivel de subred; no tienen condiciones por país de origen."
+      - label: "Una regla de AWS WAF por país de origen"
+        explanation: "Las reglas de AWS WAF pueden filtrar por país de origen, y WAF se asocia a Amazon CloudFront."
+        correct: true
+  - prompt: "Una tienda en línea de Rosario quiere proteger con AWS WAF una aplicación que corre en instancias EC2. ¿A cuál de estos recursos puede asociar AWS WAF?"
+    options:
+      - label: "Al Application Load Balancer que está delante de las instancias"
+        explanation: "AWS WAF se asocia a recursos como Application Load Balancer, CloudFront o API Gateway, que reciben las solicitudes HTTP(S)."
+        correct: true
+      - label: "Directamente a cada instancia EC2"
+        explanation: "AWS WAF no se instala en una instancia EC2 directamente; se asocia a recursos como un ALB o CloudFront."
+      - label: "A la subred donde viven las instancias"
+        explanation: "El filtrado a nivel de subred lo hacen las network ACLs; WAF se asocia a recursos como ALB, CloudFront o API Gateway."
+      - label: "Al volumen de Amazon EBS de las instancias"
+        explanation: "Un volumen EBS es almacenamiento de bloques; no recibe solicitudes HTTP(S), así que no es un recurso al que se asocie WAF."
+  - prompt: "El equipo de seguridad de una fintech de São Paulo creó una nueva regla de AWS WAF y quiere ver cuántas solicitudes coincidirían con ella antes de empezar a bloquearlas. ¿Qué acción debe configurar en la regla?"
+    options:
+      - label: "Block"
+        explanation: "Block rechaza las solicitudes que coinciden con HTTP 403 o una respuesta personalizada; afectaría a usuarios antes de validar la regla."
+      - label: "CAPTCHA"
+        explanation: "CAPTCHA presenta un desafío a quien hace la solicitud; no es la acción pensada para probar una regla sin afectar el tráfico."
+      - label: "Count"
+        explanation: "La acción Count cuenta las solicitudes que coinciden sin bloquearlas, por eso se usa para probar una regla."
+        correct: true
+      - label: "Allow"
+        explanation: "Allow deja pasar las solicitudes que coinciden; sirve para permitir tráfico, no para medir el efecto de una regla nueva."
+  - prompt: "En una empresa de logística de Medellín, un security group permite HTTPS de entrada hacia un servidor web. Un practicante pregunta si debe crear una regla adicional para que salgan las respuestas a esas solicitudes. ¿Qué le respondes?"
+    options:
+      - label: "Sí, porque los security groups son sin estado"
+        explanation: "Sin estado (stateless) describe a las network ACLs; los security groups son con estado."
+      - label: "No, porque los security groups son con estado y la respuesta se permite sola"
+        explanation: "Los security groups son con estado (stateful): si permiten la solicitud de entrada, la respuesta se permite automáticamente."
+        correct: true
+      - label: "Sí, debe agregar una regla de denegar para el resto del tráfico"
+        explanation: "Los security groups solo admiten reglas de permitir; las reglas de denegar son propias de las network ACLs."
+      - label: "No, porque AWS Shield Standard permite las respuestas"
+        explanation: "Shield Standard protege contra DDoS de capas 3 y 4; no decide qué tráfico de respuesta permite un security group."
 ---
 
 ## ¿Por qué importa?

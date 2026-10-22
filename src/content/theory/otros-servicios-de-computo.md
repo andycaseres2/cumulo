@@ -45,6 +45,73 @@ quiz:
       - label: "AWS Outposts"
         explanation: "AWS Outposts extiende la infraestructura y las APIs de AWS a tus instalaciones, y AWS lo opera y administra; sirve para baja latencia y procesamiento local."
         correct: true
+practice:
+  - prompt: "Un equipo de desarrollo de Quito tiene una aplicación web en Node.js empaquetada en contenedores Docker. Quiere desplegarla sin administrar la infraestructura subyacente, aprovechando que el servicio admite Node.js y Docker. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Batch"
+        explanation: "AWS Batch procesa trabajos por lotes que esperan en cola; no despliega ni escala una aplicación web."
+      - label: "AWS Elastic Beanstalk"
+        explanation: "Elastic Beanstalk admite Node.js y contenedores Docker: subes la aplicación y aprovisiona la capacidad, el balanceo, el monitoreo de salud y el escalado."
+        correct: true
+      - label: "AWS Outposts"
+        explanation: "AWS Outposts lleva infraestructura de AWS a las instalaciones del cliente; no automatiza el despliegue de una aplicación web."
+      - label: "AWS Local Zones"
+        explanation: "Las Local Zones son ubicaciones de AWS cerca de grandes ciudades; no despliegan ni escalan una aplicación a partir de su código."
+  - prompt: "Un equipo de Bucaramanga ya usa AWS Elastic Beanstalk y quiere que su aplicación se ejecute en Amazon EKS en lugar de directamente en Amazon EC2. ¿Qué modo de Elastic Beanstalk debe elegir?"
+    options:
+      - label: "Modo Standard"
+        explanation: "El modo Standard ejecuta las aplicaciones directamente en Amazon EC2, no en Amazon EKS."
+      - label: "Un Outpost server de 1U"
+        explanation: "Un Outpost server es capacidad de AWS instalada en el sitio del cliente, no un modo de ejecución de Elastic Beanstalk."
+      - label: "Modo Cluster"
+        explanation: "El modo Cluster de Elastic Beanstalk ejecuta las aplicaciones en Amazon EKS."
+        correct: true
+      - label: "Una instancia de Lightsail con imagen LAMP"
+        explanation: "Lightsail es un servicio aparte de servidores sencillos con precio predecible; no es un modo de Elastic Beanstalk."
+  - prompt: "Una consultora de ingeniería de Monterrey quiere ahorrar ejecutando con instancias EC2 Spot cientos de simulaciones largas que puede dejar en cola. Un colega sugiere AWS Lambda. ¿Qué servicio encaja mejor?"
+    options:
+      - label: "AWS Batch"
+        explanation: "AWS Batch gestiona colas de trabajos por lotes a cualquier escala, aprovisiona los recursos automáticamente y puede usar instancias EC2 Spot."
+        correct: true
+      - label: "AWS Lambda"
+        explanation: "AWS Lambda ejecuta funciones cortas basadas en eventos; no es el servicio de colas de trabajos por lotes."
+      - label: "Amazon Lightsail"
+        explanation: "Amazon Lightsail ofrece servidores y sitios sencillos con precio mensual predecible; no administra colas de simulaciones."
+      - label: "AWS Elastic Beanstalk"
+        explanation: "Elastic Beanstalk despliega aplicaciones web; no procesa cientos de trabajos que esperan en una cola."
+  - prompt: "Una cervecera de Arequipa instalará AWS Outposts en su planta y el gerente de TI pregunta quién operará y administrará ese equipo. ¿Qué le respondes?"
+    options:
+      - label: "El equipo de TI de la cervecera, como en un centro de datos propio"
+        explanation: "Outposts no es un centro de datos que administras tú; ese es justo el error que confunde Outposts con on-premises tradicional."
+      - label: "Un proveedor de AWS Marketplace contratado por separado"
+        explanation: "AWS Marketplace vende software de terceros; la operación de un Outpost no se contrata ahí."
+      - label: "Nadie, porque un Outpost solo almacena datos y no ejecuta recursos"
+        explanation: "Un Outpost tiene capacidad de cómputo y almacenamiento y puede ejecutar instancias EC2, volúmenes EBS, clústeres de ECS e instancias de RDS."
+      - label: "AWS, que lo opera, monitorea y administra como parte de una Región"
+        explanation: "AWS opera, monitorea y administra el Outpost instalado en el sitio del cliente como parte de una Región."
+        correct: true
+  - prompt: "Una cadena de farmacias de Santa Cruz necesita procesar datos localmente con las APIs de AWS en cada sucursal, pero sus locales tienen muy poco espacio para equipos. ¿Qué formato de AWS Outposts le conviene?"
+    options:
+      - label: "Racks de 42U"
+        explanation: "Los racks de 42U son el formato grande de Outposts; no encajan en sucursales con poco espacio."
+      - label: "Servidores de 1U o 2U"
+        explanation: "Outposts se ofrece como servidores de 1U o 2U justamente para sitios con poco espacio."
+        correct: true
+      - label: "Una instancia de Amazon Lightsail"
+        explanation: "Lightsail se ejecuta en la nube de AWS; no procesa datos dentro de cada sucursal."
+      - label: "Un entorno de AWS Batch"
+        explanation: "AWS Batch gestiona trabajos por lotes en la nube; no instala capacidad de AWS en las sucursales."
+  - prompt: "Un emprendedor de Valparaíso lanzó su tienda en Amazon Lightsail y, como el proyecto creció, ahora quiere conectarla con otros servicios de AWS. ¿Cómo puede hacerlo?"
+    options:
+      - label: "Instalando un Outpost en su oficina"
+        explanation: "Outposts lleva infraestructura de AWS a las instalaciones del cliente; no es el mecanismo para conectar Lightsail con otros servicios."
+      - label: "Convirtiendo la tienda en un trabajo de AWS Batch"
+        explanation: "AWS Batch procesa trabajos en cola sin interacción del usuario; una tienda web no es un trabajo por lotes."
+      - label: "Mediante VPC peering"
+        explanation: "Cuando un proyecto de Lightsail crece, puede conectarse con otros servicios de AWS mediante VPC peering."
+        correct: true
+      - label: "Activando el modo Cluster de Elastic Beanstalk"
+        explanation: "El modo Cluster ejecuta aplicaciones de Elastic Beanstalk en Amazon EKS; no conecta recursos de Lightsail con otros servicios."
 ---
 
 ## ¿Por qué importa?

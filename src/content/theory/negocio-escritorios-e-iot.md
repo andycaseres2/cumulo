@@ -49,6 +49,73 @@ quiz:
         explanation: "Amazon SES envía y recibe correo electrónico; no es un servicio para conectar dispositivos por MQTT."
       - label: "Amazon WorkSpaces Secure Browser"
         explanation: "Amazon WorkSpaces Secure Browser es un navegador empresarial remoto para personas; no conecta sensores ni dispositivos IoT."
+practice:
+  - prompt: "Una aseguradora de Guayaquil necesita un centro de contacto en la nube para atender reclamos por voz, chat y SMS, con enrutamiento inteligente, sin pagos por adelantado ni infraestructura que administrar. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon SES"
+        explanation: "Amazon SES es una plataforma de correo electrónico; no conecta a los clientes con agentes por voz, chat o SMS."
+      - label: "Amazon Connect"
+        explanation: "Amazon Connect es un centro de contacto omnicanal en la nube con enrutamiento inteligente y métricas en tiempo real, y se paga por uso."
+        correct: true
+      - label: "Amazon WorkSpaces"
+        explanation: "Amazon WorkSpaces aprovisiona escritorios virtuales; podría dar un escritorio al agente, pero no es la plataforma que atiende y enruta los contactos."
+      - label: "AWS IoT Core"
+        explanation: "AWS IoT Core conecta dispositivos IoT con servicios de AWS; no atiende llamadas ni chats de clientes."
+  - prompt: "Un estudio contable de Asunción quiere dar a cada empleado remoto un escritorio completo de Windows, persistente y asignado solo a él, sin comprar laptops corporativas. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon AppStream 2.0"
+        explanation: "Amazon AppStream 2.0 se centra en el streaming de aplicaciones desde flotas no persistentes; no asigna a cada empleado un escritorio persistente propio."
+      - label: "Amazon WorkSpaces Secure Browser"
+        explanation: "Amazon WorkSpaces Secure Browser da acceso a sitios web internos y aplicaciones SaaS desde el navegador, no un escritorio completo de Windows."
+      - label: "Amazon Connect"
+        explanation: "Amazon Connect es un centro de contacto en la nube; no aprovisiona escritorios para los empleados."
+      - label: "Amazon WorkSpaces"
+        explanation: "Amazon WorkSpaces aprovisiona escritorios virtuales en la nube con Windows o Linux, y WorkSpaces Personal los hace persistentes y asignados a un usuario."
+        correct: true
+  - prompt: "Una consultora de Cartagena quiere que sus contratistas accedan solo a sus sitios web internos y a aplicaciones SaaS desde el navegador que ya tienen, sin que los datos sensibles lleguen a su dispositivo. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon WorkSpaces Secure Browser"
+        explanation: "Amazon WorkSpaces Secure Browser es un navegador empresarial remoto: la navegación ocurre en la nube y los datos sensibles no llegan al dispositivo del usuario."
+        correct: true
+      - label: "Amazon SES"
+        explanation: "Amazon SES envía y recibe correo electrónico; no da acceso protegido a sitios web internos."
+      - label: "AWS IoT Core"
+        explanation: "AWS IoT Core conecta dispositivos como sensores y medidores, no a personas que navegan sitios internos."
+      - label: "Amazon Connect"
+        explanation: "Amazon Connect conecta clientes con agentes de un centro de contacto; no ofrece navegación segura a aplicaciones SaaS."
+  - prompt: "Una tienda en línea de Mendoza quiere recibir los correos que llegan a su dirección de soporte para crear tickets automáticamente con su propio dominio. ¿Qué servicio de AWS encaja?"
+    options:
+      - label: "Amazon SNS"
+        explanation: "Amazon SNS sirve para notificaciones y pub/sub; para enviar y recibir correo con tu propio dominio la respuesta es otro servicio."
+      - label: "Amazon AppStream 2.0"
+        explanation: "Amazon AppStream 2.0 hace streaming de aplicaciones de escritorio; no recibe correos electrónicos."
+      - label: "Amazon SES"
+        explanation: "Amazon SES envía y recibe correos con tus propias direcciones y dominios, y la recepción sirve, por ejemplo, para crear tickets de soporte."
+        correct: true
+      - label: "AWS IoT Core"
+        explanation: "AWS IoT Core recibe mensajes de dispositivos IoT por protocolos como MQTT, no correos de clientes."
+  - prompt: "Una empresa eléctrica de Barranquilla conecta medidores por LoRaWAN a AWS IoT Core y un gerente supone que IoT Core analizará los consumos por sí solo. ¿Qué afirmación es correcta?"
+    options:
+      - label: "IoT Core analiza los datos y genera reportes de consumo automáticamente"
+        explanation: "IoT Core no analiza los datos por sí solo; conecta los dispositivos y enruta sus mensajes."
+      - label: "IoT Core conecta y enruta los datos con reglas; el análisis se hace con otros servicios de AWS"
+        explanation: "IoT Core conecta los dispositivos, su message broker maneja publicación y suscripción, y sus reglas envían los datos a otros servicios donde se analizan."
+        correct: true
+      - label: "IoT Core solo acepta MQTT, así que los medidores LoRaWAN no pueden conectarse"
+        explanation: "IoT Core soporta MQTT, MQTT sobre WebSockets seguros, HTTPS y LoRaWAN, así que los medidores sí pueden conectarse."
+      - label: "IoT Core requiere instalar Amazon WorkSpaces en cada medidor"
+        explanation: "Los dispositivos se integran mediante los AWS IoT Device SDKs; WorkSpaces es un servicio de escritorios virtuales para personas."
+  - prompt: "Un call center de Lima tiene turnos rotativos y quiere escritorios virtuales no persistentes sobre infraestructura efímera, en lugar de un escritorio fijo para cada agente. ¿Qué opción debe usar?"
+    options:
+      - label: "WorkSpaces Personal"
+        explanation: "WorkSpaces Personal entrega escritorios persistentes asignados a un usuario, lo contrario de lo que pide el call center."
+      - label: "Amazon WorkSpaces Secure Browser"
+        explanation: "WorkSpaces Secure Browser da acceso a sitios web y SaaS desde el navegador, no escritorios virtuales."
+      - label: "Amazon AppStream 2.0"
+        explanation: "AppStream 2.0 está orientado al streaming de aplicaciones; para escritorios virtuales completos no persistentes, la opción de WorkSpaces es Pools."
+      - label: "WorkSpaces Pools"
+        explanation: "WorkSpaces Pools ofrece escritorios no persistentes sobre infraestructura efímera, adecuados para turnos rotativos."
+        correct: true
 ---
 
 ## ¿Por qué importa?

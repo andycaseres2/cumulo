@@ -51,6 +51,73 @@ quiz:
         correct: true
       - label: "AWS SCT (AWS Schema Conversion Tool)"
         explanation: "AWS SCT convierte esquemas de bases de datos entre motores; no migra servidores completos a AWS."
+practice:
+  - prompt: "Una distribuidora de Barranquilla usa un CRM con licencia tradicional instalado en su centro de datos y, en la migración, decide reemplazarlo por un CRM SaaS. ¿Qué estrategia de los 7 Rs está aplicando?"
+    options:
+      - label: "Replatform"
+        explanation: "Replatform conserva la misma aplicación y le hace algunas optimizaciones; aquí la empresa cambia de producto."
+      - label: "Repurchase"
+        explanation: "Repurchase (drop and shop) reemplaza la aplicación por otro producto, normalmente SaaS, como pasar a un CRM SaaS."
+        correct: true
+      - label: "Rehost"
+        explanation: "Rehost mueve la misma aplicación a AWS sin cambios; no la reemplaza por un producto distinto."
+      - label: "Refactor"
+        explanation: "Refactor rediseña la propia aplicación para usar funciones nativas de la nube; no compra un producto SaaS de reemplazo."
+  - prompt: "Un hospital de Rosario migra su base de datos Microsoft SQL Server a Amazon RDS for SQL Server para dejar de administrar el motor, sin cambiar la arquitectura central de la aplicación. ¿Qué estrategia de los 7 Rs aplica?"
+    options:
+      - label: "Rehost"
+        explanation: "Rehost mueve la aplicación sin cambios, por ejemplo a instancias EC2; pasar a un servicio administrado como RDS agrega optimizaciones."
+      - label: "Refactor"
+        explanation: "Refactor rediseña la aplicación para aprovechar funciones nativas de la nube; aquí la arquitectura central no cambia."
+      - label: "Repurchase"
+        explanation: "Repurchase cambia a otro producto, normalmente SaaS; el hospital sigue usando SQL Server."
+      - label: "Replatform"
+        explanation: "Replatform (lift, tinker and shift) mueve la aplicación con algunas optimizaciones, como pasar SQL Server a Amazon RDS for SQL Server."
+        correct: true
+  - prompt: "Una plataforma de e-commerce de Ciudad de México quiere dividir su aplicación monolítica en microservicios para escalar más rápido y aprovechar funciones nativas de la nube, aunque sea la opción más compleja. ¿Qué estrategia de los 7 Rs describe esto?"
+    options:
+      - label: "Refactor / re-architect"
+        explanation: "Refactor rediseña la aplicación para usar funciones nativas de la nube, como dividir un monolito en microservicios; es la estrategia más compleja y costosa."
+        correct: true
+      - label: "Relocate"
+        explanation: "Relocate transfiere servidores o recursos a otra plataforma, VPC, Región o cuenta sin cambiar la arquitectura de la aplicación."
+      - label: "Rehost"
+        explanation: "Rehost mueve la aplicación a AWS sin cambios; el monolito seguiría siendo un monolito."
+      - label: "Retain"
+        explanation: "Retain mantiene la aplicación en el entorno de origen por ahora; no la rediseña en microservicios."
+  - prompt: "Una cadena de retail de Lima quiere migrar a AWS con una metodología en tres fases (Assess, Mobilize, Migrate & Modernize), capacitación, socios e inversión financiera para compensar los costos iniciales de la migración. ¿Qué recurso de AWS ofrece esto?"
+    options:
+      - label: "AWS Prescriptive Guidance"
+        explanation: "AWS Prescriptive Guidance ofrece guías y patrones de expertos; no incluye inversión financiera para compensar costos de migración."
+      - label: "Migration Evaluator"
+        explanation: "Migration Evaluator construye un caso de negocio basado en datos y compara costos; no es un programa con fases e inversión financiera."
+      - label: "AWS Migration Acceleration Program (MAP)"
+        explanation: "MAP combina una metodología en tres fases (Assess, Mobilize, Migrate & Modernize), herramientas, capacitación, socios e inversión financiera para compensar costos iniciales."
+        correct: true
+      - label: "AWS Application Discovery Service"
+        explanation: "AWS Application Discovery Service recopila la configuración, el uso y las dependencias de los servidores; no es un programa de apoyo financiero."
+  - prompt: "Una aseguradora de Quito migra su base de datos MySQL on-premises a Amazon RDS for MySQL. Quiere mover los datos y seguir replicando los cambios para mantener sincronizados origen y destino hasta el momento del corte. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS DMS (AWS Database Migration Service)"
+        explanation: "AWS DMS hace migraciones únicas o replica los cambios continuos hasta el corte, y admite migraciones homogéneas como MySQL a MySQL."
+        correct: true
+      - label: "AWS SCT (AWS Schema Conversion Tool)"
+        explanation: "AWS SCT convierte esquemas cuando cambias de motor; en una migración MySQL a MySQL no hace falta convertir el esquema ni mueve los datos."
+      - label: "Migration Evaluator"
+        explanation: "Migration Evaluator construye un caso de negocio y compara costos; no mueve ni replica datos."
+      - label: "AWS Migration Hub"
+        explanation: "AWS Migration Hub da seguimiento al estado de las migraciones; no replica los cambios de una base de datos."
+  - prompt: "El directorio de una empresa minera de Arequipa pide un caso de negocio basado en datos antes de aprobar la migración: inventariar el entorno on-premises, detectar servidores sobredimensionados y comparar costos, incluido reutilizar licencias frente a licencias incluidas. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Migration Hub"
+        explanation: "AWS Migration Hub da seguimiento al estado de cada migración; no construye el caso de negocio con comparación de costos."
+      - label: "Migration Evaluator"
+        explanation: "Migration Evaluator construye un caso de negocio basado en datos: inventaría el entorno, detecta servidores sobredimensionados y compara costos, incluido BYOL frente a licencias incluidas."
+        correct: true
+      - label: "AWS Application Migration Service"
+        explanation: "AWS Application Migration Service ejecuta el rehost replicando servidores; no arma el caso de negocio previo a la aprobación."
+      - label: "AWS DMS (AWS Database Migration Service)"
+        explanation: "AWS DMS migra y replica datos entre bases de datos; no compara costos ni detecta servidores sobredimensionados."
 ---
 
 ## ¿Por qué importa?

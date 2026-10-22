@@ -53,6 +53,73 @@ quiz:
       - label: "Dedicated Hosts"
         explanation: "Dedicated Hosts dan un servidor físico completo con visibilidad de sockets y núcleos, y permiten usar licencias propias (BYOL) por socket o núcleo."
         correct: true
+practice:
+  - prompt: "Una startup de Asunción lanza una app nueva y durante unas semanas de prueba no sabe cuánta demanda tendrá. El servidor no puede interrumpirse y no quiere comprometerse a ningún plazo. ¿Qué opción de compra de EC2 le conviene?"
+    options:
+      - label: "Spot Instances"
+        explanation: "Spot puede interrumpirse con un aviso de dos minutos, algo inaceptable para un servidor que no puede detenerse."
+      - label: "Standard Reserved Instances por 3 años"
+        explanation: "Una RI exige un compromiso de 1 o 3 años y no se puede cancelar; la startup no quiere comprometerse a ningún plazo."
+      - label: "On-Demand Instances"
+        explanation: "On-Demand cobra por hora o por segundo, sin pago inicial ni compromiso, y no se interrumpe: encaja con cargas cortas, nuevas e impredecibles."
+        correct: true
+      - label: "Dedicated Hosts"
+        explanation: "Dedicated Hosts dan un servidor físico completo para licencias por socket o núcleo o cumplimiento, necesidades que este escenario no menciona."
+  - prompt: "Una distribuidora de Santa Cruz ya decidió comprar Reserved Instances por 3 años, pero prevé que durante ese tiempo querrá cambiar a otra familia de instancias y otro sistema operativo. ¿Qué clase de RI debe comprar?"
+    options:
+      - label: "Convertible Reserved Instances"
+        explanation: "Las Convertible se pueden intercambiar por otra Convertible con distinta familia, sistema operativo o tenencia, de igual o mayor valor y en la misma Región."
+        correct: true
+      - label: "Standard Reserved Instances"
+        explanation: "Las Standard dan el mayor descuento, pero solo permiten modificar algunos atributos y no se pueden intercambiar por otra familia o sistema operativo."
+      - label: "Spot Instances"
+        explanation: "Spot no es una clase de Reserved Instance; es capacidad sobrante sin compromiso que puede interrumpirse."
+      - label: "On-Demand Capacity Reservations"
+        explanation: "Las Capacity Reservations garantizan capacidad en una AZ y no dan descuento por sí mismas; no son una clase de RI."
+  - prompt: "Un hospital de Montevideo necesita garantizar capacidad de EC2 en una Availability Zone específica durante una semana de migración crítica, sin comprometerse a un plazo de 1 o 3 años. ¿Qué opción debe usar?"
+    options:
+      - label: "Reserved Instances regionales"
+        explanation: "Una RI regional no reserva capacidad y además exige un compromiso de 1 o 3 años."
+      - label: "Compute Savings Plans"
+        explanation: "Compute Savings Plans dan un descuento a cambio de un compromiso de 1 o 3 años, pero no reservan capacidad en una AZ."
+      - label: "Spot Instances"
+        explanation: "Spot usa capacidad sobrante que AWS puede recuperar, justo lo contrario de capacidad garantizada."
+      - label: "On-Demand Capacity Reservations"
+        explanation: "Reservan capacidad de EC2 en una AZ específica por el tiempo que quieras, y las de uso inmediato no exigen compromiso de plazo."
+        correct: true
+  - prompt: "Una cooperativa de Cochabamba compró una Reserved Instance por 1 año para su servidor de contabilidad. ¿Qué pasa con la instancia cuando la RI vence?"
+    options:
+      - label: "La RI se renueva automáticamente por otro año"
+        explanation: "Una RI no se renueva sola; si la cooperativa quiere el descuento de nuevo, debe comprar otra."
+      - label: "La instancia sigue funcionando, pero a tarifa On-Demand"
+        explanation: "Al vencer la RI, la instancia sigue funcionando y se cobra a tarifa On-Demand, porque la RI solo era un descuento de facturación."
+        correct: true
+      - label: "AWS detiene la instancia hasta que compres otra RI"
+        explanation: "Una RI es un descuento de facturación, no el servidor; su vencimiento no detiene la instancia."
+      - label: "La instancia pasa a cobrarse como Spot Instance"
+        explanation: "Spot es otra opción de compra con capacidad interrumpible; una RI vencida no convierte la instancia en Spot."
+  - prompt: "En una organización de AWS Organizations con facturación consolidada, la cuenta de finanzas compró Reserved Instances, y la cuenta de ventas ejecuta instancias que coinciden con sus atributos. Por defecto, ¿qué ocurre?"
+    options:
+      - label: "El descuento solo aplica a la cuenta de finanzas, que fue la que pagó"
+        explanation: "Con facturación consolidada todas las cuentas se tratan como una sola para la facturación, así que el descuento no queda limitado a la cuenta compradora."
+      - label: "La cuenta de ventas debe comprar sus propias RI para recibir descuento"
+        explanation: "No hace falta duplicar la compra: el descuento de una RI se comparte por defecto entre las cuentas de la organización."
+      - label: "El descuento de las RI puede aplicarse al uso de la cuenta de ventas"
+        explanation: "La facturación consolidada trata a la organización como una sola cuenta, por eso el descuento puede aplicarse a instancias que coinciden en otra cuenta; la cuenta de administración puede desactivarlo."
+        correct: true
+      - label: "Las RI se convierten en Savings Plans para cubrir ambas cuentas"
+        explanation: "Las RI y los Savings Plans son opciones de compra distintas; compartir descuentos no transforma una en la otra."
+  - prompt: "Un equipo de Caracas compra una Reserved Instance con alcance regional para instancias Linux/Unix con tenencia por defecto. ¿Qué afirmación es correcta?"
+    options:
+      - label: "Reserva capacidad en todas las AZ de la Región"
+        explanation: "Una RI regional no reserva capacidad; solo la RI zonal reserva capacidad, y únicamente en la AZ elegida."
+      - label: "Cuesta más que la misma RI con alcance zonal"
+        explanation: "El alcance no cambia el precio de la RI; regional y zonal cuestan lo mismo."
+      - label: "Solo aplica al tamaño exacto de instancia que se compró"
+        explanation: "Aplicar solo al tamaño exacto es propio de la RI zonal; la regional en Linux/Unix con tenencia por defecto cubre cualquier tamaño de la familia."
+      - label: "El descuento aplica en cualquier AZ de la Región y a los distintos tamaños de la misma familia"
+        explanation: "Una RI regional aplica su descuento en cualquier AZ de la Región y, en Linux/Unix con tenencia por defecto, a los distintos tamaños de la misma familia."
+        correct: true
 ---
 
 ## ¿Por qué importa?

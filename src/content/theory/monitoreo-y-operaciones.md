@@ -53,6 +53,73 @@ quiz:
         explanation: "AWS License Manager administra licencias de software de proveedores como Microsoft u Oracle; no evalúa el tamaño de las instancias."
       - label: "AWS Health Dashboard"
         explanation: "AWS Health Dashboard informa sobre eventos y fallas de los servicios de AWS; no da recomendaciones de rightsizing."
+practice:
+  - prompt: "Un portal de ventas de Santo Domingo quiere recibir una alerta, y ejecutar una acción automática, cuando el uso de CPU de sus instancias EC2 supere el 80 %. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra quién hizo cada acción en la API; no vigila métricas de rendimiento contra un umbral."
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch recopila métricas como el uso de CPU, y sus alarmas vigilan un umbral, alertan y pueden ejecutar acciones automáticas."
+        correct: true
+      - label: "AWS Config"
+        explanation: "AWS Config registra la configuración de los recursos y sus cambios; no mide el uso de CPU en tiempo real."
+      - label: "AWS Service Catalog"
+        explanation: "AWS Service Catalog define qué productos aprobados pueden lanzar los equipos; no monitorea el rendimiento."
+  - prompt: "Un auditor de una aseguradora de San José pide ver cómo estaba configurado un recurso de AWS el mes pasado, qué cambios tuvo y si cumple las reglas internas definidas. ¿Qué servicio responde esa pregunta?"
+    options:
+      - label: "AWS Config"
+        explanation: "AWS Config registra la configuración de tus recursos y sus cambios para evaluar si cumplen las reglas definidas."
+        correct: true
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch monitorea métricas, logs y alarmas de rendimiento; no evalúa el cumplimiento de reglas de configuración."
+      - label: "AWS Health Dashboard"
+        explanation: "AWS Health Dashboard muestra la salud de los servicios de AWS y eventos que afectan a la cuenta, no el historial de configuración de un recurso."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager controla licencias de software de proveedores; no registra la configuración de los recursos."
+  - prompt: "Una aplicación de pagos de Tegucigalpa empieza a fallar, y el equipo quiere saber si un evento de AWS está afectando a los recursos de su cuenta, incluidas actividades planificadas. ¿Qué herramienta debe revisar?"
+    options:
+      - label: "Service Quotas"
+        explanation: "Service Quotas muestra los límites de los servicios y permite pedir aumentos; no informa sobre eventos de AWS que afectan a la cuenta."
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer recomienda el tamaño adecuado de los recursos según su uso; no reporta eventos de AWS."
+      - label: "AWS Health Dashboard"
+        explanation: "La vista Your account health de AWS Health Dashboard muestra los eventos que afectan a tu cuenta y tus recursos, incluidas actividades planificadas."
+        correct: true
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra las acciones de usuarios, roles y servicios en tu cuenta; no informa sobre el estado de los servicios de AWS."
+  - prompt: "Una empresa de videojuegos de Ciudad de México llegó al valor máximo de un recurso permitido en su cuenta y necesita ver ese límite y solicitar un aumento desde un solo lugar. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Systems Manager"
+        explanation: "AWS Systems Manager opera nodos a escala con parches y comandos remotos; no administra los límites de los servicios."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager fija límites de consumo de licencias de software, no las cuotas de los servicios de AWS."
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail audita quién hizo cada acción; no muestra cuotas ni permite solicitar aumentos."
+      - label: "Service Quotas"
+        explanation: "Service Quotas permite ver y administrar desde un solo lugar las cuotas de los servicios de AWS y solicitar aumentos cuando son ajustables."
+        correct: true
+  - prompt: "Una universidad de Concepción quiere que sus facultades lancen por autoservicio solo productos de TI aprobados por el área central, organizados en portafolios con restricciones. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace es una tienda de software de terceros; no es un catálogo de productos aprobados internamente."
+      - label: "AWS Service Catalog"
+        explanation: "AWS Service Catalog permite crear catálogos de servicios de TI aprobados en portafolios con restricciones, que los usuarios lanzan por autoservicio."
+        correct: true
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer da recomendaciones de rightsizing; no controla qué productos pueden lanzar los usuarios."
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch monitorea métricas, logs y alarmas; no define qué productos están aprobados para lanzar."
+  - prompt: "Una agroexportadora de Trujillo tiene el plan Basic Support y quiere acceder al conjunto completo de verificaciones de AWS Trusted Advisor y a su API. ¿Qué necesita?"
+    options:
+      - label: "Nada; el plan Basic Support ya incluye todas las verificaciones"
+        explanation: "Basic Support solo incluye todas las verificaciones de Service limits y algunas de Security y Fault tolerance, no el conjunto completo."
+      - label: "Activar AWS Compute Optimizer con opt in"
+        explanation: "Activar Compute Optimizer da recomendaciones de rightsizing, pero no desbloquea las verificaciones completas de Trusted Advisor."
+      - label: "Crear un trail en AWS CloudTrail"
+        explanation: "Un trail guarda eventos de la API en S3 de forma continua; no da acceso a más verificaciones de Trusted Advisor."
+      - label: "Contratar AWS Business Support+, AWS Enterprise Support o AWS Unified Operations"
+        explanation: "El conjunto completo de verificaciones de Trusted Advisor y su API requieren AWS Business Support+, AWS Enterprise Support o AWS Unified Operations."
+        correct: true
 ---
 
 ## ¿Por qué importa?

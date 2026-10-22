@@ -48,6 +48,73 @@ quiz:
         explanation: "Amazon Inspector busca vulnerabilidades de software; no investiga lo que hizo un atacante a partir de un hallazgo de GuardDuty."
       - label: "AWS Trusted Advisor"
         explanation: "AWS Trusted Advisor ejecuta checks de buenas prácticas; no analiza la actividad relacionada con un hallazgo de seguridad."
+practice:
+  - prompt: "Una red de clínicas de Quito guarda miles de documentos de pacientes en buckets de Amazon S3 y necesita descubrir cuáles contienen datos personales sensibles (PII). ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector busca vulnerabilidades de software en EC2, ECR y Lambda; no revisa el contenido de los objetos de S3 en busca de datos personales."
+      - label: "AWS Config"
+        explanation: "AWS Config indica si un recurso cumple una regla de configuración; no analiza el contenido de los documentos para encontrar PII."
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie descubre datos sensibles, como PII, en Amazon S3, que es justo lo que necesitan las clínicas."
+        correct: true
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective investiga la causa raíz de hallazgos con un grafo de comportamiento; no clasifica el contenido de los buckets."
+  - prompt: "Un banco de Bogotá quiere un solo lugar donde ver los hallazgos de GuardDuty, Inspector y Macie, verificar sus cuentas contra estándares como CIS y PCI DSS y obtener un puntaje de seguridad. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Security Hub CSPM"
+        explanation: "AWS Security Hub CSPM ejecuta verificaciones contra estándares como CIS y PCI DSS, calcula puntajes de seguridad y agrega hallazgos de GuardDuty, Inspector y Macie."
+        correct: true
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective investiga lo ocurrido tras un hallazgo; no verifica las cuentas contra estándares ni calcula un puntaje de seguridad."
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector produce sus propios hallazgos de vulnerabilidades; no agrega los de GuardDuty y Macie ni evalúa estándares como PCI DSS."
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie encuentra datos sensibles en S3; es una de las fuentes de hallazgos, no la vista central que pide el banco."
+  - prompt: "Una agencia de viajes de Cusco quiere recomendaciones de buenas prácticas que le avisen si su cuenta raíz no tiene MFA y si algún security group deja puertos abiertos a todo internet. ¿Qué servicio debe consultar?"
+    options:
+      - label: "Amazon GuardDuty"
+        explanation: "Amazon GuardDuty detecta amenazas activas por comportamiento, como credenciales comprometidas; no es una lista de checks de buenas prácticas de configuración."
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective investiga la causa raíz de hallazgos existentes; no recomienda activar MFA ni cerrar puertos."
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie busca datos sensibles en Amazon S3; no revisa la configuración de la cuenta raíz ni de los security groups."
+      - label: "AWS Trusted Advisor"
+        explanation: "AWS Trusted Advisor incluye checks de seguridad como MFA on root account y Security Groups – Specific Ports Unrestricted."
+        correct: true
+  - prompt: "Una startup de Asunción tiene el plan Basic Support y quiere saber qué checks de AWS Trusted Advisor puede usar. ¿Qué afirmación es correcta?"
+    options:
+      - label: "Tiene acceso al conjunto completo de checks de Trusted Advisor"
+        explanation: "El conjunto completo de checks requiere AWS Business Support+, AWS Enterprise Support o AWS Unified Operations, no Basic Support."
+      - label: "Tiene checks seleccionados de seguridad y tolerancia a fallos, y todos los de límites de servicio"
+        explanation: "Con Basic Support se accede a checks seleccionados de seguridad y tolerancia a fallos, y a todos los checks de límites de servicio."
+        correct: true
+      - label: "Trusted Advisor solo está disponible con AWS Enterprise Support"
+        explanation: "Basic Support ya incluye checks seleccionados; Enterprise Support es uno de los planes que dan el conjunto completo, no el único con acceso."
+      - label: "Solo tiene checks de optimización de costos"
+        explanation: "Con Basic Support los checks disponibles son de seguridad, tolerancia a fallos y límites de servicio, no solo de costos."
+  - prompt: "El gerente de TI de una minera de Antofagasta propone desactivar GuardDuty e Inspector porque la empresa acaba de activar AWS Security Hub. ¿Qué afirmación describe correctamente la relación entre estos servicios?"
+    options:
+      - label: "Security Hub reemplaza a GuardDuty e Inspector, así que pueden desactivarse"
+        explanation: "Security Hub no detecta amenazas ni escanea CVE por sí mismo; depende de los hallazgos que generan GuardDuty e Inspector."
+      - label: "Security Hub escanea CVE por su cuenta, así que solo Inspector sobra"
+        explanation: "El escaneo continuo de CVE en EC2, ECR y Lambda lo hace Amazon Inspector, no Security Hub."
+      - label: "Security Hub agrega y correlaciona los hallazgos de GuardDuty e Inspector, sin sustituirlos"
+        explanation: "Security Hub centraliza, correlaciona y ayuda a priorizar los hallazgos de otros servicios; si se desactivan GuardDuty e Inspector, se pierden esas detecciones."
+        correct: true
+      - label: "GuardDuty e Inspector envían sus hallazgos solo a Amazon Detective"
+        explanation: "Security Hub CSPM agrega hallazgos de GuardDuty, Inspector y Macie, así que no dependen únicamente de Detective para centralizarse."
+  - prompt: "Una cooperativa de ahorro de Montevideo quiere que cada hallazgo de Amazon GuardDuty dispare automáticamente una respuesta, como aislar la instancia afectada. ¿A qué servicio debe enviar los hallazgos?"
+    options:
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective sirve para investigar la causa raíz de un hallazgo; no está pensado para disparar respuestas automáticas."
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector escanea vulnerabilidades de software; no recibe hallazgos de GuardDuty para automatizar respuestas."
+      - label: "AWS Trusted Advisor"
+        explanation: "AWS Trusted Advisor recomienda buenas prácticas; no reacciona a hallazgos de GuardDuty con acciones automáticas."
+      - label: "Amazon EventBridge"
+        explanation: "GuardDuty puede enviar sus hallazgos a Amazon EventBridge, que permite automatizar la respuesta a cada uno."
+        correct: true
 ---
 
 ## ¿Por qué importa?

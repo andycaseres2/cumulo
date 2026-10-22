@@ -45,6 +45,73 @@ quiz:
       - label: "AWS Step Functions"
         explanation: "AWS Step Functions coordina componentes con flujos de trabajo visuales: inicia y sigue cada paso, reintenta ante errores y registra el estado."
         correct: true
+practice:
+  - prompt: "Una empresa de logística de Monterrey quiere ejecutar una función de AWS Lambda cada vez que una de sus instancias de EC2 cambie de estado, filtrando con reglas solo los eventos que le interesan. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon EventBridge"
+        explanation: "EventBridge es un bus de eventos serverless que recibe eventos de servicios de AWS y los filtra con reglas para enviarlos a destinos como Lambda."
+        correct: true
+      - label: "Amazon SQS"
+        explanation: "Amazon SQS guarda mensajes en una cola para que un consumidor los saque; no filtra eventos de servicios de AWS con reglas."
+      - label: "AWS Step Functions"
+        explanation: "Step Functions coordina pasos de un flujo de trabajo; reaccionar a eventos con reglas de filtrado es la función de EventBridge."
+      - label: "Amazon SES"
+        explanation: "Amazon SES envía correos de negocio con tu propio dominio; no reacciona a cambios de estado de instancias."
+  - prompt: "Una plataforma de venta de entradas de Buenos Aires recibe picos enormes al abrir cada venta. Quiere guardar las solicitudes hasta que sus servidores las procesen a su ritmo, sin perder mensajes y con máximo rendimiento; el orden no importa. ¿Qué debe usar?"
+    options:
+      - label: "Un tema de Amazon SNS"
+        explanation: "SNS empuja cada mensaje a sus suscriptores en el momento; no guarda los mensajes para que un consumidor los saque a su ritmo."
+      - label: "AWS Step Functions"
+        explanation: "Step Functions orquesta pasos con decisiones y reintentos; no es una cola que absorba picos de carga."
+      - label: "Una cola Standard de Amazon SQS"
+        explanation: "La cola Standard de SQS guarda los mensajes sin perderlos hasta que un consumidor los procesa y ofrece el máximo rendimiento."
+        correct: true
+      - label: "Amazon EventBridge"
+        explanation: "EventBridge enruta eventos con reglas hacia destinos; el escenario pide guardar solicitudes para que los servidores las saquen a su ritmo."
+  - prompt: "El equipo de TI de una clínica de Rosario quiere que, cuando falle un proceso crítico, se envíe una alerta por SMS y por correo electrónico a los administradores de turno. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon SQS"
+        explanation: "Elegir SQS para avisar a personas es una trampa típica: SQS guarda mensajes para que un consumidor los saque, no envía SMS ni correos."
+      - label: "Amazon SNS"
+        explanation: "Amazon SNS notifica a personas por SMS, correo electrónico y push móvil, lo que lo hace la opción para alertas a administradores."
+        correct: true
+      - label: "AWS Step Functions"
+        explanation: "Step Functions coordina los pasos de un proceso; no es el servicio que entrega alertas por SMS y correo."
+      - label: "Amazon EventBridge"
+        explanation: "EventBridge filtra y enruta eventos con reglas hacia destinos; no envía por sí mismo SMS ni correos a personas."
+  - prompt: "En una app de delivery de Ciudad de México, todos los componentes se llaman directamente entre sí. Cuando el servicio de pagos falla, se pierden pedidos. ¿Qué principio de diseño resuelve este problema?"
+    options:
+      - label: "Mantener una arquitectura acoplada (tightly coupled)"
+        explanation: "En una arquitectura acoplada la falla de un componente se propaga a los demás, que es justo el problema actual."
+      - label: "Concentrar toda la lógica en un solo programa"
+        explanation: "Un solo programa hace que la caída del servicio de pagos afecte a todo el proceso de pedidos."
+      - label: "Hacer que cada componente escale junto con los demás"
+        explanation: "Si todos dependen unos de otros, siguen compartiendo las fallas; la idea es que cada parte escale de forma independiente."
+      - label: "Desacoplar los componentes para que se comuniquen mediante mensajes"
+        explanation: "Al desacoplar, un componente deja un mensaje y otro lo procesa cuando puede, así una falla no se propaga y no se pierden pedidos."
+        correct: true
+  - prompt: "Una tienda online de Guayaquil quiere enviar confirmaciones de compra y boletines de marketing por correo electrónico desde su propio dominio. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon SES"
+        explanation: "Amazon SES es el servicio para correos de negocio con tu propio dominio, como confirmaciones de compra y boletines."
+        correct: true
+      - label: "Amazon SQS"
+        explanation: "Amazon SQS es una cola de mensajes entre componentes; no envía correos a clientes."
+      - label: "AWS Step Functions"
+        explanation: "Step Functions coordina pasos de un flujo de trabajo; no es un servicio de envío de correo."
+      - label: "Amazon EventBridge"
+        explanation: "EventBridge enruta eventos entre aplicaciones y servicios; no envía correos de negocio desde tu dominio."
+  - prompt: "¿Cuál es la diferencia de modelo entre Amazon SQS y Amazon SNS?"
+    options:
+      - label: "SQS empuja mensajes a muchos suscriptores y SNS los guarda en una cola"
+        explanation: "Está al revés: SQS es la cola de la que el consumidor saca mensajes y SNS empuja a los suscriptores."
+      - label: "SQS es un bus de eventos con reglas y SNS un flujo de trabajo visual"
+        explanation: "El bus de eventos con reglas es EventBridge y los flujos de trabajo visuales son de Step Functions."
+      - label: "En SQS el consumidor saca (pull) los mensajes; SNS empuja (push) cada mensaje a todos los suscriptores"
+        explanation: "SQS guarda mensajes para que un consumidor los saque, mientras SNS es pub/sub y empuja el mensaje a muchos suscriptores."
+        correct: true
+      - label: "SQS solo envía SMS y SNS solo conecta microservicios"
+        explanation: "Los SMS a personas los envía SNS, y SQS es una cola de mensajes entre componentes."
 ---
 
 ## ¿Por qué importa?

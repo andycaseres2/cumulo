@@ -51,6 +51,73 @@ quiz:
       - label: "AWS Prescriptive Guidance"
         explanation: "AWS Prescriptive Guidance reúne guías de planificación e implementación y patrones con pasos, arquitecturas y código para migraciones y modernizaciones."
         correct: true
+practice:
+  - prompt: "Una consultora de Lima es socia de AWS y se dedica a migrar, implementar y administrar soluciones en AWS para sus clientes, sin vender software propio. ¿Qué tipo de socio de la AWS Partner Network es?"
+    options:
+      - label: "Independent Software Vendor (ISV)"
+        explanation: "Un ISV se define por crear software que funciona en AWS o se integra con AWS; la consultora no vende software propio."
+      - label: "System integrator (SI) o socio de servicios"
+        explanation: "Los system integrators y socios de servicios diseñan, migran, implementan o administran soluciones en AWS para sus clientes."
+        correct: true
+      - label: "Private Marketplace"
+        explanation: "Private Marketplace es una función de gobernanza de AWS Marketplace para limitar el catálogo; no es un tipo de socio."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager gestiona licencias y entitlements; no es una categoría de socio de la APN."
+  - prompt: "Una empresa minera de Antofagasta compró licencias de un software en AWS Marketplace y quiere distribuirlas, activarlas y rastrearlas entre varias cuentas de su organización. ¿Qué servicio usa?"
+    options:
+      - label: "Private Marketplace"
+        explanation: "Private Marketplace define qué productos aprobados pueden comprar los usuarios; no distribuye ni rastrea licencias ya compradas."
+      - label: "AWS Prescriptive Guidance"
+        explanation: "AWS Prescriptive Guidance ofrece guías y patrones para migrar y modernizar; no gestiona licencias."
+      - label: "AWS re:Post"
+        explanation: "AWS re:Post es un servicio de preguntas y respuestas de la comunidad; no administra derechos de uso de software."
+      - label: "AWS License Manager"
+        explanation: "AWS Marketplace gestiona los entitlements con AWS License Manager, que distribuye, activa y rastrea las licencias compradas, incluso entre cuentas de la organización."
+        correct: true
+  - prompt: "El área de compras de una cadena hotelera de Cancún quiere negociar con un vendedor de AWS Marketplace precios y términos personalizados para un contrato grande. ¿Qué opción de Marketplace corresponde?"
+    options:
+      - label: "Ofertas privadas"
+        explanation: "Las ofertas privadas de AWS Marketplace permiten acordar precios y términos personalizados negociados con el vendedor."
+        correct: true
+      - label: "Private Marketplace"
+        explanation: "Private Marketplace limita el catálogo a productos aprobados; no sirve para negociar precios con un vendedor."
+      - label: "Trae tu propia licencia (BYOL)"
+        explanation: "BYOL sirve para usar una licencia que ya tienes; no es un mecanismo para negociar precios y términos nuevos."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager distribuye y rastrea licencias compradas; no negocia precios con el vendedor."
+  - prompt: "Una aerolínea de Bogotá quiere que un equipo de AWS ejecute con ella un proyecto de migración a gran escala y modernización de sus aplicaciones. ¿Qué debe contratar?"
+    options:
+      - label: "AWS Support, abriendo casos técnicos"
+        explanation: "AWS Support atiende casos técnicos según el plan contratado; no ejecuta proyectos de migración, que es el rol de AWS Professional Services."
+      - label: "AWS re:Post"
+        explanation: "AWS re:Post ofrece preguntas y respuestas de la comunidad; no ejecuta proyectos de migración."
+      - label: "AWS Professional Services"
+        explanation: "AWS Professional Services es el equipo de AWS que ayuda a diseñar, construir, migrar y administrar cargas, incluidas migraciones a gran escala y modernización."
+        correct: true
+      - label: "AWS Whitepapers & Guides"
+        explanation: "Los whitepapers ofrecen buenas prácticas y arquitecturas de referencia por escrito; no son un equipo que ejecute el proyecto."
+  - prompt: "Una startup de salud de Montevideo quiere que un asesor técnico de AWS revise el diseño de su arquitectura con una revisión AWS Well-Architected. ¿Quién cumple ese rol?"
+    options:
+      - label: "AWS Knowledge Center"
+        explanation: "El Knowledge Center contiene artículos con respuestas a preguntas frecuentes; no es un asesor que revise tu arquitectura."
+      - label: "Un AWS solutions architect"
+        explanation: "Los solutions architects son asesores técnicos que ayudan a diseñar arquitecturas, por ejemplo mediante revisiones AWS Well-Architected."
+        correct: true
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace es un catálogo de software, datos y servicios de terceros; no ofrece revisiones de arquitectura con asesores de AWS."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager gestiona licencias de software; no participa en el diseño de arquitecturas."
+  - prompt: "El arquitecto de una empresa de energía de Medellín busca material escrito por AWS y la comunidad con buenas prácticas de seguridad y cumplimiento, guías de decisión y diagramas de arquitectura de referencia. ¿Qué recurso consulta?"
+    options:
+      - label: "AWS re:Post"
+        explanation: "AWS re:Post es para resolver dudas técnicas puntuales con preguntas y respuestas de la comunidad, no un repositorio de arquitecturas de referencia."
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager gestiona licencias de software; no publica guías ni diagramas de arquitectura."
+      - label: "AWS Whitepapers & Guides"
+        explanation: "AWS Whitepapers & Guides reúne whitepapers técnicos, guías de decisión y diagramas de arquitectura de referencia sobre buenas prácticas, seguridad y cumplimiento."
+        correct: true
+      - label: "Private Marketplace"
+        explanation: "Private Marketplace limita qué productos de Marketplace pueden comprar los usuarios; no ofrece material técnico."
 ---
 
 ## ¿Por qué importa?

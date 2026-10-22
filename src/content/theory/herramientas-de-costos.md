@@ -47,6 +47,73 @@ quiz:
       - label: "Abrir un caso en AWS Support Center eligiendo Account and billing support"
         explanation: "Para dudas o reclamos de la factura se abre un caso de Account and billing support en AWS Support Center, un soporte gratuito incluso con Basic Support."
         correct: true
+practice:
+  - prompt: "Una cadena de cafeterías de Medellín ve que su factura de AWS subió el mes pasado. Quiere filtrar y agrupar su historial de costos por servicio y por cuenta para encontrar qué generó el aumento. ¿Qué herramienta debe usar?"
+    options:
+      - label: "AWS Pricing Calculator"
+        explanation: "Pricing Calculator estima costos antes de construir con los datos que ingresas; no analiza la factura del mes pasado."
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer permite ver y analizar costos y uso de hasta los últimos 13 meses, filtrando y agrupando por servicio, cuenta o etiqueta."
+        correct: true
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets da seguimiento al gasto contra un umbral y envía alertas; no es la herramienta para filtrar y agrupar el historial de costos."
+      - label: "AWS Price List API"
+        explanation: "AWS Price List API consulta los precios publicados de los servicios; no muestra cuánto gastó tu cuenta ni en qué."
+  - prompt: "Una empresa de videojuegos de Lima quiere que, cuando su gasto supere el presupuesto definido, se aplique automáticamente una política de IAM que impida crear más recursos. ¿Qué debe configurar?"
+    options:
+      - label: "El pronóstico de AWS Cost Explorer"
+        explanation: "Cost Explorer muestra cuánto probablemente gastarás, pero no aplica políticas de IAM cuando se supera un presupuesto."
+      - label: "Una estimación compartida de AWS Pricing Calculator"
+        explanation: "Una estimación de Pricing Calculator planifica costos antes de construir; no vigila el gasto real ni ejecuta acciones."
+      - label: "Una recomendación de Savings Plans en Cost Explorer"
+        explanation: "Las recomendaciones de compra de Cost Explorer sugieren Reserved Instances o Savings Plans; no aplican restricciones al superar un presupuesto."
+      - label: "Una budget action en AWS Budgets"
+        explanation: "Las budget actions de AWS Budgets aplican una acción configurada, como una política de IAM que impida crear más recursos."
+        correct: true
+  - prompt: "Un estudio de diseño de Montevideo creó en AWS Budgets un cost budget con alerta por correo, sin configurar acciones, y cree que AWS apagará sus recursos al superar el umbral. ¿Qué ocurre realmente?"
+    options:
+      - label: "AWS Budgets envía la notificación configurada y los recursos siguen funcionando"
+        explanation: "Por defecto Budgets solo notifica; detener o restringir recursos requiere acciones que tú configures."
+        correct: true
+      - label: "AWS Budgets detiene todas las instancias de la cuenta"
+        explanation: "Es la trampa típica del examen: Budgets no corta el servicio por sí solo; sin budget actions configuradas solo envía alertas."
+      - label: "AWS Cost Explorer bloquea la creación de recursos nuevos"
+        explanation: "Cost Explorer analiza costos y muestra pronósticos; no bloquea la creación de recursos."
+      - label: "AWS Pricing Calculator ajusta la estimación y limita el gasto"
+        explanation: "Pricing Calculator solo crea estimaciones con los datos que ingresas; no controla ni limita el gasto real de la cuenta."
+  - prompt: "Un desarrollador de una tienda online de Guayaquil quiere consultar los precios de los servicios de AWS de forma programática desde su propio sistema, por producto o descargando archivos JSON o CSV por servicio y Región. ¿Qué debe usar?"
+    options:
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer analiza los costos y el uso de tu cuenta; no es la fuente programática de la lista de precios de AWS."
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets da seguimiento a tu gasto y envía alertas; no publica precios de los servicios."
+      - label: "AWS Price List API"
+        explanation: "AWS Price List API ofrece la Query API por producto y la Bulk API con archivos JSON o CSV por servicio y Región."
+        correct: true
+      - label: "AWS Support Center"
+        explanation: "AWS Support Center sirve para abrir casos, por ejemplo sobre la factura; no entrega precios de forma programática."
+  - prompt: "Una consultora de Santo Domingo prepara para su cliente una estimación en AWS Pricing Calculator. ¿Qué debe advertirle sobre esa cifra?"
+    options:
+      - label: "Es el monto exacto que aparecerá en la factura, impuestos incluidos"
+        explanation: "La cifra de Pricing Calculator es una estimación y no incluye impuestos, así que puede diferir de la factura real."
+      - label: "Es una estimación que no incluye impuestos y solo considera los datos ingresados"
+        explanation: "Pricing Calculator crea estimaciones sin impuestos basadas solo en los datos que ingresas, útiles para planificar antes de construir."
+        correct: true
+      - label: "Requiere tener al menos 13 meses de historial de uso en AWS"
+        explanation: "Los 13 meses de historial corresponden a Cost Explorer; Pricing Calculator no requiere experiencia previa con AWS."
+      - label: "Solo puede verse dentro de la cuenta que la creó"
+        explanation: "La estimación se puede compartir guardando su enlace o exportarse en CSV o PDF para entregarla al cliente."
+  - prompt: "Una empresa de transporte de Tegucigalpa lleva un año en AWS y quiere recibir recomendaciones de compra de Reserved Instances y Savings Plans basadas en su uso. ¿Qué herramienta se las da?"
+    options:
+      - label: "AWS Pricing Calculator"
+        explanation: "Pricing Calculator solo considera los datos que ingresas para estimar; no analiza tu uso real para recomendar compras."
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets permite presupuestos de utilización y cobertura de RI y Savings Plans, pero las recomendaciones de compra vienen de Cost Explorer."
+      - label: "AWS Support Center"
+        explanation: "AWS Support Center sirve para abrir casos de cuenta y facturación; no genera recomendaciones de compra."
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer, además de analizar costos y uso, ofrece recomendaciones de compra de Reserved Instances y Savings Plans."
+        correct: true
 ---
 
 ## ¿Por qué importa?

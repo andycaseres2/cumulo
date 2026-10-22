@@ -47,6 +47,73 @@ quiz:
         explanation: "Poder acceder a los datos cuando los necesitas es la disponibilidad, que en S3 Standard es del 99.99 %, no la durabilidad."
       - label: "El porcentaje de objetos que son públicos por defecto"
         explanation: "Por defecto, los buckets y sus objetos de S3 son privados; la cifra de once nueves no tiene relación con el acceso público."
+practice:
+  - prompt: "Una agencia de turismo de Cusco quiere publicar un sitio web estático con HTML, CSS e imágenes, junto con videos que los visitantes descarguen por internet, pagando solo por lo que usa. ¿Qué servicio de almacenamiento debe elegir?"
+    options:
+      - label: "Amazon EBS"
+        explanation: "Amazon EBS ofrece volúmenes de bloques que se adjuntan a una instancia EC2 como disco; no sirve archivos directamente por internet mediante URLs."
+      - label: "Amazon EFS"
+        explanation: "Amazon EFS es un sistema de archivos NFS que montan instancias y servicios de cómputo; no está pensado para servir un sitio estático directamente por internet."
+      - label: "Instance store"
+        explanation: "El instance store es almacenamiento temporal en el disco físico del host; sus datos se pierden al detener o terminar la instancia."
+      - label: "Amazon S3"
+        explanation: "Amazon S3 guarda objetos accesibles por API y URLs, puede servir sitios web estáticos directamente desde un bucket y cobra solo por lo que usas."
+        correct: true
+  - prompt: "Un equipo de Cali creó un volumen de Amazon EBS en una Availability Zone y quiere adjuntarlo a una instancia EC2 que está en otra AZ de la misma Región. ¿Qué debe tener en cuenta?"
+    options:
+      - label: "EBS replica automáticamente el volumen en todas las AZ de la Región"
+        explanation: "Un volumen EBS tiene alcance de una sola AZ; no se replica a las demás AZ para adjuntarse desde cualquiera de ellas."
+      - label: "El volumen y la instancia deben estar en la misma Availability Zone"
+        explanation: "Un volumen EBS solo se puede adjuntar a una instancia de su misma AZ, así que no puede conectarse a la instancia de la otra AZ."
+        correct: true
+      - label: "Debe convertir el volumen EBS en instance store"
+        explanation: "El instance store es un disco físico del host incluido con la instancia; no es una forma de mover un volumen EBS a otra AZ."
+      - label: "Puede adjuntarlo sin cambios porque EBS es un servicio regional como S3"
+        explanation: "S3 y EFS Regional trabajan a nivel de Región, pero EBS vive en una sola AZ; por eso el volumen no se adjunta a una instancia de otra AZ."
+  - prompt: "Una empresa de analítica de Rosario necesita en una instancia EC2 un espacio para búferes y datos de trabajo temporales que ya están replicados en otra parte, y prefiere que ese almacenamiento venga incluido en el precio de la instancia. ¿Qué opción encaja mejor?"
+    options:
+      - label: "Instance store"
+        explanation: "El instance store está incluido en el precio de la instancia y es ideal para búferes, cachés y datos temporales de trabajo que no importa perder."
+        correct: true
+      - label: "Amazon EBS"
+        explanation: "Amazon EBS se paga aparte según lo aprovisionado y puede persistir independientemente de la instancia; el escenario pide almacenamiento temporal incluido en la instancia."
+      - label: "Amazon EFS"
+        explanation: "Amazon EFS es un sistema de archivos compartido y elástico para carpetas compartidas; no es almacenamiento temporal incluido en el precio de la instancia."
+      - label: "Amazon S3 Glacier"
+        explanation: "Las clases S3 Glacier sirven para archivo de largo plazo a bajo costo; no funcionan como espacio temporal de trabajo de una instancia."
+  - prompt: "Una firma contable de San José tiene instancias EC2 Windows que necesitan una carpeta compartida de archivos, y un colega propone Amazon EFS. ¿Qué debes responderle?"
+    options:
+      - label: "EFS funciona igual en Windows y en Linux porque usa NFS"
+        explanation: "Aunque EFS usa NFS, no es compatible con instancias EC2 basadas en Windows, así que no sirve para estas instancias."
+      - label: "Conviene adjuntar un solo volumen EBS a todas las instancias Windows"
+        explanation: "Por lo general un volumen EBS se adjunta a una sola instancia y solo algunos tipos admiten Multi-Attach; no es la solución para una carpeta compartida."
+      - label: "EFS no es compatible con instancias EC2 Windows; para eso existe Amazon FSx for Windows File Server"
+        explanation: "EFS no es compatible con instancias EC2 Windows, y para archivos compartidos en Windows existe Amazon FSx for Windows File Server."
+        correct: true
+      - label: "Conviene compartir el instance store entre las instancias"
+        explanation: "El instance store es un disco físico del host de una instancia y no se comparte entre instancias."
+  - prompt: "Una plataforma educativa de La Paz guarda en Amazon S3 materiales cuyo patrón de acceso es desconocido y cambia con el tiempo. ¿Qué clase de almacenamiento está pensada para ese patrón?"
+    options:
+      - label: "S3 One Zone-IA"
+        explanation: "S3 One Zone-IA está pensada para datos de acceso poco frecuente; no es la clase para patrones de acceso cambiantes o desconocidos."
+      - label: "S3 Intelligent-Tiering"
+        explanation: "S3 Intelligent-Tiering es la clase pensada para patrones de acceso cambiantes o desconocidos, como el de estos materiales."
+        correct: true
+      - label: "S3 Standard"
+        explanation: "S3 Standard está pensada para datos de acceso frecuente; el escenario describe un patrón desconocido y cambiante."
+      - label: "S3 Glacier"
+        explanation: "Las clases S3 Glacier están pensadas para archivo a bajo costo, no para materiales con un patrón de acceso cambiante o desconocido."
+  - prompt: "Un desarrollador de Tegucigalpa sube fotos a un bucket nuevo de Amazon S3 sin cambiar ninguna configuración de acceso. ¿Qué ocurre con el acceso a esas fotos?"
+    options:
+      - label: "Cualquier persona con la URL puede verlas, porque S3 publica los objetos por defecto"
+        explanation: "S3 no publica los objetos por defecto; los buckets y sus objetos empiezan siendo privados."
+      - label: "Solo las instancias EC2 de la misma AZ pueden verlas, porque S3 vive en una AZ"
+        explanation: "S3 Standard guarda los objetos en un mínimo de tres Availability Zones de una Región; su acceso no se define por la AZ de una instancia."
+      - label: "Cualquier instancia puede verlas montando el bucket por NFS"
+        explanation: "S3 es almacenamiento de objetos al que se accede por API y URLs; no se monta por NFS como un sistema de archivos."
+      - label: "Son privadas, porque los buckets y sus objetos de S3 son privados por defecto"
+        explanation: "Por defecto, los buckets y los objetos de S3 son privados, así que las fotos no quedan públicas al subirlas."
+        correct: true
 ---
 
 ## ¿Por qué importa?
@@ -83,7 +150,7 @@ Casos típicos de **almacenamiento de objetos**:
 Características clave:
 
 - El volumen y la instancia deben estar en la **misma Availability Zone**.
-- Los volúmenes **persisten independientemente** de la vida de la instancia EC2.
+- Los volúmenes **persisten independientemente** de la vida de la instancia EC2. Excepción: el volumen raíz se borra por defecto al terminar la instancia (atributo DeleteOnTermination), y puedes cambiarlo.
 - Una instancia puede tener varios volúmenes EBS. Por lo general, un volumen se adjunta a una sola instancia; solo algunos tipos de volumen e instancia admiten **Multi-Attach** para conectarse a varias a la vez.
 - Hay tipos SSD y HDD para equilibrar rendimiento y precio.
 
@@ -148,7 +215,7 @@ Casos típicos: carpetas compartidas, gestores de contenido, directorios de usua
 - S3 es privado por defecto y tiene clases de almacenamiento según el patrón de acceso.
 - EBS = bloques persistentes; disco de una instancia EC2 en la misma AZ.
 - Instance store = bloques temporales en el host; ideal para cachés; los datos se pierden al detener o terminar la instancia.
-- Los volúmenes EBS persisten aunque la instancia se detenga o termine.
+- Los volúmenes EBS persisten aunque la instancia se detenga; al terminarla, los volúmenes adicionales siguen y el raíz se borra por defecto.
 - EFS = archivos compartidos por NFS; elástico y accesible por muchas instancias.
 - EFS Regional guarda datos en varias AZ.
 - Palabra clave "compartido" → EFS; "disco de la instancia" → EBS; "temporal o caché en el host" → instance store; "objetos o internet" → S3.

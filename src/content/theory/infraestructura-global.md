@@ -48,6 +48,73 @@ quiz:
       - label: "Ubicaciones de borde (edge locations)"
         explanation: "CloudFront dirige cada solicitud a la ubicación de borde con menor latencia y entrega desde ahí el contenido que ya está en caché."
         correct: true
+practice:
+  - prompt: "Una empresa de e-commerce de Santiago guarda sus archivos en un bucket de Amazon S3 en una Región. Luego despliega su app en otra Región y espera encontrar ahí esos mismos archivos. ¿Qué ocurre?"
+    options:
+      - label: "Los archivos aparecen automáticamente en todas las Regiones"
+        explanation: "Los recursos y datos creados en una Región no existen en otra; las Regiones están aisladas entre sí."
+      - label: "No están en la otra Región a menos que los repliques o copies explícitamente"
+        explanation: "Los datos no salen de una Región sin una acción explícita, como configurar la replicación o copiarlos con una función del servicio."
+        correct: true
+      - label: "Se guardan de forma permanente en todas las ubicaciones de borde"
+        explanation: "Las ubicaciones de borde guardan copias temporales en caché para CloudFront; no reemplazan los datos en otra Región."
+      - label: "Se replican solos a la Región más cercana a los usuarios"
+        explanation: "Es la trampa típica del examen: los datos no se replican solos entre Regiones a menos que tú lo configures."
+  - prompt: "El área de riesgo de un banco de Lima exige que su servicio siga operando aunque toda una Región de AWS quede fuera de servicio. ¿Qué enfoque responde a ese requisito?"
+    options:
+      - label: "Desplegar en varias Availability Zones de una sola Región"
+        explanation: "Varias AZ protegen contra la falla de un centro de datos, pero todas están dentro de la Región que podría caer."
+      - label: "Entregar el contenido con Amazon CloudFront"
+        explanation: "CloudFront entrega contenido en caché con menor latencia; no mantiene la aplicación operando si cae toda una Región."
+      - label: "Usar instancias más grandes en la Región actual"
+        explanation: "Instancias más grandes siguen dependiendo de la misma Región; si esta queda fuera de servicio, el servicio también."
+      - label: "Desplegar en varias Regiones, por ejemplo con una estrategia activo/activo"
+        explanation: "La continuidad del negocio ante la pérdida de una Región completa requiere varias Regiones, por ejemplo con activo/activo."
+        correct: true
+  - prompt: "Una productora de videojuegos de una gran ciudad necesita ejecutar cómputo con latencia muy baja cerca de sus jugadores, usando una extensión de una Región de AWS. ¿Qué debe usar?"
+    options:
+      - label: "AWS Local Zones"
+        explanation: "Las Local Zones son extensiones de una Región que colocan cómputo y otros servicios cerca de grandes centros de población con latencia muy baja."
+        correct: true
+      - label: "Ubicaciones de borde de CloudFront"
+        explanation: "Su función principal en el examen es entregar contenido en caché, no ejecutar el cómputo de la aplicación."
+      - label: "Availability Zones adicionales en la misma Región"
+        explanation: "Las AZ aportan alta disponibilidad dentro de una Región; no son extensiones ubicadas cerca de una ciudad concreta."
+      - label: "Una Región en otro continente"
+        explanation: "Una Región lejana aumenta la distancia con los jugadores, lo contrario de la latencia muy baja que se busca."
+  - prompt: "¿Qué describe correctamente una Availability Zone (AZ) de AWS?"
+    options:
+      - label: "Un país donde AWS tiene centros de datos"
+        explanation: "Una AZ no es un país ni una ciudad; es parte de una Región."
+      - label: "Siempre un único centro de datos"
+        explanation: "Es la trampa típica del examen: una AZ puede estar formada por uno o más centros de datos."
+      - label: "Uno o más centros de datos con energía, redes y conectividad redundantes dentro de una Región"
+        explanation: "Esa es la definición de AZ: centros de datos discretos con energía, redes y conectividad redundantes dentro de una Región."
+        correct: true
+      - label: "Un punto de presencia de CloudFront para contenido en caché"
+        explanation: "Eso describe una ubicación de borde, separada de las Regiones; una AZ está dentro de una Región."
+  - prompt: "Una aseguradora de Panamá busca, entre las estrategias de recuperación ante desastres que describe AWS, la de menor costo y complejidad. ¿Cuál es?"
+    options:
+      - label: "Multi-site active/active"
+        explanation: "Multi-site active/active está en el extremo de mayor costo y complejidad de las estrategias que describe AWS."
+      - label: "Backup and restore"
+        explanation: "Backup and restore es la estrategia de menor costo y complejidad en la escala que describe AWS."
+        correct: true
+      - label: "Warm standby"
+        explanation: "Warm standby tiene más costo y complejidad que backup and restore y que pilot light."
+      - label: "Pilot light"
+        explanation: "Pilot light es más costosa y compleja que backup and restore en la escala que describe AWS."
+  - prompt: "Una empresa de juegos en línea de São Paulo quiere que el tráfico de sus usuarios entre a la red troncal de AWS lo antes posible, aprovechando la red de borde de AWS. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Local Zones"
+        explanation: "Las Local Zones acercan cómputo y almacenamiento a grandes ciudades como extensión de una Región; no son el servicio que lleva el tráfico a la red troncal."
+      - label: "Availability Zones adicionales"
+        explanation: "Las AZ aportan alta disponibilidad dentro de una Región; no aceleran la entrada del tráfico a la red de AWS."
+      - label: "Amazon S3 Standard"
+        explanation: "S3 Standard guarda objetos de forma redundante en varias AZ; no dirige el tráfico de los usuarios hacia la red troncal."
+      - label: "AWS Global Accelerator"
+        explanation: "Global Accelerator usa la red de borde de AWS para llevar el tráfico a la red troncal de AWS lo antes posible."
+        correct: true
 ---
 
 ## ¿Por qué importa?

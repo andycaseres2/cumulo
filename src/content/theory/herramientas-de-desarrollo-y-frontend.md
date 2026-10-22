@@ -47,6 +47,73 @@ quiz:
         explanation: "CodeBuild compila y prueba código, pero no aloja ni publica la app web en la CDN global."
       - label: "AWS X-Ray"
         explanation: "X-Ray diagnostica el rendimiento de las solicitudes; no aloja ni despliega aplicaciones web."
+practice:
+  - prompt: "Una empresa de e-commerce de Santiago quiere que cada cambio en su repositorio de GitHub pase automáticamente por las fases de compilación, prueba y despliegue según un modelo que ella define. ¿Qué servicio orquesta ese flujo completo?"
+    options:
+      - label: "AWS CodePipeline"
+        explanation: "CodePipeline es un servicio de entrega continua que automatiza el pipeline de publicación y ejecuta compilación, prueba y despliegue en cada cambio."
+        correct: true
+      - label: "AWS CodeBuild"
+        explanation: "CodeBuild es la etapa que compila y prueba dentro del flujo; la orquestación completa hasta el despliegue la hace CodePipeline."
+      - label: "AWS X-Ray"
+        explanation: "X-Ray rastrea solicitudes para diagnosticar latencia y errores; no automatiza la entrega del software."
+      - label: "AWS CLI"
+        explanation: "La AWS CLI ejecuta comandos sobre los servicios de AWS desde la terminal; no orquesta por sí sola las fases de compilación, prueba y despliegue en cada cambio."
+  - prompt: "Un administrador de sistemas de Asunción quiere automatizar con scripts, desde la terminal de su laptop con Linux, las tareas que hoy hace a mano en la consola web de AWS. ¿Qué herramienta debe usar?"
+    options:
+      - label: "AWS Amplify"
+        explanation: "Amplify sirve para crear y desplegar apps web y móviles; no es una herramienta de comandos en la terminal."
+      - label: "AWS X-Ray"
+        explanation: "X-Ray recopila datos de las solicitudes de una aplicación para diagnosticarla; no ejecuta comandos sobre los servicios de AWS."
+      - label: "AWS CloudTrail"
+        explanation: "CloudTrail audita quién hizo qué llamada a la API; registra acciones, pero no sirve para ejecutarlas desde la terminal."
+      - label: "AWS CLI"
+        explanation: "La AWS CLI permite hacer desde la terminal lo mismo que en la consola web y automatizar tareas con scripts en Linux, macOS o Windows."
+        correct: true
+  - prompt: "Los desarrolladores de una app de reservas de Cusco, escrita en Python, necesitan que la propia aplicación suba archivos a Amazon S3 llamando a AWS desde su código. ¿Qué deben usar?"
+    options:
+      - label: "AWS CodePipeline"
+        explanation: "CodePipeline automatiza la entrega del software; no es una biblioteca para llamar a servicios de AWS desde el código de la app."
+      - label: "Un AWS SDK"
+        explanation: "Los AWS SDKs son bibliotecas para lenguajes como Python que permiten llamar a los servicios de AWS desde el código de la aplicación."
+        correct: true
+      - label: "AWS X-Ray"
+        explanation: "X-Ray rastrea las solicitudes de la aplicación para encontrar cuellos de botella; no sube archivos a Amazon S3."
+      - label: "AWS CodeBuild"
+        explanation: "CodeBuild compila y prueba código en un servicio administrado; no es la forma en que la app llama a Amazon S3 en ejecución."
+  - prompt: "En una fintech de Buenos Aires, cada vez que alguien sube código al repositorio, ese código se compila y se prueba automáticamente para detectar errores pronto. ¿Cómo se llama esta práctica?"
+    options:
+      - label: "Entrega continua (CD)"
+        explanation: "La entrega continua lleva automáticamente a pruebas y producción los cambios que ya pasaron las pruebas; compilar y probar en cada subida es CI."
+      - label: "Rastreo distribuido"
+        explanation: "El rastreo distribuido sigue solicitudes entre servicios, como hace X-Ray; no compila ni prueba código."
+      - label: "Integración continua (CI)"
+        explanation: "La integración continua compila y prueba automáticamente el código cada vez que alguien lo sube al repositorio."
+        correct: true
+      - label: "Acceso programático"
+        explanation: "El acceso programático es usar la AWS CLI o los SDKs para llamar a las APIs de AWS; no describe compilar y probar en cada subida."
+  - prompt: "El equipo de una minera de Antofagasta usa la AWS CLI en sus scripts y un AWS SDK dentro de su aplicación en Python. ¿Qué tienen en común ambas herramientas?"
+    options:
+      - label: "Ambas son formas de acceso programático a las APIs de AWS"
+        explanation: "La AWS CLI lo hace con comandos en la terminal y los SDKs desde el código; ambas evitan el uso manual de la AWS Management Console."
+        correct: true
+      - label: "Ambas compilan y prueban el código en un servicio administrado"
+        explanation: "Compilar y probar código en un servicio administrado es la función de AWS CodeBuild, no de la CLI ni de los SDKs."
+      - label: "Ambas rastrean solicitudes entre microservicios"
+        explanation: "El rastreo distribuido de solicitudes lo hace AWS X-Ray; la CLI y los SDKs sirven para llamar a los servicios de AWS."
+      - label: "Ambas funcionan solo dentro de la AWS Management Console"
+        explanation: "La CLI se ejecuta en la terminal de Linux, macOS o Windows y los SDKs dentro del código; ninguna depende de la consola web."
+  - prompt: "Un equipo frontend de Guadalajara quiere crear una app web y móvil y definir su backend de autenticación y datos con un enfoque basado en código, sin administrar servidores. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon EC2"
+        explanation: "Con EC2 el equipo tendría que administrar servidores, justo lo que quiere evitar para su app web y móvil."
+      - label: "AWS CodePipeline"
+        explanation: "CodePipeline automatiza la entrega del software; no ofrece herramientas para definir el backend de una app web y móvil."
+      - label: "AWS Amplify"
+        explanation: "Amplify reúne lo necesario para crear y desplegar apps web y móviles, y permite definir el backend, como autenticación y datos, con código."
+        correct: true
+      - label: "AWS X-Ray"
+        explanation: "X-Ray diagnostica solicitudes de aplicaciones distribuidas; no crea apps ni define su backend."
 ---
 
 ## ¿Por qué importa?

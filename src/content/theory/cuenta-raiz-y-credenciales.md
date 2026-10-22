@@ -48,6 +48,73 @@ quiz:
         explanation: "El token TOTP de hardware muestra un código de seis dígitos; es un tipo válido, pero no es la opción resistente al phishing recomendada."
       - label: "MFA por mensaje SMS"
         explanation: "AWS ya no permite activar MFA por SMS en IAM, así que no es una opción disponible para estas identidades."
+practice:
+  - prompt: "Un equipo de desarrollo de Mérida quiere centralizar valores de configuración no sensibles, como URLs de servicios e IDs de AMI, sin costo adicional y sin necesidad de rotación. ¿Dónde conviene guardarlos?"
+    options:
+      - label: "En la política de contraseñas de IAM"
+        explanation: "La política de contraseñas define reglas para las contraseñas de los usuarios de IAM; no almacena valores de configuración."
+      - label: "En access keys de un usuario de IAM"
+        explanation: "Las access keys son credenciales de largo plazo para acceso programático; no sirven para guardar URLs ni IDs de AMI."
+      - label: "En Parameter Store de AWS Systems Manager"
+        explanation: "Parameter Store está pensado para configuración como URLs, IDs de AMI y variables de entorno, y su nivel estándar no tiene costo adicional."
+        correct: true
+      - label: "En el usuario raíz de la cuenta"
+        explanation: "El usuario raíz es la identidad con acceso total a la cuenta; no es un almacén de configuración y debe usarse solo para tareas que lo exigen."
+  - prompt: "Una empresa de Quito configuró una política de contraseñas en su cuenta de AWS con longitud mínima, expiración y prevención de reutilización. ¿A qué identidades se aplica esta política?"
+    options:
+      - label: "Solo a los usuarios de IAM"
+        explanation: "La política de contraseñas de la cuenta define reglas para las contraseñas de los usuarios de IAM únicamente."
+        correct: true
+      - label: "Al usuario raíz y a los usuarios de IAM"
+        explanation: "La política de contraseñas no se aplica al usuario raíz; pensar que lo protege es una trampa típica del examen."
+      - label: "A las access keys de todos los usuarios"
+        explanation: "La política de contraseñas no se aplica a las access keys; estas se gestionan con buenas prácticas como rotarlas y eliminar las que no se usan."
+      - label: "Solo al usuario raíz"
+        explanation: "El usuario raíz queda fuera de la política de contraseñas; para protegerlo se usa una contraseña fuerte y MFA."
+  - prompt: "Un desarrollador de Santo Domingo creó access keys para usar la AWS CLI, pero no copió la secret access key y ahora la necesita. ¿Qué debe hacer?"
+    options:
+      - label: "Consultarla en la consola de IAM, donde siempre está visible"
+        explanation: "La secret access key solo se puede ver al momento de crearla; después no vuelve a mostrarse en la consola."
+      - label: "Pedirle a AWS Support que se la envíe por correo"
+        explanation: "La clave secreta solo se muestra al crearla; si se pierde, la solución es crear una nueva, no recuperarla."
+      - label: "Usar solo el access key ID, que basta para autenticarse"
+        explanation: "Las access keys tienen dos partes, el access key ID y la secret access key; el ID solo no es suficiente."
+      - label: "Crear una nueva access key, porque la secreta solo se ve al crearla"
+        explanation: "La secret access key solo se puede ver al crearla; si se pierde, hay que crear otra access key."
+        correct: true
+  - prompt: "Durante una auditoría en una cooperativa de Cochabamba descubres que el usuario raíz tiene access keys activas que nadie recuerda haber creado. ¿Qué debes hacer según las buenas prácticas de AWS?"
+    options:
+      - label: "Compartirlas solo con el equipo de TI para que las use en scripts"
+        explanation: "Las credenciales del usuario raíz no se comparten, y las access keys nunca deben ponerse en scripts ni en el código."
+      - label: "Eliminarlas"
+        explanation: "AWS recomienda no crear access keys para el usuario raíz y, si existen, eliminarlas."
+        correct: true
+      - label: "Guardarlas en Parameter Store como SecureString"
+        explanation: "Cifrarlas en Parameter Store no elimina el riesgo; AWS desaconseja de forma explícita tener access keys en el usuario raíz."
+      - label: "Usarlas para el trabajo diario en lugar de un usuario administrativo"
+        explanation: "El usuario raíz no debe usarse para el trabajo diario; para eso se crea un usuario administrativo con menor privilegio."
+  - prompt: "Una agencia de publicidad de Guadalajara tiene una cuenta de AWS independiente, que no pertenece a AWS Organizations, y quiere cerrarla definitivamente. ¿Qué identidad debe realizar esta tarea?"
+    options:
+      - label: "Un usuario de IAM con la política AdministratorAccess"
+        explanation: "Cerrar una cuenta independiente está en la lista de tareas que solo puede hacer el usuario raíz; un usuario de IAM no puede reemplazarlo."
+      - label: "Un rol de IAM asumido por el equipo de finanzas"
+        explanation: "Los roles de IAM dan credenciales temporales para el trabajo diario; cerrar una cuenta independiente es una tarea exclusiva del raíz."
+      - label: "El usuario raíz"
+        explanation: "Cerrar una cuenta independiente es una de las tareas que solo puede hacer el usuario raíz, según la lista oficial de IAM."
+        correct: true
+      - label: "Un usuario administrativo de AWS IAM Identity Center"
+        explanation: "El usuario administrativo de IAM Identity Center sirve para el trabajo diario, pero cerrar una cuenta independiente exige el usuario raíz."
+  - prompt: "El equipo de seguridad de una minera de Antofagasta quiere monitorear el uso del usuario raíz y recibir alertas cada vez que alguien inicia sesión con él. ¿Qué servicios menciona AWS como ejemplo para lograrlo?"
+    options:
+      - label: "AWS CloudTrail y Amazon EventBridge"
+        explanation: "AWS recomienda monitorear el uso del usuario raíz con alertas, por ejemplo con AWS CloudTrail y Amazon EventBridge."
+        correct: true
+      - label: "AWS Secrets Manager y AWS KMS"
+        explanation: "Secrets Manager guarda secretos cifrados con AWS KMS; no se usa para alertar sobre el uso del usuario raíz."
+      - label: "La política de contraseñas de IAM"
+        explanation: "La política de contraseñas define reglas para los usuarios de IAM; no monitorea ni alerta sobre el uso del raíz."
+      - label: "Parameter Store de AWS Systems Manager"
+        explanation: "Parameter Store guarda configuración y valores simples; no genera alertas sobre inicios de sesión."
 ---
 
 ## ¿Por qué importa?

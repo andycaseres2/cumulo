@@ -46,6 +46,73 @@ quiz:
         explanation: "Mejorar el desempeño ESG consiste en usar información para mejorar la sostenibilidad y la transparencia corporativa, no en abrir nuevos mercados."
       - label: "Increased operational efficiency"
         explanation: "Aumentar la eficiencia operativa es reducir costos de operación y aumentar la productividad; no describe crear productos para nuevos clientes."
+practice:
+  - prompt: "En una minera de Antofagasta, el director de riesgos (CRO) quiere orquestar las iniciativas de la nube y gestionar los riesgos de los programas y proyectos de la transformación. ¿Qué perspectiva del AWS CAF cubre estas capacidades?"
+    options:
+      - label: "Security"
+        explanation: "Security busca la confidencialidad, integridad y disponibilidad de datos y cargas de trabajo; gestionar riesgos de programas y proyectos de la transformación no es su enfoque."
+      - label: "Governance"
+        explanation: "Governance orquesta las iniciativas maximizando beneficios y minimizando riesgos, con capacidades como gestión de programas y proyectos y gestión de riesgos."
+        correct: true
+      - label: "Business"
+        explanation: "Business busca que las inversiones en la nube aceleren los resultados de negocio con gestión de la estrategia e innovación; la gestión de riesgos del programa es de otra perspectiva."
+      - label: "Platform"
+        explanation: "Platform se enfoca en construir la plataforma de nube y modernizar aplicaciones con arquitectos e ingenieros; no gestiona los riesgos de los programas."
+  - prompt: "Una cadena de farmacias de Guayaquil recién empieza su transformación: quiere mostrar cómo la nube acelerará sus resultados de negocio, identificar y priorizar oportunidades y asignarles responsables y métricas. ¿En qué fase del AWS CAF está?"
+    options:
+      - label: "Envision"
+        explanation: "En Envision se muestra cómo la nube acelerará los resultados de negocio y se identifican y priorizan oportunidades asociadas a responsables y métricas."
+        correct: true
+      - label: "Align"
+        explanation: "En Align se buscan brechas de capacidades en las seis perspectivas y dependencias entre áreas; ocurre después de priorizar las oportunidades."
+      - label: "Launch"
+        explanation: "En Launch se entregan pilotos en producción que demuestran valor incremental; la cadena todavía no llegó a ese punto."
+      - label: "Scale"
+        explanation: "En Scale se expanden los pilotos y el valor de negocio a la escala deseada; primero hace falta haber lanzado pilotos."
+  - prompt: "El equipo de arquitectos e ingenieros de una empresa de logística de Monterrey quiere construir una plataforma de nube híbrida y escalable, implementar CI/CD y crear soluciones nativas de la nube. ¿Qué perspectiva del AWS CAF corresponde?"
+    options:
+      - label: "People"
+        explanation: "People atiende la cultura, el liderazgo y la transformación de la fuerza laboral; no se encarga de la arquitectura de la plataforma ni del CI/CD."
+      - label: "Governance"
+        explanation: "Governance orquesta iniciativas y gestiona programas, riesgos y gobierno de datos; construir la plataforma técnica es de otra perspectiva."
+      - label: "Business"
+        explanation: "Business se orienta a la estrategia, el portafolio y la monetización de datos con partes interesadas como el CEO y el CFO; no construye la plataforma."
+      - label: "Platform"
+        explanation: "Platform busca una plataforma de nube híbrida, escalable y de nivel empresarial, con capacidades como arquitectura de plataforma, desarrollo moderno de aplicaciones y CI/CD."
+        correct: true
+  - prompt: "El CISO de un banco de Asunción pide asegurar la confidencialidad, integridad y disponibilidad de los datos, con capacidades como gestión de identidades y accesos y detección de amenazas. ¿Qué perspectiva del AWS CAF atiende este pedido?"
+    options:
+      - label: "People"
+        explanation: "People se enfoca en la cultura, la estructura organizacional y las habilidades del equipo; no protege datos ni detecta amenazas."
+      - label: "Business"
+        explanation: "Business busca que las inversiones en la nube aceleren los resultados de negocio; no se encarga de la protección de datos y cargas de trabajo."
+      - label: "Security"
+        explanation: "Security busca la confidencialidad, integridad y disponibilidad de datos y cargas de trabajo, con capacidades como gestión de identidades y accesos y detección de amenazas."
+        correct: true
+      - label: "Governance"
+        explanation: "Governance gestiona programas, proyectos y riesgos de la transformación; la protección de datos y la detección de amenazas son de otra perspectiva."
+  - prompt: "Una embotelladora de San José, Costa Rica, quiere usar la información de sus operaciones en la nube para mejorar su sostenibilidad y la transparencia corporativa ante sus inversionistas. ¿Qué resultado de negocio del AWS CAF persigue?"
+    options:
+      - label: "Increased revenue"
+        explanation: "Aumentar los ingresos es crear nuevos productos y servicios y llegar a nuevos clientes o mercados; no trata la sostenibilidad ni la transparencia."
+      - label: "Improved ESG performance"
+        explanation: "Mejorar el desempeño ESG (ambiental, social y de gobierno) es usar información para mejorar la sostenibilidad y la transparencia corporativa."
+        correct: true
+      - label: "Increased operational efficiency"
+        explanation: "Aumentar la eficiencia operativa es reducir costos de operación y aumentar la productividad; el objetivo aquí es la sostenibilidad y la transparencia."
+      - label: "Reduced business risk"
+        explanation: "Reducir el riesgo del negocio es bajar el perfil de riesgo con mejor confiabilidad, rendimiento y seguridad; no describe mejorar la sostenibilidad."
+  - prompt: "Según la cadena de valor del AWS CAF, los cuatro dominios de transformación se habilitan uno a otro en orden. ¿Qué dominio es el punto de partida que habilita la transformación de procesos?"
+    options:
+      - label: "Producto"
+        explanation: "La transformación de producto (nuevas propuestas de valor y modelos de ingresos) es el último eslabón de la cadena, no el primero."
+      - label: "Organizacional"
+        explanation: "La transformación organizacional (repensar el modelo operativo y organizar equipos en torno a productos) es habilitada por la de procesos, no la habilita."
+      - label: "Procesos"
+        explanation: "La transformación de procesos (digitalizar, automatizar y optimizar operaciones) es la que resulta habilitada; la pregunta busca el dominio que la precede."
+      - label: "Tecnológica"
+        explanation: "La transformación tecnológica (migrar y modernizar infraestructura, aplicaciones y datos) inicia la cadena y habilita la de procesos."
+        correct: true
 ---
 
 ## ¿Por qué importa?

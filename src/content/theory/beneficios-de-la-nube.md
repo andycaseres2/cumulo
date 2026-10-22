@@ -46,6 +46,73 @@ quiz:
         explanation: "Esta ventaja trata de dejar de instalar, cablear y alimentar servidores; el escenario destaca la velocidad para probar ideas."
       - label: "Go global in minutes"
         explanation: "Esta ventaja trata de llegar a usuarios en varias Regiones del mundo; el banco busca rapidez para experimentar, no alcance global."
+practice:
+  - prompt: "Una tienda de artesanías de Oaxaca vende casi todo en temporada alta. Antes compraba servidores con un gran pago inicial; en AWS su factura sube en temporada alta y baja el resto del año, según lo que usa. ¿Qué ventaja de la nube describe este cambio?"
+    options:
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican precios más bajos porque AWS agrupa a muchos clientes; el escenario habla de pagar solo por lo que se consume."
+      - label: "Go global in minutes"
+        explanation: "Esta ventaja trata de desplegar en varias Regiones del mundo con pocos clics; no describe el cambio en la forma de pagar."
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja significa dejar de invertir por adelantado y pagar solo cuando consumes y solo lo que consumes."
+        correct: true
+      - label: "Increase speed and agility"
+        explanation: "Esta ventaja trata de obtener recursos en minutos en lugar de semanas; el escenario se centra en el modelo de pago."
+  - prompt: "Una empresa de venta de boletos de Bogotá nunca sabe cuánta demanda tendrá: antes compraba servidores de más o se quedaba corta. En AWS escala hacia arriba o hacia abajo con pocos minutos de aviso. ¿Qué ventaja aprovecha?"
+    options:
+      - label: "Stop guessing capacity"
+        explanation: "Con esta ventaja ya no adivinas cuánta infraestructura necesitas: escalas hacia arriba o hacia abajo con pocos minutos de aviso."
+        correct: true
+      - label: "Go global in minutes"
+        explanation: "Go global in minutes trata de llegar a usuarios en varias Regiones; la demanda impredecible se resuelve con stop guessing capacity."
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "Esta ventaja trata de dejar de instalar, cablear y alimentar servidores; no describe escalar según una demanda incierta."
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican precios más bajos por el volumen de clientes de AWS, no la capacidad de escalar con minutos de aviso."
+  - prompt: "Una cooperativa de Arequipa cerró su cuarto de servidores al migrar a AWS: ya no reemplaza discos dañados ni mantiene la refrigeración, y su equipo dedica ese tiempo a lo que diferencia a su negocio. ¿Qué ventaja de la nube describe este caso?"
+    options:
+      - label: "Increase speed and agility"
+        explanation: "Esta ventaja trata de obtener recursos en minutos y experimentar a bajo costo; el escenario destaca dejar de operar servidores."
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja trata de pagar solo lo que consumes; el escenario habla de liberar al equipo del trabajo físico con servidores."
+      - label: "Stop guessing capacity"
+        explanation: "Esta ventaja trata de escalar con minutos de aviso sin adivinar la capacidad; no describe dejar de instalar y cablear servidores."
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "Con esta ventaja te enfocas en lo que diferencia a tu negocio en lugar de instalar, cablear y alimentar servidores."
+        correct: true
+  - prompt: "Una plataforma de cursos en línea de Santiago quiere llegar a estudiantes de México y España con menor latencia, desplegando su aplicación en varias Regiones con pocos clics y a un costo mínimo. ¿Qué ventaja de la nube aprovecha?"
+    options:
+      - label: "Stop guessing capacity"
+        explanation: "Esta ventaja trata de escalar según la demanda con minutos de aviso; el escenario busca acercarse a usuarios de otros países."
+      - label: "Go global in minutes"
+        explanation: "Esta ventaja permite desplegar en varias Regiones del mundo con pocos clics, con menor latencia para los clientes y a un costo mínimo."
+        correct: true
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja trata de pagar solo lo que consumes; no describe desplegar en otras Regiones para reducir la latencia."
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican precios más bajos por el volumen de clientes de AWS; no tratan del alcance geográfico."
+  - prompt: "Un sitio de noticias de Buenos Aires recibe picos de tráfico impredecibles y quiere agregar y quitar servidores automáticamente según la demanda, sin sobredimensionar ni quedarse corto. ¿Qué concepto describe esta necesidad?"
+    options:
+      - label: "Alta disponibilidad"
+        explanation: "La alta disponibilidad responde a fallas de infraestructura; el escenario habla de cambios en la demanda."
+      - label: "Agilidad"
+        explanation: "La agilidad es la rapidez para obtener recursos y experimentar; no describe el ajuste automático según el tráfico."
+      - label: "Elasticidad"
+        explanation: "La elasticidad es aumentar o reducir recursos automáticamente según la demanda, agregando y quitando servidores al subir o bajar el tráfico."
+        correct: true
+      - label: "Alcance global"
+        explanation: "El alcance global consiste en colocar la aplicación cerca de los usuarios para reducir la latencia, no en ajustarse a los picos de tráfico."
+  - prompt: "El gerente financiero de una distribuidora de Asunción cree que al migrar a AWS desaparecerán todos los costos de tecnología de la empresa. ¿Qué afirmación es correcta?"
+    options:
+      - label: "La nube elimina todos los costos de tecnología"
+        explanation: "La nube cambia el tipo de gasto, pero no lo hace desaparecer; la empresa sigue pagando por lo que consume."
+      - label: "La nube cambia el gasto de capital (CapEx) por gasto operativo variable (OpEx), pero no lo hace desaparecer"
+        explanation: "Con la nube dejas de invertir por adelantado en bienes físicos y pagas a medida que consumes; el gasto cambia de tipo, pero sigue existiendo."
+        correct: true
+      - label: "La nube convierte el gasto operativo variable en gasto de capital"
+        explanation: "Ocurre al revés: la nube cambia el gasto de capital por adelantado por gasto variable que se paga según el consumo."
+      - label: "La nube obliga a pagar por adelantado la capacidad de todo el año"
+        explanation: "La nube funciona con pago por uso: pagas a medida que consumes, en lugar de invertir por adelantado en capacidad."
 ---
 
 ## ¿Por qué importa?

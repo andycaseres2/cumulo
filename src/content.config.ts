@@ -31,6 +31,8 @@ const theory = defineCollection({
     sources: z.array(z.url()).min(1),
     /** Three questions at the end of the topic; answering all of them right completes it. */
     quiz: z.array(quizQuestion).length(3).optional(),
+    /** Extra questions about the topic used only by the practice exam, so repeated attempts stay fresh. */
+    practice: z.array(quizQuestion).length(6).optional(),
   }),
 });
 

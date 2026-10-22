@@ -52,6 +52,73 @@ quiz:
       - label: "Al equipo de AWS Trust & Safety, mediante el formulario de reporte de abuso"
         explanation: "El abuso de recursos de AWS, como escaneo de puertos, se reporta a AWS Trust & Safety con su formulario, incluso sin tener una cuenta de AWS."
         correct: true
+practice:
+  - prompt: "Un banco de Bogotá opera cargas de misión crítica y necesita respuesta en menos de 5 minutos ante una caída crítica del negocio, con Incident Management Engineers y monitoreo 24/7 de seguridad y rendimiento. ¿Qué plan debe contratar?"
+    options:
+      - label: "AWS Enterprise Support"
+        explanation: "Enterprise Support responde en menos de 15 minutos en caídas críticas y no incluye el monitoreo 24/7 de misión crítica que se pide."
+      - label: "AWS Business Support+"
+        explanation: "Business Support+ es el mínimo para producción, con respuesta en menos de 30 minutos; no llega a lo que exige el banco."
+      - label: "AWS Unified Operations"
+        explanation: "Unified Operations está pensado para misión crítica: Incident Management Engineers con respuesta en menos de 5 minutos y monitoreo 24/7 de seguridad y rendimiento."
+        correct: true
+      - label: "Basic Support"
+        explanation: "Basic Support no incluye casos de soporte técnico; solo cubre cuenta y facturación."
+  - prompt: "Una startup de Guatemala tiene el plan Basic Support y quiere ver la salud de los servicios de AWS y los eventos que afectan a su cuenta. ¿Qué necesita para usar el AWS Health Dashboard?"
+    options:
+      - label: "Nada adicional; el AWS Health Dashboard es gratuito y sin configuración para todos los clientes"
+        explanation: "El AWS Health Dashboard es gratuito y sin configuración para todos los clientes, incluidos los de Basic Support."
+        correct: true
+      - label: "Contratar AWS Business Support+"
+        explanation: "Business Support+ se requiere para la AWS Health API, no para el AWS Health Dashboard."
+      - label: "Contratar AWS Enterprise Support"
+        explanation: "Enterprise Support agrega TAM y servicios proactivos, pero no hace falta para ver el AWS Health Dashboard."
+      - label: "Abrir un caso en AWS Support Center para activarlo"
+        explanation: "El AWS Health Dashboard no requiere configuración ni activación; no hace falta abrir un caso."
+  - prompt: "Una tienda de ropa de Rosario con el plan Basic Support tiene una duda sobre un cargo en su factura de AWS. ¿Qué opción tiene?"
+    options:
+      - label: "Contratar AWS Business Support+, porque Basic no permite consultas de facturación"
+        explanation: "Basic incluye acceso 24/7 al servicio al cliente de cuenta y facturación, así que no necesita cambiar de plan."
+      - label: "Reportarlo al equipo de AWS Trust & Safety"
+        explanation: "AWS Trust & Safety atiende reportes de abuso de recursos de AWS, no dudas sobre la factura."
+      - label: "Revisarlo con los checks de AWS Trusted Advisor"
+        explanation: "Trusted Advisor recomienda mejores prácticas para tu entorno; no responde consultas sobre un cargo específico de la factura."
+      - label: "Contactar al servicio al cliente de cuenta y facturación, que es gratuito en todos los planes"
+        explanation: "El soporte de cuenta y facturación es gratuito para todos los planes, incluido Basic Support."
+        correct: true
+  - prompt: "El ingeniero de guardia de una plataforma educativa de Lima necesita crear un caso de soporte, elegir su severidad y darle seguimiento. ¿Dónde lo hace?"
+    options:
+      - label: "En AWS re:Post"
+        explanation: "AWS re:Post es el servicio de preguntas y respuestas de la comunidad; ahí no se crean casos de soporte con severidad."
+      - label: "En AWS Support Center"
+        explanation: "AWS Support Center es la consola donde creas y administras casos de soporte y eliges su severidad."
+        correct: true
+      - label: "En el AWS Health Dashboard"
+        explanation: "El AWS Health Dashboard muestra eventos que afectan a tus recursos y a los servicios de AWS; no gestiona casos de soporte."
+      - label: "En el AWS Trust & Safety Center"
+        explanation: "El AWS Trust & Safety Center explica cómo reportar abuso y responder a sus avisos; no es donde se abren casos de soporte."
+  - prompt: "Un estudiante de Caracas encuentra en una guía antigua que el plan recomendado para su escenario es Enterprise On-Ramp. Según AWS, ¿qué pasa con ese plan?"
+    options:
+      - label: "Es el plan mínimo recomendado para producción en la guía vigente"
+        explanation: "El mínimo recomendado para producción en la guía vigente es AWS Business Support+, no Enterprise On-Ramp."
+      - label: "Forma parte de los cuatro planes vigentes del examen"
+        explanation: "Los cuatro planes vigentes son Basic, Business Support+, Enterprise Support y Unified Operations; Enterprise On-Ramp no está entre ellos."
+      - label: "Se discontinúa el 1 de enero de 2027 y sus clientes se migran automáticamente a AWS Enterprise Support durante 2026"
+        explanation: "AWS discontinúa Enterprise On-Ramp el 1 de enero de 2027, y sus clientes se migran automáticamente a Enterprise Support durante 2026."
+        correct: true
+      - label: "Se reemplaza por Basic Support"
+        explanation: "Los clientes de Enterprise On-Ramp pasan a Enterprise Support, no a Basic Support."
+  - prompt: "Una cadena hotelera de Cancún ya tiene todos los checks de Trusted Advisor, pero ahora también quiere Trusted Advisor Priority. Entre los planes vigentes, ¿cuál es el primero que lo incluye?"
+    options:
+      - label: "Basic Support"
+        explanation: "Basic Support solo da los checks básicos de Trusted Advisor, sin Trusted Advisor Priority."
+      - label: "AWS Business Support+"
+        explanation: "Business Support+ incluye todos los checks de Trusted Advisor, pero no Trusted Advisor Priority."
+      - label: "Developer Support"
+        explanation: "Developer Support se discontinúa el 1 de enero de 2027 y no forma parte de los planes vigentes del examen."
+      - label: "AWS Enterprise Support"
+        explanation: "Enterprise Support incluye todos los checks de Trusted Advisor más Trusted Advisor Priority, y es el primer plan que lo ofrece."
+        correct: true
 ---
 
 ## ¿Por qué importa?

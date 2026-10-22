@@ -48,6 +48,73 @@ quiz:
         explanation: "La facturación consolidada une las facturas y comparte descuentos, pero no entrega por sí sola archivos detallados por hora y etiqueta en S3."
       - label: "Las facturas de las cuentas miembro"
         explanation: "En una organización, las facturas de las cuentas miembro son solo informativas; no son el conjunto de datos detallado que se entrega en S3 para consultar con Athena."
+practice:
+  - prompt: "Un grupo de retail de Santiago tiene sus cuentas en AWS Organizations. Finanzas nota que el descuento de una Reserved Instance comprada en la cuenta de logística se aplicó a instancias que coinciden en la cuenta de e-commerce. ¿Por qué ocurre?"
+    options:
+      - label: "La cuenta de e-commerce activó una etiqueta de asignación de costos que mueve el descuento"
+        explanation: "Las etiquetas organizan los costos para reportes; no mueven descuentos de RI entre cuentas."
+      - label: "AWS Cost Explorer reasigna automáticamente las RI que no se usan"
+        explanation: "Cost Explorer sirve para visualizar y analizar costos; no aplica ni reasigna descuentos de RI."
+      - label: "Para la facturación, la organización se trata como una sola cuenta y los descuentos de RI se comparten"
+        explanation: "Con facturación consolidada la organización se trata como una sola cuenta, así que el beneficio de una RI puede aplicarse a instancias que coincidan en otra cuenta."
+        correct: true
+      - label: "Es un error de facturación, porque una RI solo beneficia a la cuenta que la compró"
+        explanation: "En una organización los descuentos de RI se comparten por defecto; que beneficien a otra cuenta es el comportamiento esperado."
+  - prompt: "Una holding de Bogotá con AWS Organizations quiere que los descuentos de Reserved Instances y Savings Plans de cada cuenta dejen de compartirse con las demás cuentas. ¿Qué debe hacer?"
+    options:
+      - label: "Desactivar el uso compartido desde la cuenta de administración, en la página Preferences de Billing and Cost Management"
+        explanation: "La cuenta de administración puede desactivar el uso compartido de descuentos de RI y Savings Plans en la página Preferences de la consola de Billing and Cost Management."
+        correct: true
+      - label: "Pedir a cada cuenta miembro que desactive la facturación consolidada"
+        explanation: "La configuración del uso compartido la controla la cuenta de administración, no cada cuenta miembro."
+      - label: "Quitar las etiquetas user-defined de las instancias reservadas"
+        explanation: "Las etiquetas sirven para organizar y reportar costos; quitarlas no cambia cómo se comparten los descuentos."
+      - label: "Crear una exportación CUR 2.0 en AWS Data Exports"
+        explanation: "El CUR entrega datos detallados de costo y uso en S3; no cambia el reparto de descuentos entre cuentas."
+  - prompt: "Una startup de Asunción tiene una cuenta con el plan gratuito (Free account plan) y la empresa matriz quiere sumarla a su organización de AWS Organizations. ¿Qué ocurre con esa cuenta al unirse?"
+    options:
+      - label: "Puede seguir en el plan gratuito mientras sea cuenta miembro"
+        explanation: "Una cuenta con el plan gratuito no conserva ese plan dentro de una organización: al unirse pasa automáticamente al plan pagado."
+      - label: "Sigue en el plan gratuito hasta que la cambie manualmente"
+        explanation: "El cambio no es manual: al unirse a la organización, la cuenta pasa automáticamente al plan pagado."
+      - label: "Debe pagar una tarifa mensual por usar la facturación consolidada"
+        explanation: "La facturación consolidada es gratuita; unirse a la organización no agrega una tarifa por ese servicio."
+      - label: "Pasa automáticamente al plan pagado"
+        explanation: "Si una cuenta con el plan gratuito se une a AWS Organizations, pasa automáticamente al plan pagado; los créditos que le queden se aplican a sus facturas futuras."
+        correct: true
+  - prompt: "El equipo de costos de una constructora de Lima encuentra la etiqueta aws:createdBy en sus recursos y quiere agrupar costos por ella en AWS Cost Explorer. ¿Qué tipo de etiqueta es y qué debe hacer?"
+    options:
+      - label: "Es user-defined y aparece en Cost Explorer sin activarla"
+        explanation: "El prefijo aws: indica que la generó AWS, y ninguna etiqueta aparece en Cost Explorer sin activarse primero."
+      - label: "Es AWS-generated y debe activarse como etiqueta de asignación de costos"
+        explanation: "Las etiquetas con prefijo aws: son AWS-generated y, como las user-defined, deben activarse por separado en Billing and Cost Management antes de aparecer en Cost Explorer."
+        correct: true
+      - label: "Es AWS-generated y aparece en Cost Explorer sin activarla"
+        explanation: "Aunque la cree AWS, la etiqueta debe activarse como etiqueta de asignación de costos antes de aparecer en Cost Explorer."
+      - label: "Es user-defined y debe activarla cada cuenta miembro"
+        explanation: "El prefijo aws: corresponde a etiquetas AWS-generated, y en una organización solo la cuenta de administración gestiona las etiquetas de asignación de costos."
+  - prompt: "Una empresa de medios de Buenos Aires unió sus seis cuentas en AWS Organizations y su costo de Amazon S3 y de transferencia de datos bajó, aunque el uso total fue el mismo. ¿Qué lo explica?"
+    options:
+      - label: "AWS suma el uso de todas las cuentas para decidir qué nivel de precio por volumen aplicar"
+        explanation: "S3 y la transferencia de datos tienen niveles de precio por volumen; al sumar el uso de todas las cuentas, la organización llega antes a los precios más bajos por GB."
+        correct: true
+      - label: "Cada cuenta recibe un descuento fijo solo por pertenecer a la organización"
+        explanation: "El ahorro viene de combinar el uso para alcanzar niveles de precio por volumen, no de un descuento fijo por cuenta."
+      - label: "Las etiquetas de asignación de costos reducen la tarifa por GB"
+        explanation: "Las etiquetas organizan y reportan los costos; no cambian el precio por GB."
+      - label: "AWS Cost Explorer aplica precios más bajos al visualizar los costos"
+        explanation: "Cost Explorer sirve para visualizar y analizar costos; no modifica los precios que se cobran."
+  - prompt: "El contador de una cadena de cafeterías de Medellín pregunta quién paga en una organización con facturación consolidada y qué valor tienen las facturas que ve cada cuenta miembro. ¿Qué respuesta es correcta?"
+    options:
+      - label: "Cada cuenta miembro paga su propia factura y la de administración solo las revisa"
+        explanation: "En la facturación consolidada paga la cuenta de administración; las cuentas miembro no pagan sus propias facturas."
+      - label: "Paga la cuenta miembro con el mayor gasto del mes"
+        explanation: "No importa qué cuenta gasta más: la cuenta de administración paga los cargos de todas las cuentas miembro."
+      - label: "Paga la cuenta de administración y las facturas de las cuentas miembro son solo informativas"
+        explanation: "La cuenta de administración paga los cargos de todas las cuentas miembro, cuyas facturas son solo informativas."
+        correct: true
+      - label: "Las cuentas miembro pagan y la de administración recibe un resumen informativo"
+        explanation: "Es al revés: la cuenta de administración es la que paga y las facturas de las cuentas miembro son informativas."
 ---
 
 ## ¿Por qué importa?
@@ -67,7 +134,7 @@ Beneficios de la **facturación consolidada** (*consolidated billing*):
 - **Uso combinado:** el uso de todas las cuentas se suma, lo que permite compartir **descuentos por volumen**, descuentos de **Reserved Instances** y **Savings Plans**. El resultado puede ser un cargo menor que con cuentas independientes.
 - **Sin costo adicional:** la facturación consolidada es gratuita.
 
-Ejemplo: servicios como la transferencia de datos y Amazon S3 tienen **niveles de precio por volumen**. AWS suma el uso de todas las cuentas para decidir qué nivel aplicar, así la organización llega antes a los precios más bajos por GB y luego AWS reparte el descuento entre las cuentas según su uso. La capa gratuita también se aplica al uso total de la organización, no a cada cuenta. Ojo: si una cuenta con el plan gratuito (Free account plan) se une a AWS Organizations, pasa automáticamente al plan pagado y pierde sus créditos de la capa gratuita.
+Ejemplo: servicios como la transferencia de datos y Amazon S3 tienen **niveles de precio por volumen**. AWS suma el uso de todas las cuentas para decidir qué nivel aplicar, así la organización llega antes a los precios más bajos por GB y luego AWS reparte el descuento entre las cuentas según su uso. La capa gratuita también se aplica al uso total de la organización, no a cada cuenta. Ojo: si una cuenta con el plan gratuito (Free account plan) se une a AWS Organizations, pasa automáticamente al plan pagado; los créditos que le queden se aplican a sus facturas futuras.
 
 ## Asignación de costos entre cuentas
 

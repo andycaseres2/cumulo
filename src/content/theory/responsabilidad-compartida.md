@@ -46,6 +46,73 @@ quiz:
       - label: "Los controles físicos y ambientales de los centros de datos"
         explanation: "Los controles físicos y ambientales de los centros de datos son el ejemplo de control heredado: el cliente los hereda por completo de AWS."
         correct: true
+practice:
+  - prompt: "Una startup de delivery de Lima procesa pedidos con funciones de AWS Lambda. Según el modelo de responsabilidad compartida, ¿qué le corresponde a la startup?"
+    options:
+      - label: "Parchar el sistema operativo donde corren las funciones"
+        explanation: "En Lambda, AWS administra la infraestructura, el sistema operativo y la plataforma, incluido el parcheo."
+      - label: "Parchar el runtime de las funciones"
+        explanation: "En Lambda, el software principal o runtime lo parcha AWS, no el cliente."
+      - label: "La seguridad física de los servidores"
+        explanation: "La seguridad física y el hardware son seguridad DE la nube, responsabilidad de AWS en todos los servicios."
+      - label: "Las dependencias que incluye en el código de sus funciones"
+        explanation: "En Lambda, el cliente es responsable de su código, de las dependencias que incluye, de los permisos de IAM de la función y de sus datos."
+        correct: true
+  - prompt: "Una agencia de viajes de Cartagena descubre que unos archivos con datos de clientes en Amazon S3 quedaron accesibles para cualquiera. Según el modelo de responsabilidad compartida, ¿quién debía configurar ese acceso?"
+    options:
+      - label: "AWS, porque administra la infraestructura de Amazon S3"
+        explanation: "AWS gestiona la infraestructura y la plataforma de S3, pero no decide quién puede ver tus archivos."
+      - label: "La agencia, porque los permisos de acceso a sus datos son responsabilidad del cliente"
+        explanation: "En S3 el cliente se encarga de sus datos: opciones de cifrado, clasificación y permisos de acceso mediante IAM."
+        correct: true
+      - label: "AWS, porque S3 es un servicio muy abstraído"
+        explanation: "Más abstracción reduce las tareas operativas del cliente, pero los datos y los permisos de acceso siguen siendo suyos."
+      - label: "AWS, porque es un control heredado"
+        explanation: "El ejemplo de control heredado son los controles físicos y ambientales de los centros de datos, no los permisos de los datos del cliente."
+  - prompt: "En una cadena de restaurantes de Monterrey, AWS configura sus dispositivos de infraestructura y el equipo de TI configura sus sistemas operativos, bases de datos y aplicaciones. ¿Qué tipo de control describe esta situación?"
+    options:
+      - label: "Un control heredado"
+        explanation: "Un control heredado lo hereda el cliente por completo de AWS, como los controles físicos; aquí ambos hacen su parte."
+      - label: "Un control específico del cliente"
+        explanation: "Un control específico del cliente depende solo del cliente y su aplicación; aquí AWS también configura su infraestructura."
+      - label: "Un control compartido"
+        explanation: "La gestión de configuración es un control compartido: AWS configura su infraestructura y el cliente sus sistemas operativos, bases de datos y aplicaciones."
+        correct: true
+      - label: "Seguridad DE la nube, solo a cargo de AWS"
+        explanation: "La seguridad DE la nube cubre la infraestructura de AWS; configurar los sistemas del cliente es parte de la seguridad EN la nube."
+  - prompt: "Una empresa de videojuegos de Santiago usa las Regiones, Availability Zones y ubicaciones de borde de AWS. ¿Quién es responsable de la seguridad de esa infraestructura?"
+    options:
+      - label: "AWS, como parte de la seguridad DE la nube"
+        explanation: "AWS protege la infraestructura que ejecuta sus servicios, incluidas las Regiones, las Availability Zones y las ubicaciones de borde."
+        correct: true
+      - label: "La empresa, porque elige en qué Regiones desplegar"
+        explanation: "Elegir Regiones no traslada la seguridad de esa infraestructura al cliente; protegerla es seguridad DE la nube."
+      - label: "Ambos, como control compartido"
+        explanation: "Los controles compartidos son parches, configuración y capacitación; la seguridad de Regiones y AZ es solo de AWS."
+      - label: "La empresa, como control específico del cliente"
+        explanation: "Los controles específicos del cliente dependen de su aplicación, como separar ciertos datos; no incluyen la infraestructura de AWS."
+  - prompt: "Una empresa de logística de Quito compara servicios de AWS para su nueva aplicación. ¿En cuál de estos le tocan más tareas de seguridad, incluido parchar el sistema operativo?"
+    options:
+      - label: "AWS Lambda"
+        explanation: "En Lambda, AWS administra servidores, sistema operativo y runtime; el cliente se encarga de su código, dependencias, permisos y datos."
+      - label: "Amazon EC2"
+        explanation: "Amazon EC2 es IaaS: el cliente instala, configura y parcha el sistema operativo invitado, el software y las reglas de red; es donde más le toca."
+        correct: true
+      - label: "Amazon RDS"
+        explanation: "En Amazon RDS, AWS parcha el sistema operativo y el motor de base de datos dentro de la ventana de mantenimiento."
+      - label: "Amazon DynamoDB"
+        explanation: "En DynamoDB, AWS gestiona la infraestructura, el sistema operativo y la plataforma; el cliente se enfoca en sus datos."
+  - prompt: "Un hospital de Guadalajara guarda datos de pacientes en Amazon DynamoDB. ¿Quién es responsable de cumplir las leyes y normas que aplican a esos datos?"
+    options:
+      - label: "AWS, porque DynamoDB es un servicio administrado"
+        explanation: "Que el servicio sea administrado reduce tareas operativas, pero no traslada a AWS el cumplimiento de las normas sobre los datos del cliente."
+      - label: "AWS, porque gestiona el sistema operativo y la plataforma"
+        explanation: "AWS gestiona el sistema operativo y la plataforma de DynamoDB, pero eso no lo hace responsable de las normas que aplican a los datos del hospital."
+      - label: "AWS, como control heredado de los centros de datos"
+        explanation: "Los controles heredados son los físicos y ambientales de los centros de datos; no cubren el cumplimiento sobre los datos del cliente."
+      - label: "El hospital, porque sigue siendo responsable de las normas que aplican a sus datos"
+        explanation: "Aunque el servicio sea muy administrado, el cliente sigue siendo responsable de cumplir las leyes y normas que aplican a sus datos."
+        correct: true
 ---
 
 ## ¿Por qué importa?

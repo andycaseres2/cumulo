@@ -51,6 +51,73 @@ quiz:
         explanation: "S3 File Gateway presenta recursos compartidos NFS o SMB respaldados en S3; no gestiona políticas de respaldo para EC2, RDS y DynamoDB."
       - label: "Amazon FSx for OpenZFS"
         explanation: "FSx for OpenZFS es un sistema de archivos administrado sobre OpenZFS; no centraliza ni protege respaldos de otros servicios."
+practice:
+  - prompt: "Una firma de ingeniería de Monterrey ya usa NetApp en su centro de datos y quiere un sistema de archivos administrado en AWS al que accedan equipos Linux, Windows y macOS por NFS, SMB e iSCSI. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon FSx for Windows File Server"
+        explanation: "FSx for Windows File Server está construido sobre Windows Server y usa SMB; no es la opción para quien ya usa NetApp y necesita acceso por NFS, SMB e iSCSI."
+      - label: "Amazon EFS"
+        explanation: "Amazon EFS es un sistema de archivos NFS que no es compatible con instancias EC2 Windows; no cubre el acceso multiprotocolo de una empresa que ya usa NetApp."
+      - label: "Amazon FSx for NetApp ONTAP"
+        explanation: "FSx for NetApp ONTAP está construido sobre NetApp ONTAP y ofrece acceso por NFS, SMB, iSCSI y NVMe desde Linux, Windows y macOS."
+        correct: true
+      - label: "Volume Gateway"
+        explanation: "Volume Gateway presenta volúmenes iSCSI desde un dispositivo en tu centro de datos para extender el almacenamiento local; no es un sistema de archivos administrado multiprotocolo en AWS."
+  - prompt: "Un hospital de Barranquilla quiere replicar continuamente sus servidores on-premises hacia AWS, hacer simulacros sin interrumpir la operación y, si su centro de datos se inunda, levantar los servidores en AWS en minutos y luego regresar a su sitio principal. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery replica continuamente los servidores a un área de preparación, permite simulacros, lanza instancias de recuperación en minutos y admite failback."
+        correct: true
+      - label: "AWS Backup"
+        explanation: "AWS Backup centraliza copias para restaurar datos; no mantiene servidores completos replicados listos para arrancar en minutos con failback."
+      - label: "Amazon S3 File Gateway"
+        explanation: "S3 File Gateway presenta recursos compartidos NFS o SMB respaldados en Amazon S3; no replica servidores completos para recuperarlos ante un desastre."
+      - label: "Amazon FSx for OpenZFS"
+        explanation: "FSx for OpenZFS es un sistema de archivos administrado sobre OpenZFS; no replica ni recupera servidores on-premises ante un desastre."
+  - prompt: "Una editorial de Córdoba quiere que sus servidores locales sigan guardando archivos en recursos compartidos NFS, pero que esos archivos queden como objetos en Amazon S3 para alimentar un data lake, con los más usados en una caché local. ¿Qué tipo de AWS Storage Gateway corresponde?"
+    options:
+      - label: "Volume Gateway"
+        explanation: "Volume Gateway presenta volúmenes de bloques iSCSI; no ofrece recursos compartidos NFS cuyos archivos se guarden como objetos en S3."
+      - label: "Amazon S3 File Gateway"
+        explanation: "S3 File Gateway presenta recursos compartidos NFS o SMB, guarda los archivos como objetos en Amazon S3 y mantiene en caché local los datos más usados."
+        correct: true
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway presenta cintas virtuales al software de respaldo; no ofrece recursos compartidos de archivos para alimentar un data lake."
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery replica servidores para recuperarlos ante un desastre; no presenta recursos compartidos NFS conectados a S3."
+  - prompt: "Una planta manufacturera de Puebla quiere extender el almacenamiento de bloques de sus servidores locales con volúmenes iSCSI respaldados en la nube, para poder recuperarlos desde AWS. ¿Qué tipo de AWS Storage Gateway debe usar?"
+    options:
+      - label: "Amazon S3 File Gateway"
+        explanation: "S3 File Gateway presenta recursos compartidos de archivos NFS o SMB; no presenta volúmenes de bloques iSCSI a los servidores locales."
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway presenta cintas virtuales para el software de respaldo; no extiende el almacenamiento de bloques con volúmenes iSCSI."
+      - label: "Amazon FSx for Windows File Server"
+        explanation: "FSx for Windows File Server ofrece carpetas compartidas de Windows por SMB; no es un gateway híbrido que presente volúmenes iSCSI a servidores locales."
+      - label: "Volume Gateway"
+        explanation: "Volume Gateway presenta volúmenes de bloques iSCSI, en arquitectura cached o stored, guarda los datos en Amazon S3 y permite la recuperación en la nube."
+        correct: true
+  - prompt: "Una universidad de Valparaíso quiere llevar a AWS unos servidores de archivos Linux que ya usan ZFS, con un servicio totalmente administrado que use NFS. ¿Qué opción de Amazon FSx debe elegir?"
+    options:
+      - label: "Amazon FSx for Lustre"
+        explanation: "FSx for Lustre es un sistema de archivos de alto rendimiento para cómputo HPC y está fuera del alcance del CLF-C02; no es la opción para cargas que ya usan ZFS."
+      - label: "Amazon FSx for OpenZFS"
+        explanation: "FSx for OpenZFS está construido sobre OpenZFS, usa NFS y es la opción para migrar cargas que ya usan ZFS u otros servidores de archivos Linux."
+        correct: true
+      - label: "Amazon FSx for Windows File Server"
+        explanation: "FSx for Windows File Server está construido sobre Windows Server y usa SMB con Active Directory; no es la opción para servidores Linux con ZFS."
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway reemplaza cintas físicas con cintas virtuales para respaldos; no es un sistema de archivos administrado para servidores ZFS."
+  - prompt: "Una cooperativa financiera de Cuenca debe guardar copias de sus respaldos en otra Región y en otra cuenta de su organización de AWS Organizations, y demostrar ante el regulador que todos sus recursos están respaldados. ¿Qué servicio cumple ambos requisitos?"
+    options:
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery mantiene servidores replicados listos para recuperarse en minutos; no es el servicio de respaldos centralizados con auditoría de cumplimiento que pide el regulador."
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway presenta cintas virtuales al software de respaldo local; no gestiona copias entre Regiones y cuentas ni audita el cumplimiento de los respaldos."
+      - label: "AWS Backup"
+        explanation: "AWS Backup permite copiar respaldos entre Regiones y entre cuentas de AWS Organizations, y AWS Backup Audit Manager ayuda a demostrar el cumplimiento."
+        correct: true
+      - label: "Amazon FSx for NetApp ONTAP"
+        explanation: "FSx for NetApp ONTAP es un sistema de archivos administrado multiprotocolo; no centraliza respaldos de otros servicios ni demuestra su cumplimiento."
 ---
 
 ## ¿Por qué importa?
