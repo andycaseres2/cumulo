@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
     "astro": "7.4.1",
     "phaser": "^3.90.0"
   },

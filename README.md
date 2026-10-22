@@ -23,6 +23,22 @@ pnpm dev
 
 Restart the dev server after changing `src/content.config.ts`.
 
+### Environment variables
+
+Supabase is optional: without these variables the site runs in guest mode and saves progress in the browser. Create a `.env` file in the project root (it is ignored by git) with:
+
+```bash
+# Supabase dashboard → your project → Settings → API Keys.
+# Both values are public by design: the browser uses them and Row Level Security protects the data.
+PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+- Use the **publishable key** (`sb_publishable_...`), which replaces the legacy `anon` key. The schema in `astro.config.mjs` rejects legacy JWT keys (`eyJ...`) and malformed URLs when the client is used.
+- Never add the **secret key** (`sb_secret_...`) or the legacy `service_role` key: they bypass Row Level Security and must not reach the browser or the repository.
+- The shared client lives in `src/infrastructure/supabase/client.ts`; it returns `null` while the variables are missing.
+- Restart `pnpm dev` after editing `.env`.
+
 ## Routes
 
 | Route | Page |
