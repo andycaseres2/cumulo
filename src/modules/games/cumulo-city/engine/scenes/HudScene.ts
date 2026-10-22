@@ -165,7 +165,8 @@ export class HudScene extends Phaser.Scene {
 
   /** The current mission, under the minimap: offer with an accept button, objective, or all done. */
   private showMissionCard(content: MissionCardContent) {
-    this.cardHeading.setText(content.heading.toUpperCase());
+    // Mixed case on purpose: the pixel font draws accented capitals (Ó, Ú) without room for the accent.
+    this.cardHeading.setText(content.heading);
     this.cardTitle.setText(content.title);
     this.cardDetail.setText(content.detail).setY(this.cardTitle.y + this.cardTitle.height + 8);
     let bottom = this.cardDetail.y + this.cardDetail.height;
@@ -187,7 +188,7 @@ export class HudScene extends Phaser.Scene {
   }
 
   private showLocation(location: LocationInfo) {
-    this.locationTitle.setText(location.title.toUpperCase());
+    this.locationTitle.setText(location.title);
     this.locationSubtitle.setText(location.subtitle);
     this.minimapFrame.setVisible(location.minimap);
   }
