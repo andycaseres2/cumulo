@@ -3,7 +3,7 @@ import { safeNextPath } from './safeNextPath';
 
 describe('safeNextPath', () => {
   it('keeps paths inside the site', () => {
-    expect(safeNextPath('/juegos/nimbus-city')).toBe('/juegos/nimbus-city');
+    expect(safeNextPath('/juegos/cumulo-city')).toBe('/juegos/cumulo-city');
     expect(safeNextPath('/teoria?tema=s3#arriba')).toBe('/teoria?tema=s3#arriba');
   });
 

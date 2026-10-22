@@ -6,7 +6,7 @@ import type { SliceRole } from '../../world/autotile';
 import type { BuildingDef } from '../../world/cityMap';
 
 export const SHEET = 'kenney-urban';
-export const SHEET_URL = '/games/nimbus-city/kenney-rpg-urban/tilemap_packed.png';
+export const SHEET_URL = '/games/cumulo-city/kenney-rpg-urban/tilemap_packed.png';
 export const SHEET_COLUMNS = 27;
 
 export type NineSlice = Record<SliceRole, number>;

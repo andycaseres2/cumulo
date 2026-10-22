@@ -1,6 +1,6 @@
 ---
 import { theory } from '@/composition/theory';
-import { BUILDINGS } from '@/modules/games/nimbus-city/world/cityMap';
+import { BUILDINGS } from '@/modules/games/cumulo-city/world/cityMap';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
@@ -11,14 +11,14 @@ const topicTitles = Object.fromEntries(topics.map((t) => [t.slug, t.title]));
 const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
 ---
 
-<PageLayout title="Mi perfil" description="Tu cuenta, los temas de teoría que completaste, tus misiones en Nimbus City y los dominios del examen que ya practicaste.">
+<PageLayout title="Mi perfil" description="Tu cuenta, los temas de teoría que completaste, tus misiones en Cúmulo City y los dominios del examen que ya practicaste.">
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
         eyebrow="Tu cuenta"
         title="Mi perfil"
-        description="Tu cuenta y tu avance: los temas de teoría que completaste, las misiones que resolviste en Nimbus City y los dominios del examen CLF-C02 que ya practicaste."
+        description="Tu cuenta y tu avance: los temas de teoría que completaste, las misiones que resolviste en Cúmulo City y los dominios del examen CLF-C02 que ya practicaste."
       />
       <div data-profile></div>
       <h2 class="section-title">Teoría</h2>
@@ -80,7 +80,7 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       renderProgress(host, await campaignOverview(), {
-        gameUrl: routes.game('nimbus-city'),
+        gameUrl: routes.game('cumulo-city'),
         theoryUrl: routes.topic,
         buildingName: (id) => buildings[id] ?? id,
         topicTitle: (slug) => topics[slug] ?? slug,

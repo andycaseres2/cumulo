@@ -1,6 +1,6 @@
 # Cúmulo
 
-A platform to prepare for the AWS Certified Cloud Practitioner exam (CLF-C02): practice games where you solve realistic cloud problems, and theory organized by the four official exam domains. Its first game is **Nimbus City**. The platform name lives in `src/ui/site.ts`.
+A platform to prepare for the AWS Certified Cloud Practitioner exam (CLF-C02): practice games where you solve realistic cloud problems, and theory organized by the four official exam domains. Its first game is **Cúmulo City**. The platform name lives in `src/ui/site.ts`.
 
 Built with Astro (static pages, Markdown content collections) and Phaser (the 2D game, loaded only on its own page).
 
@@ -62,7 +62,7 @@ Supabase's built-in email service only sends a few emails per hour; configure cu
 | --- | --- |
 | `/` | Home: games and theory sections, featured game, exam domains |
 | `/juegos` | Game catalog |
-| `/juegos/nimbus-city` | The Nimbus City game. Add `?play=man` or `?play=woman` to skip character selection |
+| `/juegos/cumulo-city` | The Cúmulo City game. Add `?play=man` or `?play=woman` to skip character selection |
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
 | `/ingresar` | Sign in or create an account (also available as a modal from the header and the game) |
@@ -84,7 +84,7 @@ src/
 │   ├── exam/            Shared kernel: the four CLF-C02 domains and their weights
 │   ├── theory/          domain (Topic, TopicRepository port) → application (use cases) → infrastructure (content collection adapter) → presentation
 │   ├── games/           domain (Game, GameCatalog port) → application → infrastructure (static catalog) → presentation
-│   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots, access rule, office layouts and pathfinding, office talk), engine (Kenney tile indices, office furniture drawn in the Kenney palette, renderers, entities, shared systems for input and interactions, scenes, HUD), mount.ts (public entry point)
+│   │   └── cumulo-city/ The Phaser game: world (pure city map, autotile, prop spots, access rule, office layouts and pathfinding, office talk), engine (Kenney tile indices, office furniture drawn in the Kenney palette, renderers, entities, shared systems for input and interactions, scenes, HUD), mount.ts (public entry point)
 │   ├── missions/        domain (Mission, run rules, campaign states, progress port) → application (play and record) → infrastructure (mission content, static catalog, localStorage progress) → presentation (mission panel)
 │   └── player/          domain (Player, PlayerSession port) → application → infrastructure (guest session) → presentation
 ├── composition/         Composition root: wires adapters into use cases. Pages only import from here.
@@ -95,7 +95,7 @@ src/
 
 Dependency rule: `pages → composition → application → domain`, and `infrastructure → domain`. Presentational components receive data through props.
 
-To add real sign-in, write a `PlayerSession` adapter (for example with Supabase Auth) and swap it in `src/composition/player.ts`. The game receives the player name and its missions through `mountNimbusCity(parent, { playerName, missions })` (the `GameMissions` port in `src/modules/games/nimbus-city/missions.ts`) and does not change. Mission progress moves to an account the same way: replace `localStorageProgressStore` in `src/composition/missions.ts`.
+To add real sign-in, write a `PlayerSession` adapter (for example with Supabase Auth) and swap it in `src/composition/player.ts`. The game receives the player name and its missions through `mountCumuloCity(parent, { playerName, missions })` (the `GameMissions` port in `src/modules/games/cumulo-city/missions.ts`) and does not change. Mission progress moves to an account the same way: replace `localStorageProgressStore` in `src/composition/missions.ts`.
 
 ### Adding a mission
 
@@ -139,6 +139,6 @@ Start the body at `##`; the page renders the title. Every factual claim should b
 
 ## Credits
 
-Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/nimbus-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime. Office furniture (desks, chairs, meeting table, counter, shelves, printer, cooler, sofa) is drawn in code with colors from the Kenney palette, because no free 16x16 office set matches the pack.
+Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/cumulo-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime. Office furniture (desks, chairs, meeting table, counter, shelves, printer, cooler, sofa) is drawn in code with colors from the Kenney palette, because no free 16x16 office set matches the pack.
 
 Not affiliated with or endorsed by Amazon Web Services.

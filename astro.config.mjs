@@ -4,8 +4,8 @@ import { defineConfig, envField } from 'astro/config';
 export default defineConfig({
   // The dev toolbar overlaps the full-screen game canvas.
   devToolbar: { enabled: false },
-  // The progress page became part of the profile.
-  redirects: { '/progreso': '/perfil' },
+  // The progress page became part of the profile, and the game was renamed from Nimbus City.
+  redirects: { '/progreso': '/perfil', '/juegos/nimbus-city': '/juegos/cumulo-city' },
   env: {
     schema: {
       // Optional: without them the site runs in guest mode (progress saved in this browser).

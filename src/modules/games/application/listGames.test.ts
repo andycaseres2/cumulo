@@ -34,9 +34,9 @@ describe('listGames', () => {
 
 describe('getGame', () => {
   it('finds a game by slug and returns null when it does not exist', async () => {
-    const games = catalog([game({ slug: 'nimbus-city' })]);
+    const games = catalog([game({ slug: 'cumulo-city' })]);
 
-    expect((await getGame(games, 'nimbus-city'))?.slug).toBe('nimbus-city');
+    expect((await getGame(games, 'cumulo-city'))?.slug).toBe('cumulo-city');
     await expect(getGame(games, 'missing')).resolves.toBeNull();
   });
 });

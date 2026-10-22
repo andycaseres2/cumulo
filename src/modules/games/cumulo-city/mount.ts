@@ -8,7 +8,7 @@ import { SelectScene } from './engine/scenes/SelectScene';
 import { noMissions, type GameMissions } from './missions';
 import type { PlayableCharacter } from './startScene';
 
-export interface NimbusCityOptions {
+export interface CumuloCityOptions {
   /** Shown above the player's character. Provided by whoever hosts the game. */
   playerName: string;
   /** Jobs offered in the buildings; without it the city is free to explore. */
@@ -19,12 +19,12 @@ export interface NimbusCityOptions {
   onCharacterChosen?: (character: PlayableCharacter) => void;
 }
 
-export interface NimbusCityHandle {
+export interface CumuloCityHandle {
   destroy: () => void;
 }
 
-/** Public entry point of the game: renders Nimbus City inside `parent`. */
-export async function mountNimbusCity(parent: HTMLElement, options: NimbusCityOptions): Promise<NimbusCityHandle> {
+/** Public entry point of the game: renders Cúmulo City inside `parent`. */
+export async function mountCumuloCity(parent: HTMLElement, options: CumuloCityOptions): Promise<CumuloCityHandle> {
   try {
     await document.fonts.load('16px "Press Start 2P"');
   } catch {

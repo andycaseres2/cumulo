@@ -2,6 +2,7 @@
  * Composition root for the player module. Client-side only (uses the browser location and Supabase).
  * With Supabase configured players have accounts; otherwise everyone plays as a guest.
  */
+import { migrateLegacyStorage, STORAGE_PREFIX } from '@/infrastructure/storage/renameStoragePrefix';
 import { supabase } from '@/infrastructure/supabase/client';
 import { getCurrentPlayer } from '@/modules/player/application/getCurrentPlayer';
 import type { Character } from '@/modules/player/domain/Player';
@@ -22,7 +23,7 @@ export function playerAuth(): PlayerAuth {
 
 export const currentPlayer = () => getCurrentPlayer(playerAuth());
 
-const CHARACTER_HINT = 'nimbus-city:has-character';
+const CHARACTER_HINT = `${STORAGE_PREFIX}has-character`;
 
 /**
  * Whether a character was picked on this device. Used before signing in (when the account is unknown)
@@ -30,6 +31,7 @@ const CHARACTER_HINT = 'nimbus-city:has-character';
  */
 export function deviceHasCharacter(): boolean {
   try {
+    migrateLegacyStorage();
     return window.localStorage.getItem(CHARACTER_HINT) === 'yes';
   } catch {
     return false;

@@ -15,7 +15,7 @@ export function missionCard(current: CurrentMission | null): MissionCardContent 
     return {
       heading: 'Misiones al día',
       title: '¡Completaste todas las misiones disponibles!',
-      detail: 'Muy pronto llegarán nuevos clientes a Nimbus City.',
+      detail: 'Muy pronto llegarán nuevos clientes a Cúmulo City.',
       action: null,
     };
   }

@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { findExamTask } from '@/modules/exam/domain/ExamTask';
-import { BUILDINGS } from '@/modules/games/nimbus-city/world/cityMap';
+import { BUILDINGS } from '@/modules/games/cumulo-city/world/cityMap';
 import { staticMissionCatalog } from './staticMissionCatalog';
 
 const missions = await staticMissionCatalog.all();

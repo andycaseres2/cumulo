@@ -5,7 +5,7 @@ import { secondMission, twoStepMission as firstMission } from '../testing/fixtur
 import { renderProgress } from './progressView';
 
 const options = {
-  gameUrl: '/juegos/nimbus-city',
+  gameUrl: '/juegos/cumulo-city',
   theoryUrl: (slug: string) => `/teoria/${slug}`,
   buildingName: (id: string) => `Building ${id}`,
   topicTitle: (slug: string) => `Topic ${slug}`,
@@ -55,6 +55,6 @@ describe('progress view', () => {
 
   it('invites the player to keep playing', () => {
     renderProgress(host, overview, options);
-    expect(host.querySelector('a[href="/juegos/nimbus-city"]')?.textContent).toContain('Seguir jugando');
+    expect(host.querySelector('a[href="/juegos/cumulo-city"]')?.textContent).toContain('Seguir jugando');
   });
 });

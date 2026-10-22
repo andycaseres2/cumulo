@@ -25,7 +25,7 @@ export class SelectScene extends Phaser.Scene {
 
   create() {
     this.cameras.main.setBackgroundColor('#1d2b53');
-    this.title = this.add.text(0, 0, 'NIMBUS CITY', { fontFamily: FONT, fontSize: '32px', color: '#ffd166' }).setOrigin(0.5);
+    this.title = this.add.text(0, 0, 'CÚMULO CITY', { fontFamily: FONT, fontSize: '32px', color: '#ffd166' }).setOrigin(0.5);
     this.subtitle = this.add
       .text(0, 0, 'Consultoría cloud · Nivel Practitioner', { fontFamily: FONT, fontSize: '12px', color: '#c7d2fe' })
       .setOrigin(0.5);

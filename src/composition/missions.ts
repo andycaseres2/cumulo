@@ -3,8 +3,9 @@
  * Signed-in players keep progress in their Supabase account (with a copy in the browser);
  * without Supabase, progress stays in the browser.
  */
+import { migrateLegacyStorage, STORAGE_PREFIX } from '@/infrastructure/storage/renameStoragePrefix';
 import { supabase } from '@/infrastructure/supabase/client';
-import type { GameMissions } from '@/modules/games/nimbus-city/missions';
+import type { GameMissions } from '@/modules/games/cumulo-city/missions';
 import { getCampaignOverview, type CampaignOverview } from '@/modules/missions/application/campaignOverview';
 import { acceptMission, getCampaign, getMissionStatus } from '@/modules/missions/application/missionProgress';
 import { playMission } from '@/modules/missions/application/playMission';
@@ -19,11 +20,12 @@ import { routes } from '@/ui/routes';
 let store: Promise<MissionProgressStore> | undefined;
 
 async function createStore(): Promise<MissionProgressStore> {
+  migrateLegacyStorage();
   const client = supabase();
   const userId = client ? (await client.auth.getSession()).data.session?.user.id : undefined;
   if (!client || !userId) return localProgressStore();
 
-  const local = localProgressStore(`nimbus-city:mission-progress:${userId}`);
+  const local = localProgressStore(`${STORAGE_PREFIX}mission-progress:${userId}`);
   // Progress played on this device before accounts existed now belongs to this player.
   const legacy = takeLegacyProgress();
   if (Object.keys(legacy).length > 0) await local.save(mergeProgress(await local.load(), legacy));

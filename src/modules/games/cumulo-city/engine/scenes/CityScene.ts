@@ -143,7 +143,7 @@ export class CityScene extends Phaser.Scene {
     this.controls.reset();
     this.transitioning = false;
     void this.tracker.refresh();
-    this.game.events.emit(EVENTS.location, { title: 'Nimbus City', subtitle: 'Distrito Centro', minimap: true });
+    this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: 'Distrito Centro', minimap: true });
     this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
   }
 

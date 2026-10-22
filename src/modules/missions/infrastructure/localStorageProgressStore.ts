@@ -1,7 +1,8 @@
+import { STORAGE_PREFIX } from '@/infrastructure/storage/renameStoragePrefix';
 import type { MissionProgressStore, ProgressRecords } from '../domain/MissionProgress';
 
 /** Key used before progress was tied to an account. */
-const LEGACY_KEY = 'nimbus-city:mission-progress';
+const LEGACY_KEY = `${STORAGE_PREFIX}mission-progress`;
 
 function read(key: string): ProgressRecords {
   try {

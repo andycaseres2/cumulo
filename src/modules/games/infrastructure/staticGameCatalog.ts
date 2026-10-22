@@ -3,11 +3,11 @@ import type { GameCatalog } from '../domain/GameCatalog';
 
 const GAMES: Game[] = [
   {
-    slug: 'nimbus-city',
-    title: 'Nimbus City',
+    slug: 'cumulo-city',
+    title: 'Cúmulo City',
     tagline: 'Recorre la ciudad como consultor cloud',
     description:
-      'Camina por Nimbus City, conversa con sus vecinos y ayuda a negocios reales con sus problemas en la nube. Cada misión te enseña un servicio de AWS en contexto.',
+      'Camina por Cúmulo City, conversa con sus vecinos y ayuda a negocios reales con sus problemas en la nube. Cada misión te enseña un servicio de AWS en contexto.',
     status: 'available',
     level: 'practitioner',
     domains: ['cloud-concepts', 'security-compliance', 'technology-services', 'billing-pricing-support'],

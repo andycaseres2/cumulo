@@ -3,11 +3,11 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
 ---
 
 <GameLayout
-  title="Nimbus City"
-  description="Recorre Nimbus City como consultor cloud y ayuda a sus negocios con problemas reales de AWS."
+  title="Cúmulo City"
+  description="Recorre Cúmulo City como consultor cloud y ayuda a sus negocios con problemas reales de AWS."
   exitHref="/juegos"
 >
-  <div class="game-root" data-nimbus-city></div>
+  <div class="game-root" data-cumulo-city></div>
 </GameLayout>
 
 <style>
@@ -27,7 +27,7 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
   }
 
   .game-root.is-locked {
-    background: url('/images/games/nimbus-city.png') center / cover no-repeat;
+    background: url('/images/games/cumulo-city.png') center / cover no-repeat;
     image-rendering: pixelated;
   }
 </style>
@@ -35,11 +35,11 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
 <script>
   import { gameMissions } from '@/composition/missions';
   import { chooseCharacter, currentPlayer, deviceHasCharacter, playerAuth, rememberCharacterOnDevice } from '@/composition/player';
-  import { mountNimbusCity } from '@/modules/games/nimbus-city/mount';
+  import { mountCumuloCity } from '@/modules/games/cumulo-city/mount';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { routes } from '@/ui/routes';
 
-  const root = document.querySelector<HTMLElement>('[data-nimbus-city]');
+  const root = document.querySelector<HTMLElement>('[data-cumulo-city]');
   if (root) {
     const player = await currentPlayer();
     if (player.isGuest) {
@@ -53,7 +53,7 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
       });
     } else {
       if (player.character) rememberCharacterOnDevice();
-      await mountNimbusCity(root, {
+      await mountCumuloCity(root, {
         playerName: player.displayName,
         missions: gameMissions(root),
         character: player.character,

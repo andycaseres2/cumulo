@@ -62,7 +62,7 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0, 1);
 
     this.minimapFrame = this.add.rectangle(0, 0, 10, 10).setOrigin(0).setStrokeStyle(3, 0xffd166);
-    this.showLocation({ title: 'Nimbus City', subtitle: 'Distrito Centro', minimap: true });
+    this.showLocation({ title: 'Cúmulo City', subtitle: 'Distrito Centro', minimap: true });
     this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact)).setVisible(false);
 
     this.cardBg = this.add.rectangle(0, 0, CARD_WIDTH, 10, PANEL, 0.92).setOrigin(0).setStrokeStyle(2, 0xffd166);
