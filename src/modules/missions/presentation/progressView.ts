@@ -8,6 +8,8 @@ export interface ProgressViewOptions {
   theoryUrl: (slug: string) => string;
   buildingName: (buildingId: string) => string;
   topicTitle: (slug: string) => string;
+  /** Name of a campaign track (in Cúmulo City, a district). */
+  trackName: (track: string) => string;
 }
 
 type Child = Node | string;
@@ -59,6 +61,26 @@ function missionCard(entry: CampaignEntry, options: ProgressViewOptions): HTMLEl
   return card;
 }
 
+/**
+ * One collapsible group per track, in campaign order, with how many of its missions are completed.
+ * The group with the active mission starts open (the first one when nothing is active).
+ */
+function trackGroups(entries: CampaignEntry[], options: ProgressViewOptions): HTMLElement[] {
+  const tracks = [...new Set(entries.map((e) => e.mission.track))];
+  const openTrack = entries.find((e) => e.state === 'active')?.mission.track ?? tracks[0];
+  return tracks.map((track) => {
+    const inTrack = entries.filter((e) => e.mission.track === track);
+    const done = inTrack.filter((e) => e.state === 'completed').length;
+    return el('details', { class: 'pv-track', 'data-track': track, ...(track === openTrack ? { open: '' } : {}) }, [
+      el('summary', { class: 'pv-track-summary' }, [
+        el('span', {}, [options.trackName(track)]),
+        el('span', { class: 'pv-track-count' }, [`${done} de ${inTrack.length}`]),
+      ]),
+      el('ol', { class: 'pv-missions' }, inTrack.map((entry) => missionCard(entry, options))),
+    ]);
+  });
+}
+
 /** Renders the player's campaign progress: summary, exam domains practiced and every mission. */
 export function renderProgress(host: HTMLElement, overview: CampaignOverview, options: ProgressViewOptions): void {
   const practiced = new Set(overview.practicedDomains);
@@ -82,7 +104,7 @@ export function renderProgress(host: HTMLElement, overview: CampaignOverview, op
         ),
       ),
       el('h2', { class: 'pv-heading' }, ['Misiones']),
-      el('ol', { class: 'pv-missions' }, overview.entries.map((entry) => missionCard(entry, options))),
+      ...trackGroups(overview.entries, options),
     ]),
   );
 }

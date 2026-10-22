@@ -1,5 +1,6 @@
 import type { CurrentMission } from '../missions';
-import { BUILDINGS, type BuildingDef } from './cityMap';
+import type { BuildingDef } from './cityMap';
+import { districtOf, findBuilding } from './districts';
 
 export type AccessDecision = { allowed: true } | { allowed: false; reason: string };
 
@@ -19,8 +20,12 @@ export function missionAccess(current: CurrentMission | null): AccessPolicy {
     canEnter(building) {
       if (current?.state === 'active' && current.brief.buildingId === building.id) return { allowed: true };
       if (current?.state === 'active') {
-        const target = BUILDINGS.find((b) => b.id === current.brief.buildingId);
-        return { allowed: false, reason: `${building.name} no te espera hoy. Tu misión activa es en ${target?.name ?? 'otro edificio'}: sigue la flecha.` };
+        const target = findBuilding(current.brief.buildingId);
+        const way =
+          target && target.district !== building.district
+            ? `, en el ${districtOf(target.id)?.name}: toma el bus en la parada`
+            : ': sigue la flecha';
+        return { allowed: false, reason: `${building.name} no te espera hoy. Tu misión activa es en ${target?.name ?? 'otro edificio'}${way}.` };
       }
       if (current?.state === 'offered') {
         return {

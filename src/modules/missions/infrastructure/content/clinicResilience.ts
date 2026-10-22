@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const clinicResilience: Mission = {
   id: 'clinic-resilience',
+  track: 'tecnologico',
+  topicSlug: 'bases-de-datos-relacionales',
   buildingId: 'clinic',
   title: 'Sistemas que no pueden caerse',
   client: { name: 'Dr. Jorge Salazar', role: 'Director médico de Clínica Vida' },

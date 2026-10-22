@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { FONT, MAP_H, MAP_W, TILE } from '../../config';
 import { sliceRole } from '../../world/autotile';
 import {
-  BUILDINGS,
   buildingTop,
   doorTile,
   H_ROADS,
@@ -68,13 +67,18 @@ export function renderRoadMarkings(scene: Phaser.Scene, ground: GroundGrid) {
 }
 
 /** Buildings made of Kenney tiles, with a name sign above the door. Returns where each door is. */
-export function renderBuildings(scene: Phaser.Scene, ground: Phaser.Tilemaps.TilemapLayer, addSolid: AddSolid): Door[] {
+export function renderBuildings(
+  scene: Phaser.Scene,
+  ground: Phaser.Tilemaps.TilemapLayer,
+  buildings: BuildingDef[],
+  addSolid: AddSolid,
+): Door[] {
   const map = ground.tilemap;
   const tileset = map.getTileset(SHEET)!;
   const structure = map.createBlankLayer('buildings', tileset)!.setDepth(2);
   const overlay = map.createBlankLayer('building-overlay', tileset)!.setDepth(3);
 
-  return BUILDINGS.map((def) => {
+  return buildings.map((def) => {
     const top = buildingTop(def);
     const parts = composeBuilding(def, top);
     for (const t of parts.structure) structure.putTileAt(t.frame, t.x, t.y);
@@ -110,7 +114,7 @@ const SHORT_FRAMES: Record<Exclude<StreetPropKind, 'tree' | 'lamp'>, number> = {
 };
 
 /** Trees, lamps and street furniture, depth-sorted by their base so characters walk behind and in front. */
-export function renderProps(scene: Phaser.Scene, ground: GroundGrid, addSolid: AddSolid) {
+export function renderProps(scene: Phaser.Scene, ground: GroundGrid, buildings: BuildingDef[], addSolid: AddSolid) {
   const tall = (x: number, y: number, topFrame: number, bottomFrame: number) => {
     const px = (x + 0.5) * TILE;
     const base = (y + 1) * TILE;
@@ -125,7 +129,7 @@ export function renderProps(scene: Phaser.Scene, ground: GroundGrid, addSolid: A
     addSolid(px, base - 5, 12, 6);
   };
 
-  for (const prop of streetProps(ground)) {
+  for (const prop of streetProps(ground, buildings)) {
     if (prop.kind === 'tree') tall(prop.x, prop.y, PROP.treeTop, PROP.treePlanter);
     else if (prop.kind === 'lamp') tall(prop.x, prop.y, PROP.lampTop, PROP.lampPole);
     else short(prop.x, prop.y, SHORT_FRAMES[prop.kind]);

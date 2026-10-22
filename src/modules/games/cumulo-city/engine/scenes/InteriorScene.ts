@@ -12,7 +12,8 @@ import { MissionTracker } from '../systems/MissionTracker';
 import { PlayerControls } from '../systems/PlayerControls';
 import { clientOffer, clientOutro, START } from '../../missionTalk';
 import type { GameMissions, MissionBrief } from '../../missions';
-import { BUILDINGS, type BuildingDef } from '../../world/cityMap';
+import type { BuildingDef } from '../../world/cityMap';
+import { ALL_BUILDINGS, findBuilding } from '../../world/districts';
 import { guideArrow } from '../../world/guide';
 import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
 import { workerLine, workerName } from '../../world/officeTalk';
@@ -45,7 +46,7 @@ export class InteriorScene extends Phaser.Scene {
   }
 
   create(data: InteriorData) {
-    this.building = BUILDINGS.find((b) => b.id === data.buildingId)!;
+    this.building = findBuilding(data.buildingId)!;
     this.layout = buildOfficeLayout(this.building);
     this.leaving = false;
     this.inMission = false;
@@ -132,7 +133,7 @@ export class InteriorScene extends Phaser.Scene {
   private spawnWorkers(): Worker[] {
     const rng = seededRandom(this.building.id.length * 7919);
     const walkable = walkableGrid(this.layout);
-    const lookOffset = BUILDINGS.indexOf(this.building);
+    const lookOffset = ALL_BUILDINGS.indexOf(this.building);
     const takenSpots = new Set<string>();
     return this.layout.workstations.map((station, i) => {
       const worker = new Worker(
@@ -173,11 +174,10 @@ export class InteriorScene extends Phaser.Scene {
   private async setupClient(worker: Worker, talk: Interactable) {
     const tracker = MissionTracker.of(this);
     const missions = tracker.missions;
-    const brief = await missions.forBuilding(this.building.id);
-    if (!brief) return;
-    const initial = await missions.status(brief.id);
-    // Until the player accepts the mission, the client is just another worker.
-    if ((initial !== 'active' && initial !== 'completed') || !this.sys.isActive()) return;
+    // Until the player accepts one of its missions, the client is just another worker.
+    const found = await missions.forBuilding(this.building.id);
+    if (!found || !this.sys.isActive()) return;
+    const { brief, state: initial } = found;
 
     let state: 'active' | 'completed' = initial;
     worker.stayAtDesk();

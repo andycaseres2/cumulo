@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const bakeryElasticity: Mission = {
   id: 'bakery-elasticity',
+  track: 'centro',
+  topicSlug: 'beneficios-de-la-nube',
   buildingId: 'bakery',
   title: 'La Navidad que tumbó la web',
   client: { name: 'Rosa Quispe', role: 'Dueña de la Pastelería Dulce Nube' },

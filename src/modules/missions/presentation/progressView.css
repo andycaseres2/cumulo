@@ -169,3 +169,28 @@
   gap: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
 }
+
+.pv-track {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.pv-track-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+}
+
+.pv-track[open] > .pv-track-summary {
+  margin-bottom: var(--space-3);
+}
+
+.pv-track-count {
+  flex: none;
+  color: var(--color-accent);
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BUILDINGS } from './cityMap';
+import { ALL_BUILDINGS as BUILDINGS } from './districts';
 import { buildOfficeLayout, findPath, walkableGrid, type OfficeLayout, type Point } from './office';
 
 const layouts = BUILDINGS.map((b) => [b.id, buildOfficeLayout(b)] as const);

@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const bankAccess: Mission = {
   id: 'bank-access',
+  track: 'financiero',
+  topicSlug: 'iam-fundamentos',
   buildingId: 'bank',
   title: 'Las llaves del banco',
   client: { name: 'Carlos Mendoza', role: 'Gerente de TI del Banco Andino' },

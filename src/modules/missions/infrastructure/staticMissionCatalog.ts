@@ -12,5 +12,5 @@ const MISSIONS = [bakeryElasticity, bankAccess, startupCosts, streamingGlobal, c
 /** Adapter: missions written as typed data in the repository. */
 export const staticMissionCatalog: MissionCatalog = {
   all: async () => [...MISSIONS],
-  findByBuilding: async (buildingId) => MISSIONS.find((m) => m.buildingId === buildingId) ?? null,
+  inBuilding: async (buildingId) => MISSIONS.filter((m) => m.buildingId === buildingId),
 };

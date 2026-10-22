@@ -11,7 +11,9 @@ const option = (id: string, correct = false) => ({
 
 export const twoStepMission: Mission = {
   id: 'test-mission',
+  track: 'centro',
   buildingId: 'bakery',
+  topicSlug: 'beneficios-de-la-nube',
   title: 'Test mission',
   client: { name: 'Rosa', role: 'Owner' },
   intro: ['Hello'],
@@ -37,10 +39,13 @@ export const twoStepMission: Mission = {
 
 export const secondMission: Mission = { ...twoStepMission, id: 'second-mission', buildingId: 'bank', title: 'Second mission' };
 
+/** First mission of another track (district). */
+export const otherTrackMission: Mission = { ...twoStepMission, id: 'other-track', track: 'financiero', buildingId: 'vault', title: 'Other track' };
+
 /** Catalog whose order is the campaign order. */
 export function catalogOf(...missions: Mission[]): MissionCatalog {
   return {
     all: async () => [...missions],
-    findByBuilding: async (buildingId) => missions.find((m) => m.buildingId === buildingId) ?? null,
+    inBuilding: async (buildingId) => missions.filter((m) => m.buildingId === buildingId),
   };
 }

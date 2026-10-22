@@ -22,24 +22,9 @@ export interface BuildingDef {
   facade: 'red' | 'orange';
   roof: 'beige' | 'grey';
   style: 'shop' | 'office';
+  /** District it stands in (see districts.ts, which lists every building). */
+  district: string;
 }
-
-/** Future mission clients. Each one maps to Cloud Practitioner topics. */
-export const BUILDINGS: BuildingDef[] = [
-  { id: 'bakery', name: 'Pastelería Dulce Nube', x: 2, bottom: 10, w: 9, h: 7, facade: 'red', roof: 'beige', style: 'shop' },
-  { id: 'bank', name: 'Banco Andino', x: 20, bottom: 10, w: 9, h: 8, facade: 'orange', roof: 'grey', style: 'office' },
-  { id: 'cafe', name: 'Café Byte', x: 31, bottom: 10, w: 7, h: 6, facade: 'red', roof: 'grey', style: 'shop' },
-  { id: 'clinic', name: 'Clínica Vida', x: 44, bottom: 10, w: 9, h: 8, facade: 'orange', roof: 'beige', style: 'office' },
-  { id: 'hotel', name: 'Hotel Mirador', x: 55, bottom: 10, w: 8, h: 8, facade: 'red', roof: 'grey', style: 'office' },
-  { id: 'academy', name: 'Cloud Academy', x: 2, bottom: 26, w: 11, h: 8, facade: 'orange', roof: 'beige', style: 'office' },
-  { id: 'startup', name: 'Startup Hub', x: 44, bottom: 26, w: 10, h: 8, facade: 'red', roof: 'grey', style: 'office' },
-  { id: 'store', name: 'Tienda Andes', x: 56, bottom: 26, w: 7, h: 6, facade: 'orange', roof: 'grey', style: 'shop' },
-  { id: 'school', name: 'Escuela Digital', x: 2, bottom: 42, w: 10, h: 7, facade: 'red', roof: 'beige', style: 'office' },
-  { id: 'streaming', name: 'StreamLlama', x: 20, bottom: 42, w: 9, h: 8, facade: 'orange', roof: 'grey', style: 'office' },
-  { id: 'delivery', name: 'Rapidito', x: 31, bottom: 42, w: 7, h: 6, facade: 'red', roof: 'beige', style: 'shop' },
-  { id: 'cityhall', name: 'Municipalidad', x: 44, bottom: 42, w: 10, h: 9, facade: 'orange', roof: 'beige', style: 'office' },
-  { id: 'gym', name: 'FitCloud Gym', x: 56, bottom: 42, w: 7, h: 6, facade: 'red', roof: 'grey', style: 'shop' },
-];
 
 export function buildingTop(def: BuildingDef): number {
   return def.bottom - def.h + 1;
@@ -114,16 +99,16 @@ export interface StreetProp {
 const TALL: StreetPropKind[] = ['tree', 'lamp'];
 const SHORT: StreetPropKind[] = ['bin', 'mailbox', 'hydrant', 'bench'];
 
-/** Deterministic street furniture along the pavement next to roads. */
-export function streetProps(grid: GroundGrid): StreetProp[] {
+/** Deterministic street furniture along the pavement next to roads, around a district's buildings. */
+export function streetProps(grid: GroundGrid, buildings: BuildingDef[]): StreetProp[] {
   const props: StreetProp[] = [];
-  const doors = BUILDINGS.map(doorTile);
+  const doors = buildings.map(doorTile);
   const at = (x: number, y: number) => grid[y]?.[x];
 
   const allowed = (x: number, y: number, tall: boolean) => {
     if (at(x, y) !== G.PAVEMENT) return false;
     if (tall && (at(x, y - 1) === undefined || isRoad(at(x, y - 1)))) return false;
-    if (BUILDINGS.some((b) => x >= b.x - 1 && x <= b.x + b.w && y >= buildingTop(b) - 1 && y <= b.bottom + 1)) return false;
+    if (buildings.some((b) => x >= b.x - 1 && x <= b.x + b.w && y >= buildingTop(b) - 1 && y <= b.bottom + 1)) return false;
     if (doors.some((d) => Math.abs(d.x - x) <= 1 && Math.abs(d.y - y) <= 1)) return false;
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {

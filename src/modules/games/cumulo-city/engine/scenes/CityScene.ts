@@ -12,26 +12,56 @@ import { PlayerControls } from '../systems/PlayerControls';
 import type { CurrentMission } from '../../missions';
 import { guideArrow } from '../../world/guide';
 import { MissionTracker } from '../systems/MissionTracker';
+import { busStopTalk, STAY } from '../../busStop';
 import { missionAccess, type AccessPolicy } from '../../world/access';
-import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
+import { buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
+import { BUS_STOP, districtOf, findBuilding, findDistrict, type District, type DistrictId } from '../../world/districts';
 import { G } from '../../world/tileTypes';
 
-const NPC_LINES = [
-  '¿Viste la Pastelería Dulce Nube? Dicen que su web se cae cada Navidad.',
-  'En el Banco Andino andan preocupados por la seguridad de los datos de sus clientes.',
-  'Me contaron que en Startup Hub pagan una fortuna por servidores que nadie usa.',
-  'StreamLlama quiere llegar a toda Latinoamérica, pero sus videos cargan lento fuera de Lima.',
-  'Si recién empiezas, pasa por la Cloud Academy. Ahí te explican todo desde cero.',
-  'La Municipalidad tiene que guardar sus documentos por diez años. ¡Diez!',
-  'Rapidito recibe miles de pedidos al mediodía y casi ninguno de madrugada.',
-  'En la Clínica Vida dicen que sus sistemas no pueden caerse nunca.',
-];
+const BUS_LINE = 'Con el bus de la esquina llegas a los otros distritos. Cada uno tiene clientes con problemas distintos.';
+
+/** What neighbours talk about in each district: hints of the problems its clients have. */
+const NPC_LINES: Record<DistrictId, string[]> = {
+  centro: [
+    '¿Viste la Pastelería Dulce Nube? Dicen que su web se cae cada Navidad.',
+    'Si recién empiezas, pasa por la Cloud Academy. Ahí te explican todo desde cero.',
+    'Rapidito recibe miles de pedidos al mediodía y casi ninguno de madrugada.',
+    'En Seguros Horizonte se preguntan si la nube les conviene más que su centro de datos.',
+  ],
+  financiero: [
+    'En el Banco Andino andan preocupados por la seguridad de los datos de sus clientes.',
+    'Aquí todos hablan de auditorías, cifrado y permisos. Es el barrio más cuidadoso de la ciudad.',
+    'La Fintech PagoYa mueve pagos de miles de personas. Un acceso indebido sería un desastre.',
+    'Dicen que en la Bolsa de Valores Andina reciben ataques para tumbar su sistema.',
+  ],
+  tecnologico: [
+    'StreamLlama quiere llegar a toda Latinoamérica, pero sus videos cargan lento fuera de Lima.',
+    'La Municipalidad tiene que guardar sus documentos por diez años. ¡Diez!',
+    'En la Clínica Vida dicen que sus sistemas no pueden caerse nunca.',
+    'En el Startup Lab cada mes nace una startup que quiere crecer sin administrar servidores.',
+  ],
+  mercado: [
+    'Me contaron que en Startup Hub pagan una fortuna por servidores que nadie usa.',
+    'En el Estudio Contable Saldo siempre preguntan por qué la factura de AWS subió.',
+    'La Florería Primavera vende diez veces más en San Valentín. El resto del año, casi nada.',
+    'En el Contact Center Andino atienden las 24 horas. Si algo se cae, ¿a quién llaman?',
+  ],
+};
+
+/** Each district places its neighbours differently, the same way on every visit. */
+const NPC_SEEDS: Record<DistrictId, number> = { centro: 2024, financiero: 2025, tecnologico: 2026, mercado: 2027 };
 
 const FADE_MS = 250;
 
 /** Data passed when coming back from a building interior. */
 export interface CityWakeData {
   exitBuildingId?: string;
+}
+
+/** Data the city starts with: which district to show and whether the player arrives by bus. */
+export interface CityStartData {
+  districtId?: string;
+  arriveByBus?: boolean;
 }
 
 export class CityScene extends Phaser.Scene {
@@ -48,12 +78,20 @@ export class CityScene extends Phaser.Scene {
   private tracker!: MissionTracker;
   private guide!: Phaser.GameObjects.Image;
   private guideTarget: { x: number; y: number } | null = null;
+  private district!: District;
 
   constructor() {
     super('city');
   }
 
-  create() {
+  create(data: CityStartData = {}) {
+    this.tracker = MissionTracker.of(this);
+    this.district = findDistrict(data.districtId ?? this.tracker.district);
+    this.tracker.district = this.district.id;
+    this.transitioning = false;
+    this.markers = [];
+    this.guideTarget = null;
+
     const cityGround = buildCityGround();
     this.physics.world.setBounds(0, 0, WORLD_W, WORLD_H);
 
@@ -62,16 +100,22 @@ export class CityScene extends Phaser.Scene {
 
     const ground = renderGround(this, cityGround);
     renderRoadMarkings(this, cityGround);
-    const doors = renderBuildings(this, ground, addSolid);
-    renderProps(this, cityGround, addSolid);
+    const doors = renderBuildings(this, ground, this.district.buildings, addSolid);
+    renderProps(this, cityGround, this.district.buildings, addSolid);
+    const busStop = { x: (BUS_STOP.x + 0.5) * TILE, y: (BUS_STOP.y + 1) * TILE };
+    this.add.image(busStop.x, busStop.y, MARKERS.busStop).setOrigin(0.5, 1).setDepth(busStop.y);
+    addSolid(busStop.x, busStop.y - 3, 6, 6);
 
-    const academy = doorTile(BUILDINGS.find((b) => b.id === 'academy')!);
-    this.player = new Walker(this, (academy.x + 0.5) * TILE, (academy.y + 1) * TILE - 2, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
+    // A new game starts at the Cloud Academy; a bus ride ends next to the stop.
+    const academy = this.district.buildings.find((b) => b.id === 'academy');
+    const start = data.arriveByBus || !academy ? { x: busStop.x + TILE, y: busStop.y - 2 } : { x: (doorTile(academy).x + 0.5) * TILE, y: (doorTile(academy).y + 1) * TILE - 2 };
+    this.player = new Walker(this, start.x, start.y, this.registry.get(REGISTRY.playerKey) ?? 'player-man');
     this.nameTag = new NameTag(this, this.registry.get(REGISTRY.playerName));
     this.controls = new PlayerControls(this);
     this.interactions = new Interactions(this, this.player);
     for (const door of doors) this.addDoor(door);
-    const npcs = this.spawnNpcs(cityGround, seededRandom(2024));
+    this.addBusStop(busStop);
+    const npcs = this.spawnNpcs(cityGround, seededRandom(NPC_SEEDS[this.district.id]));
 
     const npcGroup = this.add.group(npcs, { runChildUpdate: true });
     for (const obstacle of [solids, ground]) {
@@ -86,14 +130,49 @@ export class CityScene extends Phaser.Scene {
     this.setupCameras();
     this.minimap.ignore(this.guide);
 
-    this.tracker = MissionTracker.of(this);
     const onMissionChanged = (current: CurrentMission | null) => void this.applyMission(current);
     this.game.events.on(EVENTS.missionChanged, onMissionChanged);
-    this.events.once('shutdown', () => this.game.events.off(EVENTS.missionChanged, onMissionChanged));
-    void this.tracker.refresh();
+    const onWake = (_: unknown, wake: CityWakeData) => this.returnFromBuilding(wake);
+    this.events.on('wake', onWake);
+    this.events.once('shutdown', () => {
+      this.game.events.off(EVENTS.missionChanged, onMissionChanged);
+      this.events.off('wake', onWake);
+    });
 
-    this.scene.launch('hud');
-    this.events.on('wake', (_: unknown, data: CityWakeData) => this.returnFromBuilding(data));
+    if (!this.scene.isActive('hud')) this.scene.launch('hud');
+    void this.tracker.refresh();
+    this.showLocation();
+    this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
+  }
+
+  private showLocation() {
+    this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: this.district.name, minimap: true });
+  }
+
+  /** The bus stop takes the player to another district. */
+  private addBusStop(stop: { x: number; y: number }) {
+    this.interactions.add({
+      x: stop.x,
+      y: stop.y - 4,
+      prompt: '[E] Tomar el bus',
+      open: () => ({
+        pages: [busStopTalk(this.district.id)],
+        onChoice: (choice: string) => {
+          if (choice !== STAY) this.travel(choice as DistrictId);
+        },
+      }),
+    });
+  }
+
+  private travel(districtId: DistrictId) {
+    this.transitioning = true;
+    this.player.move(0, 0);
+    this.interactions.clearPrompt();
+    this.cameras.main.fadeOut(FADE_MS, 0, 0, 0);
+    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+      this.tracker.district = districtId;
+      this.scene.restart({ districtId, arriveByBus: true } satisfies CityStartData);
+    });
   }
 
   update() {
@@ -134,7 +213,7 @@ export class CityScene extends Phaser.Scene {
   }
 
   private returnFromBuilding(data: CityWakeData) {
-    const building = BUILDINGS.find((b) => b.id === data?.exitBuildingId);
+    const building = this.district.buildings.find((b) => b.id === data?.exitBuildingId);
     if (building) {
       const door = doorTile(building);
       this.player.setPosition((door.x + 0.5) * TILE, (door.y + 1) * TILE - 2);
@@ -144,34 +223,38 @@ export class CityScene extends Phaser.Scene {
     this.controls.reset();
     this.transitioning = false;
     void this.tracker.refresh();
-    this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: 'Distrito Centro', minimap: true });
+    this.showLocation();
     this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
   }
 
-  /** Updates markers and the guide target after the current mission changes. */
+  /**
+   * Updates door access, markers and the guide after the current mission changes: the arrow points to the
+   * active mission's door, or to the bus stop when that building is in another district.
+   */
   private async applyMission(current: CurrentMission | null) {
     this.access = missionAccess(current);
-    const active = current?.state === 'active' ? BUILDINGS.find((b) => b.id === current.brief.buildingId) : undefined;
-    if (active) {
+    const active = current?.state === 'active' ? findBuilding(current.brief.buildingId) : undefined;
+    if (active && districtOf(active.id)?.id === this.district.id) {
       const door = doorTile(active);
       this.guideTarget = { x: (door.x + 0.5) * TILE, y: door.y * TILE + 8 };
+    } else if (active) {
+      this.guideTarget = { x: (BUS_STOP.x + 0.5) * TILE, y: (BUS_STOP.y + 1) * TILE };
     } else {
       this.guideTarget = null;
     }
     await this.refreshMarkers();
   }
 
-  /** "!" above the building of the active mission, a check above completed ones; nothing for offered or locked. */
+  /** "!" above the building of the active mission, a check above buildings whose clients were all helped. */
   private async refreshMarkers() {
     const missions = this.tracker.missions;
     const placed = await Promise.all(
-      BUILDINGS.map(async (building) => {
-        const brief = await missions.forBuilding(building.id);
-        if (!brief) return null;
-        const state = await missions.status(brief.id);
-        return state === 'active' || state === 'completed' ? { building, completed: state === 'completed' } : null;
+      this.district.buildings.map(async (building) => {
+        const found = await missions.forBuilding(building.id);
+        return found ? { building, completed: found.state === 'completed' } : null;
       }),
     );
+    if (!this.sys.isActive()) return;
     for (const marker of this.markers) marker.destroy();
     this.markers = placed
       .filter((p) => p !== null)
@@ -196,9 +279,10 @@ export class CityScene extends Phaser.Scene {
 
   /** Citizens start on free pavement: not under a building and not on a prop. */
   private spawnNpcs(ground: GroundGrid, rng: () => number): Npc[] {
-    const taken = new Set(streetProps(ground).map((p) => `${p.x},${p.y}`));
+    const taken = new Set([...streetProps(ground, this.district.buildings), BUS_STOP].map((p) => `${p.x},${p.y}`));
     const underBuilding = (x: number, y: number) =>
-      BUILDINGS.some((b) => x >= b.x && x < b.x + b.w && y >= buildingTop(b) && y <= b.bottom);
+      this.district.buildings.some((b) => x >= b.x && x < b.x + b.w && y >= buildingTop(b) && y <= b.bottom);
+    const lines = [...NPC_LINES[this.district.id], BUS_LINE];
     const free: { x: number; y: number }[] = [];
     for (let y = 0; y < MAP_H; y++) {
       for (let x = 0; x < MAP_W; x++) {
@@ -207,7 +291,7 @@ export class CityScene extends Phaser.Scene {
     }
     return Array.from({ length: NPC_COUNT }, (_, i) => {
       const spot = free[Math.floor(rng() * free.length)];
-      const npc = new Npc(this, (spot.x + 0.5) * TILE, (spot.y + 1) * TILE - 2, npcLookKey(i), NPC_LINES[i % NPC_LINES.length]);
+      const npc = new Npc(this, (spot.x + 0.5) * TILE, (spot.y + 1) * TILE - 2, npcLookKey(i), lines[i % lines.length]);
       this.interactions.add({
         get x() {
           return npc.x;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { inMemoryProgressStore } from '../infrastructure/inMemoryProgressStore';
-import { catalogOf, secondMission, twoStepMission as firstMission } from '../testing/fixtures';
-import { acceptMission, getCampaign, getMissionStatus, recordMissionResult } from './missionProgress';
+import { catalogOf, otherTrackMission, secondMission, twoStepMission as firstMission } from '../testing/fixtures';
+import { acceptMission, getBuildingMission, getCampaign, getMissionStatus, recordMissionResult } from './missionProgress';
 
 const catalog = catalogOf(firstMission, secondMission);
 
@@ -60,6 +60,52 @@ describe('mission campaign', () => {
       [secondMission.id]: { bestScore: 1, completed: true, accepted: true },
     });
     expect((await getCampaign(store, catalog)).current).toBeNull();
+  });
+
+  it('runs one campaign per track: the first mission of every track is on offer at the same time', async () => {
+    const tracks = catalogOf(firstMission, secondMission, otherTrackMission);
+    const store = inMemoryProgressStore();
+
+    expect((await getMissionStatus(store, tracks, firstMission.id)).state).toBe('offered');
+    expect((await getMissionStatus(store, tracks, secondMission.id)).state).toBe('locked');
+    expect((await getMissionStatus(store, tracks, otherTrackMission.id)).state).toBe('offered');
+    expect((await getCampaign(store, tracks, 'financiero')).current).toEqual({ mission: otherTrackMission, state: 'offered' });
+    expect((await getCampaign(store, tracks, 'centro')).current).toEqual({ mission: firstMission, state: 'offered' });
+  });
+
+  it('allows only one active mission in the whole city, and shows it from every track', async () => {
+    const tracks = catalogOf(firstMission, secondMission, otherTrackMission);
+    const store = inMemoryProgressStore();
+
+    await expect(acceptMission(store, tracks, firstMission.id)).resolves.toBe(true);
+    await expect(acceptMission(store, tracks, otherTrackMission.id)).resolves.toBe(false);
+    expect((await getCampaign(store, tracks, 'financiero')).current).toEqual({ mission: firstMission, state: 'active' });
+
+    await recordMissionResult(store, firstMission.id, { score: 1, passed: true });
+    await expect(acceptMission(store, tracks, otherTrackMission.id)).resolves.toBe(true);
+  });
+
+  it('finds the missions hosted by a building, in campaign order', async () => {
+    const shared = { ...secondMission, buildingId: firstMission.buildingId };
+    await expect(catalogOf(firstMission, shared, otherTrackMission).inBuilding(firstMission.buildingId)).resolves.toEqual([firstMission, shared]);
+  });
+
+  it('tells what matters in a building: its active mission, nothing while clients wait, the last one when all are done', async () => {
+    const shared = { ...secondMission, buildingId: firstMission.buildingId };
+    const building = catalogOf(firstMission, shared);
+    const store = inMemoryProgressStore();
+    await expect(getBuildingMission(store, building, firstMission.buildingId)).resolves.toBeNull();
+
+    await acceptMission(store, building, firstMission.id);
+    await expect(getBuildingMission(store, building, firstMission.buildingId)).resolves.toEqual({ mission: firstMission, state: 'active' });
+
+    await recordMissionResult(store, firstMission.id, { score: 1, passed: true });
+    await expect(getBuildingMission(store, building, firstMission.buildingId)).resolves.toBeNull();
+
+    await acceptMission(store, building, shared.id);
+    await recordMissionResult(store, shared.id, { score: 1, passed: true });
+    await expect(getBuildingMission(store, building, firstMission.buildingId)).resolves.toEqual({ mission: shared, state: 'completed' });
+    await expect(getBuildingMission(store, building, 'empty-building')).resolves.toBeNull();
   });
 
   it('reads progress saved before missions had to be accepted', async () => {

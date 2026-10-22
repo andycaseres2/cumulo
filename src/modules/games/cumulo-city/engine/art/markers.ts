@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { createCanvas } from './canvas';
 
-export const MARKERS = { job: 'marker-job', done: 'marker-done', guide: 'marker-guide' } as const;
+export const MARKERS = { job: 'marker-job', done: 'marker-done', guide: 'marker-guide', busStop: 'bus-stop' } as const;
 
 const OUTLINE = '#3a3a40';
 
@@ -57,6 +57,24 @@ export function createMarkers(scene: Phaser.Scene) {
   g.fillStyle = '#ffc999';
   g.fillRect(2, 6, 6, 1);
   scene.textures.addCanvas(MARKERS.guide, guide);
+
+  // Bus stop (12x26): a blue sign with a white bus on a grey pole.
+  const stop = createCanvas(12, 26);
+  const s = stop.getContext('2d')!;
+  s.fillStyle = OUTLINE;
+  s.fillRect(4, 10, 4, 16);
+  s.fillRect(0, 0, 12, 12);
+  s.fillStyle = '#9aa0ad';
+  s.fillRect(5, 11, 2, 15);
+  s.fillStyle = '#3b6fb6';
+  s.fillRect(1, 1, 10, 10);
+  s.fillStyle = '#f4f7ee';
+  s.fillRect(3, 3, 6, 5);
+  s.fillRect(3, 8, 1, 1);
+  s.fillRect(8, 8, 1, 1);
+  s.fillStyle = '#3b6fb6';
+  s.fillRect(4, 4, 4, 2);
+  scene.textures.addCanvas(MARKERS.busStop, stop);
 }
 
 /** Places a marker above a point and makes an open job bounce gently. */

@@ -9,6 +9,7 @@ const options = {
   theoryUrl: (slug: string) => `/teoria/${slug}`,
   buildingName: (id: string) => `Building ${id}`,
   topicTitle: (slug: string) => `Topic ${slug}`,
+  trackName: (track: string) => `Track ${track}`,
 };
 
 const overview: CampaignOverview = {
@@ -51,6 +52,16 @@ describe('progress view', () => {
     expect(domains.filter((d) => d.dataset.practiced === 'true').map((d) => d.dataset.domain)).toEqual(['cloud-concepts']);
     const topic = firstMission.decisions[0].topicSlug;
     expect(card(firstMission.id).querySelector(`a[href="/teoria/${topic}"]`)).not.toBeNull();
+  });
+
+  it('groups the missions by district, with how many are completed in each', () => {
+    const other = { ...secondMission, id: 'other', track: 'financiero' };
+    renderProgress(host, { ...overview, entries: [...overview.entries, { mission: other, state: 'locked', bestScore: null }] }, options);
+    const groups = [...host.querySelectorAll<HTMLElement>('[data-track]')];
+    expect(groups.map((g) => g.dataset.track)).toEqual(['centro', 'financiero']);
+    expect(groups[0].querySelector('summary')?.textContent).toContain('Track centro');
+    expect(groups[0].querySelector('summary')?.textContent).toContain('1 de 2');
+    expect(groups[1].querySelectorAll('[data-mission]')).toHaveLength(1);
   });
 
   it('invites the player to keep playing', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BUILDINGS } from './cityMap';
+import { ALL_BUILDINGS as BUILDINGS } from './districts';
 import { BUILDING_CONCERNS, workerLine, workerName } from './officeTalk';
 
 describe('office talk', () => {

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MAP_H, MAP_W } from '../config';
 import {
-  BUILDINGS,
   buildCityGround,
   buildingTop,
   doorTile,
@@ -10,10 +9,13 @@ import {
   streetProps,
   type GroundGrid,
 } from './cityMap';
+import { DISTRICTS } from './districts';
 import { G, isRoad } from './tileTypes';
 
+// Every district uses the same lots (checked in districts.test.ts), so the first one stands for all.
+const BUILDINGS = DISTRICTS[0].buildings;
 const ground = buildCityGround();
-const props = streetProps(ground);
+const props = streetProps(ground, BUILDINGS);
 
 function thinCells(grid: GroundGrid, type: number): string[] {
   const is = (x: number, y: number) => x < 0 || y < 0 || x >= MAP_W || y >= MAP_H || grid[y][x] === type;

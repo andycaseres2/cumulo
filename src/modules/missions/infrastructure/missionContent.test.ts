@@ -1,17 +1,24 @@
 /** Contract over the real mission content: every decision is fair, explained and linked to theory. */
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { findExamTask } from '@/modules/exam/domain/ExamTask';
-import { BUILDINGS } from '@/modules/games/cumulo-city/world/cityMap';
+import { districtOf } from '@/modules/games/cumulo-city/world/districts';
 import { staticMissionCatalog } from './staticMissionCatalog';
 
 const missions = await staticMissionCatalog.all();
 const theoryFile = (slug: string) => join(process.cwd(), 'src/content/theory', `${slug}.md`);
+const topicDomain = (slug: string) => readFileSync(theoryFile(slug), 'utf8').match(/^domain:\s*"?([\w-]+)"?/m)?.[1];
 
 describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission) => {
-  it('belongs to a building of the city and has a story to tell', () => {
-    expect(BUILDINGS.map((b) => b.id)).toContain(mission.buildingId);
+  it('belongs to a building of its district, about a topic of that district’s exam domain', () => {
+    const district = districtOf(mission.buildingId);
+    expect(district?.id, mission.buildingId).toBe(mission.track);
+    expect(existsSync(theoryFile(mission.topicSlug)), mission.topicSlug).toBe(true);
+    expect(topicDomain(mission.topicSlug)).toBe(district?.domainId);
+  });
+
+  it('has a story to tell', () => {
     expect(mission.intro.length).toBeGreaterThanOrEqual(3);
     expect(mission.outro.passed.length).toBeGreaterThan(0);
     expect(mission.outro.failed.length).toBeGreaterThan(0);
@@ -47,15 +54,14 @@ describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission
 });
 
 describe('mission catalog', () => {
-  it('starts the campaign with the bakery and finds missions by building', async () => {
-    expect(missions[0].id).toBe('bakery-elasticity');
-    expect((await staticMissionCatalog.findByBuilding('bank'))?.id).toBe('bank-access');
-    expect(await staticMissionCatalog.findByBuilding('gym')).toBeNull();
+  it('starts the Centro campaign with the bakery and finds missions by building', async () => {
+    expect(missions.find((m) => m.track === 'centro')?.id).toBe('bakery-elasticity');
+    expect((await staticMissionCatalog.inBuilding('bank')).map((m) => m.id)).toContain('bank-access');
+    await expect(staticMissionCatalog.inBuilding('nowhere')).resolves.toEqual([]);
   });
 
-  it('uses unique mission ids and one mission per building', () => {
+  it('uses unique mission ids', () => {
     expect(new Set(missions.map((m) => m.id)).size).toBe(missions.length);
-    expect(new Set(missions.map((m) => m.buildingId)).size).toBe(missions.length);
   });
 
   it('practices all four exam domains across the campaign', () => {

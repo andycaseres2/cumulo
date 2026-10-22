@@ -23,7 +23,11 @@ export interface Decision {
 
 export interface Mission {
   id: string;
+  /** Campaign track it belongs to (in Cúmulo City, a district); each track is played in order. */
+  track: string;
   buildingId: string;
+  /** Theory topic the mission is mainly about. */
+  topicSlug: string;
   title: string;
   client: { name: string; role: string };
   /** Conversation pages before the job is offered. */

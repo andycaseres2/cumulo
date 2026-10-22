@@ -1,5 +1,5 @@
 import type { CurrentMission } from './missions';
-import { BUILDINGS } from './world/cityMap';
+import { districtOf, findBuilding, findDistrict, type DistrictId } from './world/districts';
 
 /** What the HUD mission card shows. */
 export interface MissionCardContent {
@@ -10,17 +10,18 @@ export interface MissionCardContent {
   action: string | null;
 }
 
-export function missionCard(current: CurrentMission | null): MissionCardContent {
+/** Card for the mission of the player's district (`here`), or the active one wherever it is. */
+export function missionCard(current: CurrentMission | null, here: DistrictId): MissionCardContent {
   if (!current) {
     return {
       heading: 'Misiones al día',
-      title: '¡Completaste todas las misiones disponibles!',
-      detail: 'Muy pronto llegarán nuevos clientes a Cúmulo City.',
+      title: `¡Ayudaste a todos los clientes del ${findDistrict(here).name}!`,
+      detail: 'Toma el bus en la parada para buscar clientes en otros distritos.',
       action: null,
     };
   }
   const { brief, state } = current;
-  const place = BUILDINGS.find((b) => b.id === brief.buildingId)?.name ?? brief.buildingId;
+  const place = findBuilding(brief.buildingId)?.name ?? brief.buildingId;
   if (state === 'offered') {
     return {
       heading: 'Nueva misión',
@@ -29,10 +30,12 @@ export function missionCard(current: CurrentMission | null): MissionCardContent 
       action: 'Aceptar misión',
     };
   }
+  const district = districtOf(brief.buildingId);
+  const bus = district && district.id !== here ? `toma el bus al ${district.name}, entra` : 'entra';
   return {
     heading: 'Misión activa',
     title: brief.title,
-    detail: `Objetivo: entra a ${place} y habla con ${brief.client.name}. Sigue la flecha.`,
+    detail: `Objetivo: ${bus} a ${place} y habla con ${brief.client.name}. Sigue la flecha.`,
     action: null,
   };
 }

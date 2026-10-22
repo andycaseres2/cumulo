@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { EVENTS, REGISTRY } from '../../config';
 import { missionCard } from '../../missionCard';
 import type { CurrentMission, GameMissions } from '../../missions';
+import { START_DISTRICT, type DistrictId } from '../../world/districts';
 
 /**
  * One per game: knows the current mission, accepts the one on offer and tells the HUD
@@ -9,6 +10,8 @@ import type { CurrentMission, GameMissions } from '../../missions';
  */
 export class MissionTracker {
   current: CurrentMission | null = null;
+  /** District the player is in: the card offers its next mission. */
+  district: DistrictId = START_DISTRICT;
 
   private constructor(
     private readonly game: Phaser.Game,
@@ -27,8 +30,8 @@ export class MissionTracker {
   }
 
   async refresh() {
-    this.current = await this.missions.current();
-    this.game.events.emit(EVENTS.missionCard, missionCard(this.current));
+    this.current = await this.missions.current(this.district);
+    this.game.events.emit(EVENTS.missionCard, missionCard(this.current, this.district));
     this.game.events.emit(EVENTS.missionChanged, this.current);
   }
 

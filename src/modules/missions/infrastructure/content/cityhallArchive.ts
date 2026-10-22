@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const cityhallArchive: Mission = {
   id: 'cityhall-archive',
+  track: 'tecnologico',
+  topicSlug: 'clases-de-almacenamiento-s3',
   buildingId: 'cityhall',
   title: 'Diez años de papeles',
   client: { name: 'Patricia Huamán', role: 'Jefa de Archivo de la Municipalidad' },

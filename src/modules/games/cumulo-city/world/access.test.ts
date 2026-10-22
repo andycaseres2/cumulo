@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { CurrentMission } from '../missions';
 import { missionAccess, openAccess } from './access';
-import { BUILDINGS } from './cityMap';
+import { ALL_BUILDINGS as BUILDINGS } from './districts';
 
 const bakery = BUILDINGS.find((b) => b.id === 'bakery')!;
 const bank = BUILDINGS.find((b) => b.id === 'bank')!;
@@ -26,6 +26,16 @@ describe('building access', () => {
     expect(denied.allowed).toBe(false);
     expect(!denied.allowed && denied.reason).toContain('Banco Andino');
     expect(!denied.allowed && denied.reason).toContain(bakery.name);
+  });
+
+  it('sends the player to the bus when the active mission is in another district', () => {
+    const cafe = BUILDINGS.find((b) => b.id === 'cafe')!;
+    const elsewhere = missionAccess(mission('bank', 'active')).canEnter(cafe);
+    expect(!elsewhere.allowed && elsewhere.reason).toContain('Distrito Financiero');
+    expect(!elsewhere.allowed && elsewhere.reason).toContain('bus');
+
+    const sameDistrict = missionAccess(mission('bakery', 'active')).canEnter(cafe);
+    expect(!sameDistrict.allowed && sameDistrict.reason).toContain('sigue la flecha');
   });
 
   it('keeps every door closed until the player accepts a mission, and says how to get one', () => {

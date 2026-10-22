@@ -7,7 +7,7 @@ import { migrateLegacyStorage, STORAGE_PREFIX } from '@/infrastructure/storage/r
 import { supabase } from '@/infrastructure/supabase/client';
 import type { GameMissions } from '@/modules/games/cumulo-city/missions';
 import { getCampaignOverview, type CampaignOverview } from '@/modules/missions/application/campaignOverview';
-import { acceptMission, getCampaign, getMissionStatus } from '@/modules/missions/application/missionProgress';
+import { acceptMission, getBuildingMission, getCampaign, getMissionStatus } from '@/modules/missions/application/missionProgress';
 import { playMission } from '@/modules/missions/application/playMission';
 import type { MissionProgressStore } from '@/modules/missions/domain/MissionProgress';
 import { localProgressStore, takeLegacyProgress } from '@/modules/missions/infrastructure/localStorageProgressStore';
@@ -54,11 +54,14 @@ export async function campaignOverview(): Promise<CampaignOverview> {
 
 export function gameMissions(host: HTMLElement): GameMissions {
   return {
-    current: async () => {
-      const { current } = await getCampaign(await progressStore(), catalog);
+    current: async (district) => {
+      const { current } = await getCampaign(await progressStore(), catalog, district);
       return current && { brief: current.mission, state: current.state };
     },
-    forBuilding: (buildingId) => catalog.findByBuilding(buildingId),
+    forBuilding: async (buildingId) => {
+      const found = await getBuildingMission(await progressStore(), catalog, buildingId);
+      return found && { brief: found.mission, state: found.state };
+    },
     status: async (missionId) => (await getMissionStatus(await progressStore(), catalog, missionId)).state,
     accept: async (missionId) => acceptMission(await progressStore(), catalog, missionId),
     play: async (missionId) => {

@@ -19,10 +19,17 @@ export interface CurrentMission {
   state: 'offered' | 'active';
 }
 
+/** The mission that matters in a building right now: the active one there, or the last one once all are done. */
+export interface BuildingMission {
+  brief: MissionBrief;
+  state: 'active' | 'completed';
+}
+
 export interface GameMissions {
-  /** The mission on offer or in progress; null when there is none left. */
-  current(): Promise<CurrentMission | null>;
-  forBuilding(buildingId: string): Promise<MissionBrief | null>;
+  /** The active mission wherever it is, otherwise the one on offer in this district; null when there is none. */
+  current(district: string): Promise<CurrentMission | null>;
+  /** Null while the building has clients still waiting their turn (or none at all). */
+  forBuilding(buildingId: string): Promise<BuildingMission | null>;
   status(missionId: string): Promise<MissionState>;
   /** Activates the mission on offer; false if it was not the one on offer. */
   accept(missionId: string): Promise<boolean>;

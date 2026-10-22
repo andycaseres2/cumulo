@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const startupCosts: Mission = {
   id: 'startup-costs',
+  track: 'mercado',
+  topicSlug: 'herramientas-de-costos',
   buildingId: 'startup',
   title: 'La factura que nadie entiende',
   client: { name: 'Valeria Ríos', role: 'CEO de Startup Hub' },

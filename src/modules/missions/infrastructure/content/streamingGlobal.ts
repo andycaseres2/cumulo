@@ -6,6 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const streamingGlobal: Mission = {
   id: 'streaming-global',
+  track: 'tecnologico',
+  topicSlug: 'dns-y-entrega-de-contenido',
   buildingId: 'streaming',
   title: 'Videos lentos fuera de Lima',
   client: { name: 'Diego Paredes', role: 'CTO de StreamLlama' },
