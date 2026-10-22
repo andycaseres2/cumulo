@@ -1,4 +1,4 @@
-import type { Player } from '../domain/Player';
+import { isCharacter, type Character, type Player } from '../domain/Player';
 import type { AuthErrorKind, AuthOutcome, PlayerAuth } from '../domain/PlayerAuth';
 
 interface UserLike {
@@ -22,6 +22,7 @@ export interface AuthApi {
   signOut(): Promise<{ error: ErrorLike | null }>;
   getSession(): Promise<{ data: { session: { user: UserLike } | null } }>;
   onAuthStateChange(callback: () => void): { data: { subscription: { unsubscribe(): void } } };
+  updateUser(attributes: { data: { character: Character } }): Promise<{ error: ErrorLike | null }>;
 }
 
 const ERROR_KINDS: Record<string, AuthErrorKind> = {
@@ -44,7 +45,9 @@ function errorKind(error: ErrorLike): AuthErrorKind {
 function toPlayer(user: UserLike): Player {
   const name = user.user_metadata?.display_name;
   const displayName = typeof name === 'string' && name.trim() ? name.trim() : (user.email?.split('@')[0] ?? 'Jugador');
-  return { displayName, isGuest: false };
+  // user_metadata is editable by the user, so it only holds preferences like this one, never permissions.
+  const character = user.user_metadata?.character;
+  return { displayName, isGuest: false, character: isCharacter(character) ? character : null };
 }
 
 /** Adapter: player accounts with Supabase Auth (email and password). */
@@ -65,6 +68,9 @@ export function supabasePlayerAuth(auth: AuthApi, emailRedirectTo: string): Play
     },
     async signOut() {
       await auth.signOut();
+    },
+    async saveCharacter(character) {
+      await auth.updateUser({ data: { character } });
     },
     onChange(listener) {
       const { data } = auth.onAuthStateChange(() => listener());

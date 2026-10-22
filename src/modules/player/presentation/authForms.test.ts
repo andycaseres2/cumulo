@@ -9,6 +9,7 @@ function fakeAuth(outcomes: { signIn?: AuthOutcome; signUp?: AuthOutcome } = {})
     signIn: vi.fn(async (): Promise<AuthOutcome> => outcomes.signIn ?? { ok: true, needsConfirmation: false }),
     signUp: vi.fn(async (): Promise<AuthOutcome> => outcomes.signUp ?? { ok: true, needsConfirmation: true }),
     signOut: async () => {},
+    saveCharacter: async () => {},
     onChange: () => () => {},
   };
 }

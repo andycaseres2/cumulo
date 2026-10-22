@@ -9,16 +9,16 @@ const sessionWith = (player: Awaited<ReturnType<PlayerSession['currentPlayer']>>
 
 describe('getCurrentPlayer', () => {
   it('returns a guest when nobody is signed in', async () => {
-    await expect(getCurrentPlayer(sessionWith(null))).resolves.toEqual({ displayName: GUEST_NAME, isGuest: true });
+    await expect(getCurrentPlayer(sessionWith(null))).resolves.toEqual({ displayName: GUEST_NAME, isGuest: true, character: null });
   });
 
   it('returns the signed-in player with a trimmed name', async () => {
-    const player = await getCurrentPlayer(sessionWith({ displayName: '  Andy  ', isGuest: false }));
-    expect(player).toEqual({ displayName: 'Andy', isGuest: false });
+    const player = await getCurrentPlayer(sessionWith({ displayName: '  Andy  ', isGuest: false, character: 'woman' }));
+    expect(player).toEqual({ displayName: 'Andy', isGuest: false, character: 'woman' });
   });
 
   it('falls back to the guest name when the signed-in name is blank', async () => {
-    const player = await getCurrentPlayer(sessionWith({ displayName: '   ', isGuest: false }));
-    expect(player).toEqual({ displayName: GUEST_NAME, isGuest: false });
+    const player = await getCurrentPlayer(sessionWith({ displayName: '   ', isGuest: false, character: null }));
+    expect(player).toEqual({ displayName: GUEST_NAME, isGuest: false, character: null });
   });
 });

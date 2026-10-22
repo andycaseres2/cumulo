@@ -18,6 +18,10 @@ export const REGISTRY = {
   playerName: 'playerName',
   missions: 'missions',
   missionTracker: 'missionTracker',
+  /** Character picked before ('man' | 'woman') or null. */
+  character: 'character',
+  /** Callback to tell the host page which character the player picked. */
+  onCharacterChosen: 'onCharacterChosen',
 } as const;
 
 export const EVENTS = {

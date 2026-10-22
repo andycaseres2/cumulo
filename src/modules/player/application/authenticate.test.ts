@@ -8,6 +8,7 @@ function fakeAuth(): PlayerAuth {
     signUp: vi.fn(async () => ({ ok: true as const, needsConfirmation: true })),
     signIn: vi.fn(async () => ({ ok: true as const, needsConfirmation: false })),
     signOut: vi.fn(async () => {}),
+    saveCharacter: vi.fn(async () => {}),
     onChange: vi.fn(() => () => {}),
   };
 }

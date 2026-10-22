@@ -10,6 +10,7 @@ function api(overrides: Partial<AuthApi> = {}): AuthApi {
     signOut: vi.fn(async () => ({ error: null })),
     getSession: vi.fn(async () => ({ data: { session: { user } }, error: null })),
     onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+    updateUser: vi.fn(async () => ({ error: null })),
     ...overrides,
   };
 }
@@ -52,12 +53,28 @@ describe('supabasePlayerAuth', () => {
   });
 
   it('turns the session user into a player named after the sign-up name, or the email when there is none', async () => {
-    await expect(supabasePlayerAuth(api(), '/').currentPlayer()).resolves.toEqual({ displayName: 'Andy', isGuest: false });
+    await expect(supabasePlayerAuth(api(), '/').currentPlayer()).resolves.toEqual({ displayName: 'Andy', isGuest: false, character: null });
 
     const noName = api({ getSession: vi.fn(async () => ({ data: { session: { user: { email: 'maria@example.com', user_metadata: {} } } }, error: null })) });
-    await expect(supabasePlayerAuth(noName, '/').currentPlayer()).resolves.toEqual({ displayName: 'maria', isGuest: false });
+    await expect(supabasePlayerAuth(noName, '/').currentPlayer()).resolves.toEqual({ displayName: 'maria', isGuest: false, character: null });
 
     const signedOut = api({ getSession: vi.fn(async () => ({ data: { session: null }, error: null })) });
     await expect(supabasePlayerAuth(signedOut, '/').currentPlayer()).resolves.toBeNull();
+  });
+});
+
+describe('character choice', () => {
+  it('reads the character chosen earlier from the account and ignores unknown values', async () => {
+    const withCharacter = (character: unknown) =>
+      api({ getSession: vi.fn(async () => ({ data: { session: { user: { email: 'a@b.co', user_metadata: { display_name: 'Andy', character } } } }, error: null })) });
+
+    await expect(supabasePlayerAuth(withCharacter('woman'), '/').currentPlayer()).resolves.toMatchObject({ character: 'woman' });
+    await expect(supabasePlayerAuth(withCharacter('dragon'), '/').currentPlayer()).resolves.toMatchObject({ character: null });
+  });
+
+  it('saves the chosen character in the account metadata', async () => {
+    const fake = api();
+    await supabasePlayerAuth(fake, '/').saveCharacter('man');
+    expect(fake.updateUser).toHaveBeenCalledWith({ data: { character: 'man' } });
   });
 });

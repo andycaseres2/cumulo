@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import { FONT, REGISTRY } from '../../config';
 import { walkAnimation } from '../art/characters';
+import type { PlayableCharacter } from '../../startScene';
 import { Button } from '../ui/Button';
 
-const OPTIONS = [
-  { key: 'player-man', label: 'Consultor' },
-  { key: 'player-woman', label: 'Consultora' },
+const OPTIONS: { key: string; character: PlayableCharacter; label: string }[] = [
+  { key: 'player-man', character: 'man', label: 'Consultor' },
+  { key: 'player-woman', character: 'woman', label: 'Consultora' },
 ];
 
 export class SelectScene extends Phaser.Scene {
@@ -77,7 +78,9 @@ export class SelectScene extends Phaser.Scene {
   }
 
   private startGame() {
-    this.registry.set(REGISTRY.playerKey, OPTIONS[this.selected].key);
+    const option = OPTIONS[this.selected];
+    this.registry.set(REGISTRY.playerKey, option.key);
+    (this.registry.get(REGISTRY.onCharacterChosen) as (character: PlayableCharacter) => void)(option.character);
     this.scene.start('city');
   }
 }

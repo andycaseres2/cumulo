@@ -18,7 +18,14 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
     height: 100%;
   }
 
-  /* Shown behind the sign-in modal while the player has no account. */
+  /*
+   * Behind the sign-in modal. A player who still has to pick a character sees the plain background
+   * of the selection screen; one who already picked sees the city they are going back to.
+   */
+  .game-root.is-intro {
+    background: #1d2b53;
+  }
+
   .game-root.is-locked {
     background: url('/images/games/nimbus-city.png') center / cover no-repeat;
     image-rendering: pixelated;
@@ -27,7 +34,7 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
 
 <script>
   import { gameMissions } from '@/composition/missions';
-  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { chooseCharacter, currentPlayer, deviceHasCharacter, playerAuth, rememberCharacterOnDevice } from '@/composition/player';
   import { mountNimbusCity } from '@/modules/games/nimbus-city/mount';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { routes } from '@/ui/routes';
@@ -36,8 +43,8 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
   if (root) {
     const player = await currentPlayer();
     if (player.isGuest) {
-      // Playing requires an account: ask for it right here, over a (blurred) view of the city.
-      root.classList.add('is-locked');
+      // Playing requires an account: ask for it right here, over what the player will see next.
+      root.classList.add(deviceHasCharacter() ? 'is-locked' : 'is-intro');
       openAuthModal({
         auth: playerAuth(),
         reason: 'Necesitas una cuenta gratuita para jugar. Ingresa o créala en un minuto.',
@@ -45,7 +52,13 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
         onDismiss: () => window.location.assign(routes.games),
       });
     } else {
-      await mountNimbusCity(root, { playerName: player.displayName, missions: gameMissions(root) });
+      if (player.character) rememberCharacterOnDevice();
+      await mountNimbusCity(root, {
+        playerName: player.displayName,
+        missions: gameMissions(root),
+        character: player.character,
+        onCharacterChosen: (character) => void chooseCharacter(character),
+      });
     }
   }
 </script>

@@ -6,5 +6,6 @@ export const guestPlayerSession: PlayerAuth = {
   signUp: async () => ({ ok: false, error: 'unavailable' }),
   signIn: async () => ({ ok: false, error: 'unavailable' }),
   signOut: async () => {},
+  saveCharacter: async () => {},
   onChange: () => () => {},
 };

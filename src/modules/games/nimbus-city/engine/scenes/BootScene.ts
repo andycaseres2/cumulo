@@ -4,8 +4,9 @@ import { SHEET, SHEET_URL } from '../art/kenney';
 import { createMarkers } from '../art/markers';
 import { createOfficeProps } from '../art/officeProps';
 import { REGISTRY } from '../../config';
+import { startScene, type PlayableCharacter } from '../../startScene';
 
-/** Loads the Kenney sheet, builds character textures and animations, then opens character selection. */
+/** Loads the Kenney sheet, builds textures and animations, then opens the selection or the city. */
 export class BootScene extends Phaser.Scene {
   constructor() {
     super('boot');
@@ -22,11 +23,8 @@ export class BootScene extends Phaser.Scene {
 
     // Dev shortcut: ?play=man or ?play=woman skips character selection.
     const quickStart = new URLSearchParams(window.location.search).get('play');
-    if (quickStart === 'man' || quickStart === 'woman') {
-      this.registry.set(REGISTRY.playerKey, `player-${quickStart}`);
-      this.scene.start('city');
-      return;
-    }
-    this.scene.start('select');
+    const next = startScene(this.registry.get(REGISTRY.character) as PlayableCharacter | null, quickStart);
+    if (next.scene === 'city') this.registry.set(REGISTRY.playerKey, next.playerKey);
+    this.scene.start(next.scene);
   }
 }

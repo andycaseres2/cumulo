@@ -6,12 +6,17 @@ import { HudScene } from './engine/scenes/HudScene';
 import { InteriorScene } from './engine/scenes/InteriorScene';
 import { SelectScene } from './engine/scenes/SelectScene';
 import { noMissions, type GameMissions } from './missions';
+import type { PlayableCharacter } from './startScene';
 
 export interface NimbusCityOptions {
   /** Shown above the player's character. Provided by whoever hosts the game. */
   playerName: string;
   /** Jobs offered in the buildings; without it the city is free to explore. */
   missions?: GameMissions;
+  /** Character picked before; the selection screen is skipped when present. */
+  character?: PlayableCharacter | null;
+  /** Called once the player picks a character on the selection screen. */
+  onCharacterChosen?: (character: PlayableCharacter) => void;
 }
 
 export interface NimbusCityHandle {
@@ -37,6 +42,8 @@ export async function mountNimbusCity(parent: HTMLElement, options: NimbusCityOp
       preBoot: (booting) => {
         booting.registry.set(REGISTRY.playerName, options.playerName);
         booting.registry.set(REGISTRY.missions, options.missions ?? noMissions);
+        booting.registry.set(REGISTRY.character, options.character ?? null);
+        booting.registry.set(REGISTRY.onCharacterChosen, options.onCharacterChosen ?? (() => {}));
       },
     },
     scene: [BootScene, SelectScene, CityScene, InteriorScene, HudScene],
