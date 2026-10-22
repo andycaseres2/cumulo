@@ -3,6 +3,7 @@ import { EVENTS, FONT, minimapRect } from '../../config';
 import type { MissionCardContent } from '../../missionCard';
 import { MissionTracker } from '../systems/MissionTracker';
 import { Button } from '../ui/Button';
+import { choiceRows } from '../ui/choiceLayout';
 import type { DialogChoice, DialogContent, LocationInfo } from '../ui/dialog';
 import { revealedText } from '../ui/typewriter';
 
@@ -109,7 +110,7 @@ export class HudScene extends Phaser.Scene {
       .container(0, 0, [this.dialogBox, this.portraitFrame, this.portrait, this.dialogTitle, this.dialogText, this.dialogAccept])
       .setVisible(false);
 
-    ['ONE', 'TWO', 'THREE'].forEach((key, i) =>
+    ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'].forEach((key, i) =>
       this.input.keyboard!.on(`keydown-${key}`, () => {
         if (this.dialog.visible && !this.typing && this.choices[i]) this.choose(this.choices[i].id);
       }),
@@ -147,19 +148,56 @@ export class HudScene extends Phaser.Scene {
     this.showChoices();
   }
 
-  /** Choice buttons replace "Aceptar", right-aligned at the bottom of the box, once the text is complete. */
+  /** Choice buttons replace "Aceptar" once the text is complete; they were placed when the dialog opened. */
   private showChoices() {
-    for (const button of this.choiceButtons) button.destroy();
-    this.choiceButtons = [];
     this.dialogAccept.setVisible(this.choices.length === 0);
-    let right = this.dialogBox.width - 14;
-    for (const [i, choice] of [...this.choices.entries()].reverse()) {
-      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 10);
-      button.setPosition(right - button.buttonWidth / 2, DIALOG_HEIGHT - button.buttonHeight / 2 - 12);
-      right -= button.buttonWidth + 10;
+    for (const button of this.choiceButtons) button.setVisible(true);
+  }
+
+  /** One button per choice, hidden until the text is complete, so the box can be sized for them. */
+  private buildChoices() {
+    for (const button of this.choiceButtons) button.destroy();
+    this.choiceButtons = this.choices.map((choice, i) => {
+      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 10).setVisible(false);
       this.dialog.add(button);
-      this.choiceButtons.push(button);
-    }
+      return button;
+    });
+  }
+
+  /**
+   * Sizes the dialog for its whole text and its choices, and places everything inside it:
+   * choices wrap into rows (right-aligned, in order) so none goes past the edges of the box.
+   */
+  private layoutDialogBox() {
+    const { width, height } = this.scale;
+    const boxWidth = Math.min(760, width - 24);
+    this.dialogBox.setSize(boxWidth, this.dialogBox.height);
+    this.layoutDialogText();
+
+    // Measure the full text, not the part already typed.
+    const shown = this.dialogText.text;
+    const textHeight = this.dialogText.setText(this.fullText).height;
+    this.dialogText.setText(shown);
+
+    const left = this.dialogText.x;
+    const gap = 10;
+    const rows = choiceRows(this.choiceButtons.map((b) => b.buttonWidth), boxWidth - left - 14, gap);
+    const rowHeight = (this.choiceButtons[0]?.buttonHeight ?? 0) + 8;
+    const actionsHeight = rows.length > 0 ? rows.length * rowHeight - 8 : this.dialogAccept.buttonHeight;
+    const boxHeight = Math.max(DIALOG_HEIGHT, this.dialogText.y + textHeight + 16 + actionsHeight + 12);
+
+    this.dialogBox.setSize(boxWidth, boxHeight);
+    this.dialog.setPosition((width - boxWidth) / 2, height - boxHeight - 12);
+    this.dialogAccept.setPosition(boxWidth - this.dialogAccept.buttonWidth / 2 - 14, boxHeight - this.dialogAccept.buttonHeight / 2 - 12);
+    rows.forEach((row, r) => {
+      const centerY = boxHeight - 12 - (rows.length - 1 - r) * rowHeight - this.choiceButtons[row[0]].buttonHeight / 2;
+      let right = boxWidth - 14;
+      for (const i of [...row].reverse()) {
+        const button = this.choiceButtons[i];
+        button.setPosition(right - button.buttonWidth / 2, centerY);
+        right -= button.buttonWidth + gap;
+      }
+    });
   }
 
   private choose(choiceId: string) {
@@ -173,14 +211,7 @@ export class HudScene extends Phaser.Scene {
     this.controls.setPosition(12, height - 12);
     this.prompt.setPosition(width / 2, height - 60);
 
-    const boxWidth = Math.min(760, width - 24);
-    this.dialog.setPosition((width - boxWidth) / 2, height - DIALOG_HEIGHT - 12);
-    this.dialogBox.setSize(boxWidth, DIALOG_HEIGHT);
-    this.dialogAccept.setPosition(
-      boxWidth - this.dialogAccept.buttonWidth / 2 - 14,
-      DIALOG_HEIGHT - this.dialogAccept.buttonHeight / 2 - 12,
-    );
-    this.layoutDialogText();
+    this.layoutDialogBox();
     this.header.setVisible(width > 560);
     this.card.setPosition(width - CARD_WIDTH - 12, map.y + map.height + 12);
 
@@ -191,7 +222,9 @@ export class HudScene extends Phaser.Scene {
       button.setPosition(right - button.buttonWidth / 2, bottom - button.buttonHeight / 2);
       right -= button.buttonWidth + gap;
     }
-    this.mapHint.setPosition(width / 2, 12);
+    this.mapHint.setPosition(width / 2, 12).setWordWrapWidth(width - 24);
+    // The controls hint wraps before reaching the zoom buttons on narrow screens.
+    this.controls.setWordWrapWidth(Math.max(160, right - 12 - gap));
   }
 
   /** In the full-map view the minimap is redundant and the toggle takes the player back. */
@@ -242,8 +275,7 @@ export class HudScene extends Phaser.Scene {
     this.dialog.setVisible(content !== null);
     this.controls.setVisible(content === null);
     this.choices = content?.choices ?? [];
-    for (const button of this.choiceButtons) button.destroy();
-    this.choiceButtons = [];
+    this.buildChoices();
     this.dialogAccept.setVisible(this.choices.length === 0);
     if (!content) {
       this.typing = false;
@@ -257,6 +289,7 @@ export class HudScene extends Phaser.Scene {
     this.dialogTitle.setText(content.title);
     this.fullText = content.text;
     this.dialogText.setText('');
+    this.layoutDialogBox();
     this.typingStartedAt = this.time.now;
     this.typing = true;
   }

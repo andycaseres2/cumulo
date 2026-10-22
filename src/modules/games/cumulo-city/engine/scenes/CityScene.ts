@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
 import { frameName, npcLookKey } from '../art/characters';
 import { MARKERS, placeMarker } from '../art/markers';
-import { EVENTS, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
+import { EVENTS, FONT, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
 import { NameTag } from '../entities/NameTag';
 import { Npc } from '../entities/Npc';
 import { Walker } from '../entities/Walker';
@@ -53,6 +53,9 @@ const NPC_LINES: Record<DistrictId, string[]> = {
 const NPC_SEEDS: Record<DistrictId, number> = { centro: 2024, financiero: 2025, tecnologico: 2026, mercado: 2027 };
 
 const FADE_MS = 250;
+/** How long a zoom step takes, and how much wheel movement makes one step. */
+const ZOOM_MS = 220;
+const WHEEL_STEP = 50;
 
 /** Data passed when coming back from a building interior. */
 export interface CityWakeData {
@@ -80,6 +83,9 @@ export class CityScene extends Phaser.Scene {
   private mapMode = false;
   private following = true;
   private dragging = false;
+  private zoomTween?: Phaser.Tweens.Tween;
+  /** Zoom the running animation is heading to. */
+  private zoomTarget = 0;
   private tracker!: MissionTracker;
   private guide!: Phaser.GameObjects.Image;
   private guideTarget: { x: number; y: number } | null = null;
@@ -137,6 +143,8 @@ export class CityScene extends Phaser.Scene {
     this.dragging = false;
     this.setupCameras();
     this.setupMapControls();
+    this.markBusStop(busStop);
+    this.zoomTween = undefined;
     this.game.events.emit(EVENTS.mapMode, false);
     this.minimap.ignore(this.guide);
 
@@ -157,6 +165,20 @@ export class CityScene extends Phaser.Scene {
 
   private showLocation() {
     this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: this.district.name, minimap: true });
+  }
+
+  /** A readable sign over the bus stop, and a blue dot that shows it on the minimap. */
+  private markBusStop(stop: { x: number; y: number }) {
+    const text = 'Bus · otros distritos';
+    const y = stop.y - 34;
+    this.add.rectangle(stop.x, y, text.length * 4 + 12, 10, 0x2b2b3a).setStrokeStyle(1, 0x5b8fd6).setDepth(8_000);
+    this.add
+      .text(stop.x, y, text, { fontFamily: FONT, fontSize: '4px', color: '#ffffff', resolution: 4 })
+      .setOrigin(0.5)
+      .setDepth(8_001)
+      .texture.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    const dot = this.add.circle(stop.x, stop.y - 8, 22, 0x3b6fb6).setStrokeStyle(8, 0xf4f7ee).setDepth(9_999);
+    this.cameras.main.ignore(dot);
   }
 
   /** The bus stop takes the player to another district. */
@@ -224,10 +246,27 @@ export class CityScene extends Phaser.Scene {
     this.following = true;
   }
 
+  /** Glides the zoom to `target`; `onProgress` runs every frame with the progress (0–1), e.g. to pan along. */
+  private animateZoom(target: number, onProgress?: (progress: number) => void) {
+    this.zoomTween?.stop();
+    this.zoomTarget = target;
+    this.zoomTween = this.tweens.addCounter({
+      from: this.cameras.main.zoom,
+      to: target,
+      duration: ZOOM_MS,
+      ease: 'Sine.easeOut',
+      onUpdate: (tween) => {
+        this.setZoom(tween.getValue() ?? target);
+        onProgress?.(tween.progress);
+      },
+    });
+  }
+
   private zoomBy(direction: 'in' | 'out') {
     if (this.transitioning) return;
-    const camera = this.cameras.main;
-    this.setZoom(stepZoom(this.levels(), camera.zoom, direction));
+    // Quick repeated steps continue from where the running animation is heading, not from where it is.
+    const from = this.zoomTween?.isPlaying() ? this.zoomTarget : this.cameras.main.zoom;
+    this.animateZoom(stepZoom(this.levels(), from, direction));
   }
 
   /** Full-map view: the whole district on screen, dragged around freely; leaving it goes back to the player. */
@@ -240,10 +279,13 @@ export class CityScene extends Phaser.Scene {
       this.interactions.clearPrompt();
       camera.stopFollow();
       this.following = false;
-      this.setZoom(this.levels()[0]);
-      camera.centerOn(WORLD_W / 2, WORLD_H / 2);
+      // Zoom out and glide to the middle of the district at the same time.
+      const start = { x: camera.midPoint.x, y: camera.midPoint.y };
+      this.animateZoom(this.levels()[0], (p) =>
+        camera.centerOn(Phaser.Math.Linear(start.x, WORLD_W / 2, p), Phaser.Math.Linear(start.y, WORLD_H / 2, p)),
+      );
     } else {
-      this.setZoom(pickZoom(this.scale.width, this.scale.height));
+      this.animateZoom(pickZoom(this.scale.width, this.scale.height));
       this.followPlayer();
     }
     this.minimap.setVisible(!on);
@@ -262,7 +304,14 @@ export class CityScene extends Phaser.Scene {
       for (const [event, handler] of handlers) this.game.events.off(event, handler);
     });
 
-    this.input.on('wheel', (_pointer: unknown, _over: unknown, _dx: number, dy: number) => this.zoomBy(dy > 0 ? 'out' : 'in'));
+    // A mouse wheel notch is one step; a trackpad's many small deltas add up to one.
+    let wheel = 0;
+    this.input.on('wheel', (_pointer: unknown, _over: unknown, _dx: number, dy: number) => {
+      wheel += dy;
+      if (Math.abs(wheel) < WHEEL_STEP) return;
+      this.zoomBy(wheel > 0 ? 'out' : 'in');
+      wheel = 0;
+    });
     this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
       if (this.interactions.busy) return;
       if (event.key === '+' || event.key === '=') this.zoomBy('in');
