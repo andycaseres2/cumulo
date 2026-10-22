@@ -36,6 +36,7 @@ const Heading = headingLevel === 2 ? 'h2' : 'h3';
   </ul>
   <Fragment slot="footer">
     {playable && <Button href={routes.game(game.slug)}>Jugar ahora</Button>}
+    {playable && <span class="account-note">Requiere una cuenta gratuita</span>}
   </Fragment>
 </Card>
 
@@ -92,6 +93,11 @@ const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
   .description {
     margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .account-note {
+    font-size: var(--text-sm);
     color: var(--color-text-muted);
   }
 </style>

@@ -23,10 +23,14 @@ import GameLayout from '@/ui/layouts/GameLayout.astro';
   import { gameMissions } from '@/composition/missions';
   import { currentPlayer } from '@/composition/player';
   import { mountNimbusCity } from '@/modules/games/nimbus-city/mount';
+  import { requireAccount } from '@/modules/player/presentation/requireAccount';
 
   const root = document.querySelector<HTMLElement>('[data-nimbus-city]');
   if (root) {
     const player = await currentPlayer();
-    await mountNimbusCity(root, { playerName: player.displayName, missions: gameMissions(root) });
+    // Playing requires an account: guests go to sign in and come back here afterwards.
+    const signIn = requireAccount(player, window.location.pathname);
+    if (signIn) window.location.replace(signIn);
+    else await mountNimbusCity(root, { playerName: player.displayName, missions: gameMissions(root) });
   }
 </script>

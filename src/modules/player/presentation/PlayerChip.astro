@@ -1,14 +1,13 @@
 ---
-/** Shows who is playing, with "Ingresar" for guests and "Salir" for signed-in players. */
-import { GUEST_NAME } from '@/modules/player/domain/Player';
+/** Signed-in players see their name and "Salir"; everyone else only sees "Ingresar". */
 import { routes } from '@/ui/routes';
 ---
 
 <div class="player" data-player-chip>
-  <span class="player-chip" title="Tu jugador">
+  <span class="player-chip" title="Tu jugador" data-player hidden>
     <span class="avatar" aria-hidden="true"></span>
     <span class="visually-hidden">Jugando como </span>
-    <span data-player-name>{GUEST_NAME}</span>
+    <span data-player-name></span>
   </span>
   <a class="action" href={routes.signIn} data-sign-in>Ingresar</a>
   <button class="action" type="button" data-sign-out hidden>Salir</button>
@@ -54,6 +53,8 @@ import { routes } from '@/ui/routes';
     border-radius: 999px;
   }
 
+  /* The display rules above would otherwise override the browser's [hidden] rule. */
+  .player-chip[hidden],
   .action[hidden] {
     display: none;
   }
@@ -65,7 +66,8 @@ import { routes } from '@/ui/routes';
   async function render() {
     const player = await currentPlayer();
     for (const chip of document.querySelectorAll<HTMLElement>('[data-player-chip]')) {
-      chip.querySelector('[data-player-name]')!.textContent = player.displayName;
+      chip.querySelector<HTMLElement>('[data-player]')!.hidden = player.isGuest;
+      chip.querySelector('[data-player-name]')!.textContent = player.isGuest ? '' : player.displayName;
       chip.querySelector<HTMLElement>('[data-sign-in]')!.hidden = !player.isGuest;
       chip.querySelector<HTMLElement>('[data-sign-out]')!.hidden = player.isGuest;
     }
