@@ -10,6 +10,7 @@ import { renderBuildings, renderGround, renderProps, renderRoadMarkings, type Do
 import { Interactions } from '../systems/Interactions';
 import { PlayerControls } from '../systems/PlayerControls';
 import type { CurrentMission } from '../../missions';
+import { stepZoom, zoomLevels } from '../../cameraZoom';
 import { guideArrow } from '../../world/guide';
 import { MissionTracker } from '../systems/MissionTracker';
 import { busStopTalk, STAY } from '../../busStop';
@@ -75,6 +76,10 @@ export class CityScene extends Phaser.Scene {
   private access: AccessPolicy = missionAccess(null);
   private transitioning = false;
   private markers: Phaser.GameObjects.Image[] = [];
+  /** Whether the full-map view is on, the camera follows the player, and the map is being dragged. */
+  private mapMode = false;
+  private following = true;
+  private dragging = false;
   private tracker!: MissionTracker;
   private guide!: Phaser.GameObjects.Image;
   private guideTarget: { x: number; y: number } | null = null;
@@ -127,7 +132,12 @@ export class CityScene extends Phaser.Scene {
     // Above the name tag (depth 9000) so it is never hidden; grows and shrinks to catch the eye, always opaque.
     this.guide = this.add.image(0, 0, MARKERS.guide).setDepth(9_100).setVisible(false);
     this.tweens.add({ targets: this.guide, scale: { from: 1.2, to: 1.5 }, duration: 450, yoyo: true, repeat: -1 });
+    this.mapMode = false;
+    this.following = true;
+    this.dragging = false;
     this.setupCameras();
+    this.setupMapControls();
+    this.game.events.emit(EVENTS.mapMode, false);
     this.minimap.ignore(this.guide);
 
     const onMissionChanged = (current: CurrentMission | null) => void this.applyMission(current);
@@ -180,11 +190,101 @@ export class CityScene extends Phaser.Scene {
     this.nameTag.follow(this.player);
     this.updateGuide();
     if (this.transitioning) return;
+    // The full map is only for looking around: the player waits where they are.
+    if (this.mapMode) {
+      this.player.move(0, 0);
+      return;
+    }
 
     const interact = this.controls.consumeInteract();
     if (this.interactions.busy) this.player.move(0, 0);
     else this.controls.drive(this.player);
     this.interactions.update(interact);
+
+    // After dragging to look around, walking brings the camera back to the player.
+    const body = this.player.body as Phaser.Physics.Arcade.Body;
+    if (!this.following && !this.dragging && body.velocity.lengthSq() > 0) this.followPlayer();
+  }
+
+  /** Zoom levels for this screen: the whole district first, then whole zooms up to the closest view. */
+  private levels(): number[] {
+    return zoomLevels({ width: this.scale.width, height: this.scale.height }, { width: WORLD_W, height: WORLD_H });
+  }
+
+  /** Sets a zoom and keeps the district centered when the view is larger than it. */
+  private setZoom(zoom: number) {
+    const camera = this.cameras.main.setZoom(zoom);
+    const width = Math.max(WORLD_W, this.scale.width / zoom);
+    const height = Math.max(WORLD_H, this.scale.height / zoom);
+    camera.setBounds((WORLD_W - width) / 2, (WORLD_H - height) / 2, width, height);
+  }
+
+  private followPlayer() {
+    this.cameras.main.startFollow(this.player, true, 0.15, 0.15);
+    this.following = true;
+  }
+
+  private zoomBy(direction: 'in' | 'out') {
+    if (this.transitioning) return;
+    const camera = this.cameras.main;
+    this.setZoom(stepZoom(this.levels(), camera.zoom, direction));
+  }
+
+  /** Full-map view: the whole district on screen, dragged around freely; leaving it goes back to the player. */
+  private toggleMap(on = !this.mapMode) {
+    if (this.transitioning || on === this.mapMode) return;
+    this.mapMode = on;
+    const camera = this.cameras.main;
+    if (on) {
+      this.player.move(0, 0);
+      this.interactions.clearPrompt();
+      camera.stopFollow();
+      this.following = false;
+      this.setZoom(this.levels()[0]);
+      camera.centerOn(WORLD_W / 2, WORLD_H / 2);
+    } else {
+      this.setZoom(pickZoom(this.scale.width, this.scale.height));
+      this.followPlayer();
+    }
+    this.minimap.setVisible(!on);
+    this.game.events.emit(EVENTS.mapMode, on);
+  }
+
+  /** Wheel, +/−, M and Esc, the HUD buttons, and dragging the map with the mouse or a finger. */
+  private setupMapControls() {
+    const handlers: [string, () => void][] = [
+      [EVENTS.zoomIn, () => this.zoomBy('in')],
+      [EVENTS.zoomOut, () => this.zoomBy('out')],
+      [EVENTS.toggleMap, () => this.toggleMap()],
+    ];
+    for (const [event, handler] of handlers) this.game.events.on(event, handler);
+    this.events.once('shutdown', () => {
+      for (const [event, handler] of handlers) this.game.events.off(event, handler);
+    });
+
+    this.input.on('wheel', (_pointer: unknown, _over: unknown, _dx: number, dy: number) => this.zoomBy(dy > 0 ? 'out' : 'in'));
+    this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
+      if (this.interactions.busy) return;
+      if (event.key === '+' || event.key === '=') this.zoomBy('in');
+      else if (event.key === '-' || event.key === '_') this.zoomBy('out');
+      else if (event.key === 'm' || event.key === 'M') this.toggleMap();
+      else if (event.key === 'Escape') this.toggleMap(false);
+    });
+
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (!pointer.isDown || this.transitioning) return;
+      // A short movement is still a click; only a real drag moves the map.
+      if (!this.dragging && Phaser.Math.Distance.Between(pointer.downX, pointer.downY, pointer.x, pointer.y) < 6) return;
+      this.dragging = true;
+      const camera = this.cameras.main;
+      if (this.following) {
+        camera.stopFollow();
+        this.following = false;
+      }
+      camera.scrollX -= (pointer.x - pointer.prevPosition.x) / camera.zoom;
+      camera.scrollY -= (pointer.y - pointer.prevPosition.y) / camera.zoom;
+    });
+    this.input.on('pointerup', () => (this.dragging = false));
   }
 
   private addDoor({ building, x, y }: Door) {
@@ -315,7 +415,7 @@ export class CityScene extends Phaser.Scene {
 
   private setupCameras() {
     const main = this.cameras.main;
-    main.setBounds(0, 0, WORLD_W, WORLD_H).setZoom(pickZoom(this.scale.width, this.scale.height));
+    this.setZoom(pickZoom(this.scale.width, this.scale.height));
     main.startFollow(this.player, true, 0.15, 0.15);
     main.setBackgroundColor('#1d2b53');
 
@@ -330,7 +430,7 @@ export class CityScene extends Phaser.Scene {
     this.minimap.ignore(this.nameTag);
 
     const onResize = (size: Phaser.Structs.Size) => {
-      main.setZoom(pickZoom(size.width, size.height));
+      this.setZoom(this.mapMode ? this.levels()[0] : pickZoom(size.width, size.height));
       const r = minimapRect(size.width);
       this.minimap.setPosition(r.x, r.y);
     };

@@ -21,6 +21,11 @@ export class HudScene extends Phaser.Scene {
   private locationSubtitle!: Phaser.GameObjects.Text;
   private controls!: Phaser.GameObjects.Text;
   private minimapFrame!: Phaser.GameObjects.Rectangle;
+  private zoomIn!: Button;
+  private zoomOut!: Button;
+  private mapToggle!: Button;
+  private mapControls!: Phaser.GameObjects.Container;
+  private mapHint!: Phaser.GameObjects.Text;
   private prompt!: Button;
   private dialog!: Phaser.GameObjects.Container;
   private dialogBox!: Phaser.GameObjects.Rectangle;
@@ -52,7 +57,7 @@ export class HudScene extends Phaser.Scene {
     this.header = this.add.container(12, HEADER_TOP, [headerBg, this.locationTitle, this.locationSubtitle]);
 
     this.controls = this.add
-      .text(0, 0, 'WASD/Flechas: caminar   Shift: correr   E o clic: interactuar', {
+      .text(0, 0, 'WASD/Flechas: caminar   Shift: correr   E o clic: interactuar   Rueda o +/-: zoom   M: mapa', {
         fontFamily: FONT,
         fontSize: '8px',
         color: '#ffffff',
@@ -62,6 +67,22 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0, 1);
 
     this.minimapFrame = this.add.rectangle(0, 0, 10, 10).setOrigin(0).setStrokeStyle(3, 0xffd166);
+
+    // Zoom and full-map controls of the city, bottom right; hidden inside buildings.
+    this.zoomOut = new Button(this, 0, 0, '-', () => this.game.events.emit(EVENTS.zoomOut), 12);
+    this.zoomIn = new Button(this, 0, 0, '+', () => this.game.events.emit(EVENTS.zoomIn), 12);
+    this.mapToggle = new Button(this, 0, 0, 'Mapa', () => this.game.events.emit(EVENTS.toggleMap), 10);
+    this.mapControls = this.add.container(0, 0, [this.zoomOut, this.zoomIn, this.mapToggle]);
+    this.mapHint = this.add
+      .text(0, 0, 'Vista del mapa: arrastra para recorrerlo · rueda o +/- para el zoom · M o Esc para volver', {
+        fontFamily: FONT,
+        fontSize: '8px',
+        color: '#ffd166',
+        backgroundColor: '#1b1b2add',
+        padding: { x: 10, y: 8 },
+      })
+      .setOrigin(0.5, 0)
+      .setVisible(false);
     this.showLocation({ title: 'Cúmulo City', subtitle: 'Distrito Centro', minimap: true });
     this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact)).setVisible(false);
 
@@ -102,6 +123,7 @@ export class HudScene extends Phaser.Scene {
       [EVENTS.dialogAdvance, this.advanceDialog],
       [EVENTS.location, this.showLocation],
       [EVENTS.missionCard, this.showMissionCard],
+      [EVENTS.mapMode, this.showMapMode],
     ];
     for (const [event, handler] of handlers) this.game.events.on(event, handler, this);
     // The HUD starts a frame after the city: ask for the current mission instead of waiting for the next change.
@@ -161,6 +183,23 @@ export class HudScene extends Phaser.Scene {
     this.layoutDialogText();
     this.header.setVisible(width > 560);
     this.card.setPosition(width - CARD_WIDTH - 12, map.y + map.height + 12);
+
+    const gap = 8;
+    const bottom = height - 12;
+    let right = width - 12;
+    for (const button of [this.mapToggle, this.zoomIn, this.zoomOut]) {
+      button.setPosition(right - button.buttonWidth / 2, bottom - button.buttonHeight / 2);
+      right -= button.buttonWidth + gap;
+    }
+    this.mapHint.setPosition(width / 2, 12);
+  }
+
+  /** In the full-map view the minimap is redundant and the toggle takes the player back. */
+  private showMapMode(on: boolean) {
+    this.mapHint.setVisible(on);
+    this.minimapFrame.setVisible(!on && this.mapControls.visible);
+    this.mapToggle.setText(on ? 'Volver' : 'Mapa');
+    this.layout();
   }
 
   /** The current mission, under the minimap: offer with an accept button, objective, or all done. */
@@ -191,6 +230,7 @@ export class HudScene extends Phaser.Scene {
     this.locationTitle.setText(location.title);
     this.locationSubtitle.setText(location.subtitle);
     this.minimapFrame.setVisible(location.minimap);
+    this.mapControls?.setVisible(location.minimap);
   }
 
   private showPrompt(text: string | null) {

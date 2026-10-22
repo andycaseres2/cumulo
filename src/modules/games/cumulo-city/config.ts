@@ -40,6 +40,12 @@ export const EVENTS = {
   missionAccept: 'hud:mission-accept',
   /** The current mission changed (CurrentMission | null); scenes refresh markers and guides. */
   missionChanged: 'game:mission-changed',
+  /** HUD zoom buttons and the full-map toggle (also wheel, +/− and M in the city). */
+  zoomIn: 'hud:zoom-in',
+  zoomOut: 'hud:zoom-out',
+  toggleMap: 'hud:toggle-map',
+  /** The city entered (true) or left (false) the full-map view. */
+  mapMode: 'game:map-mode',
 } as const;
 
 export function pickZoom(width: number, height: number): number {
