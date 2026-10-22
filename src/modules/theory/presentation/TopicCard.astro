@@ -18,6 +18,7 @@ const { topic } = Astro.props;
     {topic.readingMinutes} min de lectura{
       topic.services.length > 0 && ` · ${topic.services.length} ${topic.services.length === 1 ? 'servicio' : 'servicios'}`
     }
+    <span class="done" data-done hidden>✓ Completado</span>
   </p>
 </Card>
 
@@ -50,8 +51,26 @@ const { topic } = Astro.props;
   }
 
   .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
     margin: auto 0 0;
     font-size: var(--text-sm);
     color: var(--color-text-muted);
+  }
+
+  /* Shown in the browser when the visitor completed the topic's quiz. */
+  .done {
+    padding: 0 var(--space-2);
+    font-weight: 700;
+    color: var(--color-accent-ink);
+    background: var(--color-domain-technology-services);
+    border-radius: var(--radius);
+  }
+
+  .done[hidden] {
+    display: none;
   }
 </style>

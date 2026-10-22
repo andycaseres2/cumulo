@@ -1,0 +1,59 @@
+.theory-progress {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-domain-cloud-concepts);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.tp-count {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--color-domain-cloud-concepts);
+}
+
+.theory-progress progress {
+  width: 100%;
+  height: 1rem;
+  accent-color: var(--color-domain-cloud-concepts);
+}
+
+.tp-domains {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tp-domain {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+}
+
+.tp-domain-count {
+  flex: none;
+  font-weight: 700;
+}
+
+.tp-study {
+  justify-self: start;
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  color: var(--color-accent-ink);
+  text-decoration: none;
+  background: var(--color-domain-cloud-concepts);
+  border-radius: var(--radius);
+}
+
+.tp-study:hover,
+.tp-study:focus-visible {
+  background: var(--color-accent);
+}

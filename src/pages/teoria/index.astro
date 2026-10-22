@@ -43,3 +43,20 @@ const [catalog, coverage] = await Promise.all([theory.catalog(), theory.coverage
     margin-bottom: var(--space-12);
   }
 </style>
+
+<script>
+  import { theoryProgressStore } from '@/composition/theoryProgress';
+
+  // Marks the topics this visitor completed and counts them per domain.
+  const completed = new Set(await (await theoryProgressStore()).load());
+  for (const item of document.querySelectorAll<HTMLElement>('[data-topic]')) {
+    const badge = item.querySelector<HTMLElement>('[data-done]');
+    if (badge) badge.hidden = !completed.has(item.dataset.topic!);
+  }
+  for (const progress of document.querySelectorAll<HTMLElement>('[data-domain-progress]')) {
+    const section = progress.closest('section')!;
+    const done = [...section.querySelectorAll<HTMLElement>('[data-topic]')].filter((t) => completed.has(t.dataset.topic!)).length;
+    progress.textContent = `${done} de ${progress.dataset.total} temas completados`;
+    progress.hidden = false;
+  }
+</script>

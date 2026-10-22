@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html"
   - "https://aws.amazon.com/about-aws/global-infrastructure/"
   - "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-dp.html"
+quiz:
+  - prompt: "Una startup de Montevideo obtiene en AWS precios de pago por uso más bajos de los que lograría comprando su propio hardware, porque AWS agrupa el uso de cientos de miles de clientes. ¿Qué ventaja de la nube describe esta situación?"
+    options:
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Esta ventaja trata de pagar solo cuando consumes y solo lo que consumes, no de precios más bajos por el volumen agregado de clientes."
+      - label: "Benefit from massive economies of scale"
+        explanation: "Al agrupar el uso de cientos de miles de clientes, AWS consigue costos más bajos que se traducen en precios de pago por uso más bajos."
+        correct: true
+      - label: "Stop guessing capacity"
+        explanation: "Esta ventaja se refiere a escalar hacia arriba o hacia abajo con pocos minutos de aviso, no al precio obtenido por la escala de AWS."
+      - label: "Go global in minutes"
+        explanation: "Esta ventaja trata de desplegar en varias Regiones del mundo con pocos clics; el escenario habla de precios, no de alcance geográfico."
+  - prompt: "Una tienda en línea de Quito necesita que su aplicación siga funcionando aunque falle una parte de la infraestructura. ¿Qué concepto busca y cómo lo logra en AWS?"
+    options:
+      - label: "Elasticidad, agregando y quitando servidores automáticamente según el tráfico"
+        explanation: "La elasticidad responde a cambios de demanda, no a fallas; el escenario pide seguir funcionando cuando algo falla."
+      - label: "Agilidad, obteniendo recursos en minutos en lugar de semanas"
+        explanation: "La agilidad es la rapidez para obtener recursos y experimentar; no protege a la aplicación ante una falla de infraestructura."
+      - label: "Go global in minutes, desplegando en una Región cercana a sus usuarios"
+        explanation: "Acercar la aplicación a los usuarios reduce la latencia, pero el escenario pide tolerar fallas, no mejorar el tiempo de respuesta."
+      - label: "Alta disponibilidad, desplegando la aplicación en varias Availability Zones"
+        explanation: "Alta disponibilidad es seguir funcionando aunque falle una parte de la infraestructura, y se logra desplegando en varias AZ para no depender de un único punto de falla."
+        correct: true
+  - prompt: "Un banco de Bogotá antes esperaba semanas para obtener servidores nuevos; en AWS los tiene en minutos y puede probar una nueva app en una tarde a bajo costo. ¿Qué ventaja de la nube aprovecha?"
+    options:
+      - label: "Increase speed and agility"
+        explanation: "Con esta ventaja los nuevos recursos están a un clic: el tiempo para tenerlos pasa de semanas a minutos y experimentar cuesta menos."
+        correct: true
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican precios más bajos por el volumen de clientes de AWS, no la rapidez para obtener recursos y experimentar."
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "Esta ventaja trata de dejar de instalar, cablear y alimentar servidores; el escenario destaca la velocidad para probar ideas."
+      - label: "Go global in minutes"
+        explanation: "Esta ventaja trata de llegar a usuarios en varias Regiones del mundo; el banco busca rapidez para experimentar, no alcance global."
 ---
 
 ## ¿Por qué importa?

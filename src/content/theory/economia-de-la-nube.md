@@ -15,6 +15,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Oracle.Concepts.Licensing.html"
   - "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html"
   - "https://aws.amazon.com/economics/"
+quiz:
+  - prompt: "Una cadena de supermercados de Bogotá compra servidores por adelantado pensando en su pico de demanda y los paga aunque estén ociosos. Quiere pagar solo cuando consume recursos y solo por lo que consume. ¿Qué ventaja de la nube describe ese cambio?"
+    options:
+      - label: "Benefit from massive economies of scale"
+        explanation: "Las economías de escala explican por qué AWS ofrece precios más bajos gracias al volumen agregado de sus clientes, no el paso de pagar por adelantado a pagar por consumo."
+      - label: "Trade fixed expense for variable expense"
+        explanation: "Cambiar el gasto fijo (CapEx en servidores comprados antes de saber cómo se usarán) por gasto variable significa pagar solo cuando consumes y solo por lo que consumes."
+        correct: true
+      - label: "Stop spending money running and maintaining data centers"
+        explanation: "Esta ventaja se refiere a dejar el trabajo pesado de montar, cablear y alimentar servidores a AWS, no a pasar de un pago fijo por adelantado a uno según el consumo."
+      - label: "Rightsizing con AWS Compute Optimizer"
+        explanation: "El rightsizing ajusta el tipo y tamaño de los recursos al uso real, pero no es la ventaja que describe cambiar un pago fijo por uno según el consumo."
+  - prompt: "Una empresa de Lima ya pagó licencias vigentes de Oracle y quiere aprovecharlas al usar Amazon RDS for Oracle en lugar de pagar licencias nuevas. ¿Qué estrategia de licenciamiento debe elegir?"
+    options:
+      - label: "License included (licencia incluida)"
+        explanation: "Con licencia incluida la licencia es de AWS y su costo va dentro del precio del servicio; conviene cuando no tienes licencias, no cuando quieres reutilizar las que ya pagaste."
+      - label: "Usar AWS License Manager para estimar el costo de la nube"
+        explanation: "AWS License Manager gestiona licencias y ayuda a evitar incumplimientos, pero no calcula ni estima costos de la nube."
+      - label: "BYOL (Bring Your Own License)"
+        explanation: "Con BYOL reutilizas las licencias que ya compraste, siempre cumpliendo las reglas de licenciamiento del fabricante."
+        correct: true
+      - label: "Rightsizing de la instancia de base de datos"
+        explanation: "El rightsizing ajusta el tipo y tamaño de los recursos al uso real; no decide quién aporta la licencia de Oracle."
+  - prompt: "Una startup de Santiago sospecha que varias de sus instancias están sobredimensionadas y que otras están ociosas. Quiere recomendaciones basadas en la configuración y las métricas de uso para ajustar su tipo y tamaño. ¿Qué servicio de AWS debe usar?"
+    options:
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager administra licencias de fabricantes como Microsoft u Oracle entre cuentas y Regiones; no da recomendaciones de tamaño de recursos."
+      - label: "Amazon RDS con licencia incluida"
+        explanation: "Es una opción de base de datos administrada con la licencia dentro del precio; no analiza el uso de tus recursos para recomendar ajustes de tamaño."
+      - label: "BYOL (Bring Your Own License)"
+        explanation: "BYOL es una estrategia para reutilizar licencias que ya tienes; no identifica recursos sobredimensionados ni ociosos."
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer analiza la configuración y las métricas de uso para dar recomendaciones de rightsizing e identificar recursos ociosos, reduciendo costos."
+        correct: true
 ---
 
 ## ¿Por qué importa?

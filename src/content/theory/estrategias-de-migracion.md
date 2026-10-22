@@ -17,6 +17,40 @@ sources:
   - "https://aws.amazon.com/migration-acceleration-program/"
   - "https://aws.amazon.com/prescriptive-guidance/"
   - "https://aws.amazon.com/professional-services/"
+quiz:
+  - prompt: "Un grupo hotelero de Cancún prepara su migración a AWS y encuentra una aplicación interna sin conexiones entrantes en los últimos 90 días, que ya no aporta valor. ¿Qué estrategia de los 7 Rs debe aplicar?"
+    options:
+      - label: "Retain"
+        explanation: "Retain mantiene la aplicación en el entorno de origen por ahora, por ejemplo por residencia de datos o dependencias pendientes; no aplica a una aplicación que ya no aporta valor."
+      - label: "Rehost"
+        explanation: "Rehost mueve la aplicación a AWS sin cambios; migrar algo que nadie usa sería gastar esfuerzo en una carga sin valor."
+      - label: "Repurchase"
+        explanation: "Repurchase reemplaza la aplicación por otro producto, normalmente SaaS; no tiene sentido comprar un reemplazo para algo que nadie usa."
+      - label: "Retire"
+        explanation: "Retire consiste en apagar o archivar aplicaciones que ya no aportan valor, como una sin conexiones entrantes en los últimos 90 días."
+        correct: true
+  - prompt: "Una fintech de Buenos Aires migrará su base de datos de Oracle a Aurora PostgreSQL. Antes de mover los datos, necesita una herramienta que se descarga en su equipo y convierte tablas, vistas y código de base de datos al nuevo motor. ¿Cuál debe usar?"
+    options:
+      - label: "AWS SCT (AWS Schema Conversion Tool)"
+        explanation: "AWS SCT se descarga en tu equipo y convierte el esquema de una base de datos de un motor a otro, como de Oracle a Aurora PostgreSQL."
+        correct: true
+      - label: "AWS Migration Hub"
+        explanation: "AWS Migration Hub da seguimiento al estado de cada migración desde un lugar único; no convierte esquemas de base de datos."
+      - label: "AWS Application Migration Service"
+        explanation: "AWS Application Migration Service automatiza el rehost de servidores con replicación a nivel de bloque; no convierte el esquema de un motor de base de datos a otro."
+      - label: "AWS Application Discovery Service"
+        explanation: "AWS Application Discovery Service descubre servidores y bases de datos on-premises y sus dependencias; no convierte esquemas."
+  - prompt: "Una empresa de logística de Monterrey quiere mover rápido decenas de servidores físicos y virtuales a AWS sin cambios, con replicación continua a nivel de bloque y ventanas de corte de minutos. ¿Qué servicio de AWS debe usar?"
+    options:
+      - label: "Migration Evaluator"
+        explanation: "Migration Evaluator construye un caso de negocio basado en datos y compara costos; no replica ni mueve servidores."
+      - label: "AWS Migration Hub"
+        explanation: "AWS Migration Hub da seguimiento al estado de las migraciones, pero no ejecuta el rehost de los servidores."
+      - label: "AWS Application Migration Service"
+        explanation: "AWS Application Migration Service automatiza el rehost: replica servidores físicos, virtuales o de otras nubes con replicación continua a nivel de bloque y cortes de minutos."
+        correct: true
+      - label: "AWS SCT (AWS Schema Conversion Tool)"
+        explanation: "AWS SCT convierte esquemas de bases de datos entre motores; no migra servidores completos a AWS."
 ---
 
 ## ¿Por qué importa?

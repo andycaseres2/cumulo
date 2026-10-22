@@ -52,6 +52,8 @@ Signed-in players keep their mission progress in their Supabase account, with a 
 
 Until the table exists (or while offline), the game keeps working with the browser copy and uploads it as soon as the table answers. Progress played on a browser before accounts existed is added to the first account that signs in there. Scores are written by the browser, so they are a learning aid, not a tamper-proof record.
 
+Theory progress (topics completed with their quiz) uses its own table: run [`supabase/migrations/20261022000000_theory_progress.sql`](supabase/migrations/20261022000000_theory_progress.sql) the same way. It creates `theory_progress`, also with Row Level Security, and works the same: until it exists, completed topics stay in the browser.
+
 Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
 
 ## Routes
@@ -114,8 +116,22 @@ services: ["Amazon S3"]  # canonical names from src/modules/exam/domain/inScopeS
 readingMinutes: 5
 sources:
   - "https://docs.aws.amazon.com/..."
+quiz:                    # exactly 3 questions, 4 options each, exactly one correct
+  - prompt: "A short exam-style scenario and the question?"
+    options:
+      - label: "Option"
+        explanation: "Why it is wrong for this scenario."
+      - label: "Right option"
+        explanation: "Why it is right (the page already shows the verdict)."
+        correct: true
+      - label: "Option"
+        explanation: "..."
+      - label: "Option"
+        explanation: "..."
 ---
 ```
+
+The quiz appears at the end of the topic. Answering the 3 questions right completes the topic: its card shows "✓ Completado", its domain counts it and the profile shows it under "Teoría". Guests can answer too (progress stays in their browser, with an invitation to sign in); when they sign in, it joins their account. `src/modules/theory/infrastructure/quizContent.test.ts` lists the domains whose topics must all have a quiz.
 
 Start the body at `##`; the page renders the title. Every factual claim should be backed by an official AWS source listed in `sources`. Keep `examTasks` and `services` as single-line JSON arrays.
 

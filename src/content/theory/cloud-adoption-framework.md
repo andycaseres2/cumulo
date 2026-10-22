@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/foundational-capabilities.html"
   - "https://docs.aws.amazon.com/whitepapers/latest/overview-aws-cloud-adoption-framework/your-cloud-transformation-journey.html"
   - "https://docs.aws.amazon.com/pdfs/whitepapers/latest/overview-aws-cloud-adoption-framework/overview-aws-cloud-adoption-framework.pdf"
+quiz:
+  - prompt: "Una aseguradora de Ciudad de México descubre que su equipo no tiene las habilidades para trabajar en la nube y que la cultura de la organización se resiste al cambio. ¿Qué perspectiva del AWS CAF atiende estas capacidades?"
+    options:
+      - label: "People"
+        explanation: "La perspectiva People es el puente entre tecnología y negocio: se enfoca en la cultura, la estructura organizacional, el liderazgo y la transformación de la fuerza laboral."
+        correct: true
+      - label: "Governance"
+        explanation: "Governance orquesta las iniciativas y gestiona programas, proyectos y riesgos de la transformación; la cultura y las habilidades corresponden a People."
+      - label: "Platform"
+        explanation: "Platform se enfoca en construir una plataforma de nube escalable y en modernizar aplicaciones; no atiende la cultura ni las habilidades del equipo."
+      - label: "Operations"
+        explanation: "Operations busca que los servicios en la nube se entreguen al nivel que el negocio necesita (observabilidad, incidentes, parches); no trata la cultura organizacional."
+  - prompt: "Un banco de Lima ya identificó sus oportunidades y sus brechas de capacidades. Ahora entrega pilotos en producción para demostrar valor incremental y aprender de ellos. ¿En qué fase del AWS CAF está?"
+    options:
+      - label: "Envision"
+        explanation: "En Envision se muestra cómo la nube acelerará los resultados de negocio y se priorizan oportunidades; todavía no se entregan pilotos en producción."
+      - label: "Align"
+        explanation: "En Align se identifican brechas de capacidades, dependencias y preocupaciones de las partes interesadas; los pilotos en producción llegan después."
+      - label: "Launch"
+        explanation: "En Launch se entregan pilotos en producción que demuestran valor incremental, y se aprende de ellos."
+        correct: true
+      - label: "Scale"
+        explanation: "En Scale se expanden los pilotos y el valor de negocio a la escala deseada; primero hay que haber lanzado esos pilotos."
+  - prompt: "Una cadena de retail de Bogotá adopta la nube para crear nuevos productos y servicios, llegar a nuevos clientes y entrar a nuevos segmentos de mercado. ¿Qué resultado de negocio del AWS CAF busca?"
+    options:
+      - label: "Reduced business risk"
+        explanation: "Reducir el riesgo del negocio significa bajar el perfil de riesgo con mejor confiabilidad, rendimiento y seguridad, no crear productos ni llegar a nuevos clientes."
+      - label: "Increased revenue"
+        explanation: "Aumentar los ingresos es crear nuevos productos y servicios, llegar a nuevos clientes y entrar a nuevos segmentos de mercado."
+        correct: true
+      - label: "Improved ESG performance"
+        explanation: "Mejorar el desempeño ESG consiste en usar información para mejorar la sostenibilidad y la transparencia corporativa, no en abrir nuevos mercados."
+      - label: "Increased operational efficiency"
+        explanation: "Aumentar la eficiencia operativa es reducir costos de operación y aumentar la productividad; no describe crear productos para nuevos clientes."
 ---
 
 ## ¿Por qué importa?

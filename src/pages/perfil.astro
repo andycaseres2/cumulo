@@ -6,20 +6,24 @@ import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 
 // Names known at build time, handed to the client view that renders the player's progress.
-const topicTitles = Object.fromEntries((await theory.catalog()).flatMap((s) => s.topics).map((t) => [t.slug, t.title]));
+const topics = (await theory.catalog()).flatMap((s) => s.topics);
+const topicTitles = Object.fromEntries(topics.map((t) => [t.slug, t.title]));
 const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
 ---
 
-<PageLayout title="Mi perfil" description="Tu cuenta, tus misiones completadas en Nimbus City y los dominios del examen que ya practicaste.">
+<PageLayout title="Mi perfil" description="Tu cuenta, los temas de teoría que completaste, tus misiones en Nimbus City y los dominios del examen que ya practicaste.">
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
         eyebrow="Tu cuenta"
         title="Mi perfil"
-        description="Tu cuenta y tu avance: las misiones que resolviste en Nimbus City, tu mejor puntaje en cada una y los dominios del examen CLF-C02 que ya practicaste."
+        description="Tu cuenta y tu avance: los temas de teoría que completaste, las misiones que resolviste en Nimbus City y los dominios del examen CLF-C02 que ya practicaste."
       />
       <div data-profile></div>
+      <h2 class="section-title">Teoría</h2>
+      <div data-theory-progress data-topics={JSON.stringify(topics)}></div>
+      <h2 class="section-title">Misiones</h2>
       <div data-progress data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)}>
         <p class="loading">Cargando tu progreso…</p>
       </div>
@@ -34,6 +38,12 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
     padding-block: var(--space-12);
   }
 
+  .section-title {
+    margin: var(--space-6) 0 calc(var(--space-2) * -1);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+  }
+
   .loading {
     color: var(--color-text-muted);
   }
@@ -45,6 +55,10 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
   import { renderProgress } from '@/modules/missions/presentation/progressView';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { renderProfileCard } from '@/modules/player/presentation/profileCard';
+  import { theoryProgressStore } from '@/composition/theoryProgress';
+  import { getTheoryOverview } from '@/modules/theory/application/theoryProgress';
+  import type { Topic } from '@/modules/theory/domain/Topic';
+  import { renderTheoryProgress } from '@/modules/theory/presentation/theoryProgressView';
   import { routes } from '@/ui/routes';
 
   const host = document.querySelector<HTMLElement>('[data-progress]');
@@ -60,6 +74,9 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
       });
     } else {
       renderProfileCard(document.querySelector<HTMLElement>('[data-profile]')!, player);
+      const theoryHost = document.querySelector<HTMLElement>('[data-theory-progress]')!;
+      const allTopics: Topic[] = JSON.parse(theoryHost.dataset.topics ?? '[]');
+      renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.theory });
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       renderProgress(host, await campaignOverview(), {

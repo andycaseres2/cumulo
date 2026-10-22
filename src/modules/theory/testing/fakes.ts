@@ -10,6 +10,7 @@ export function topic(overrides: Partial<Topic> & Pick<Topic, 'slug'>): Topic {
     examTasks: ['1.1'],
     services: [],
     readingMinutes: 5,
+    hasQuiz: false,
     ...overrides,
   };
 }

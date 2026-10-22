@@ -12,6 +12,7 @@ function toTopic(entry: CollectionEntry<'theory'>): Topic {
     examTasks: entry.data.examTasks,
     services: entry.data.services,
     readingMinutes: entry.data.readingMinutes,
+    hasQuiz: (entry.data.quiz?.length ?? 0) > 0,
   };
 }
 
@@ -24,5 +25,5 @@ export const astroContentTopicRepository: TopicRepository = {
 export async function renderTopicBody(slug: string) {
   const entry = await getEntry('theory', slug);
   if (!entry) throw new Error(`Theory topic not found: ${slug}`);
-  return { ...(await render(entry)), sources: entry.data.sources };
+  return { ...(await render(entry)), sources: entry.data.sources, quiz: entry.data.quiz ?? [] };
 }

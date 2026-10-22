@@ -11,6 +11,8 @@ export interface Topic {
   examTasks: string[];
   services: string[];
   readingMinutes: number;
+  /** Whether the topic ends with questions that can complete it. */
+  hasQuiz: boolean;
 }
 
 /** Study order: exam domain first, then the topic's order inside it. */

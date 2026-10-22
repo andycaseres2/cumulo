@@ -11,6 +11,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/types-of-cloud-computing.html"
   - "https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html"
   - "https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html"
+quiz:
+  - prompt: "El equipo de una cadena de farmacias de Guadalajara renta servidores virtuales en Amazon EC2 y se encarga de instalar y parchar el sistema operativo. ¿Qué modelo de servicio está usando?"
+    options:
+      - label: "SaaS (Software as a Service)"
+        explanation: "En SaaS el proveedor ejecuta y administra una aplicación completa y tú solo la usas; aquí el equipo administra el sistema operativo."
+      - label: "PaaS (Platform as a Service)"
+        explanation: "En PaaS el proveedor administra el hardware y el sistema operativo; si el equipo parcha el sistema operativo, no es PaaS."
+      - label: "IaaS (Infrastructure as a Service)"
+        explanation: "IaaS entrega los bloques básicos (cómputo, red, almacenamiento) con el mayor control; en Amazon EC2 tú instalas y actualizas el sistema operativo."
+        correct: true
+      - label: "Modelo de despliegue híbrido"
+        explanation: "Híbrido es un modelo de despliegue (dónde vive la aplicación), no un modelo de servicio; la pregunta es cuánto administra el equipo."
+  - prompt: "Una startup de Medellín quiere subir el código de su app de pedidos y que AWS aprovisione las instancias EC2, configure el balanceo de carga, el monitoreo de salud y el escalado. ¿Qué servicio de AWS le conviene?"
+    options:
+      - label: "Amazon EC2, administrando las instancias por su cuenta"
+        explanation: "Con Amazon EC2 directo la startup tendría que administrar los servidores y el sistema operativo por su cuenta; quiere solo subir su código."
+      - label: "AWS Elastic Beanstalk"
+        explanation: "Con AWS Elastic Beanstalk construyes y subes tu aplicación, y el servicio aprovisiona EC2, configura balanceo de carga, monitoreo de salud y escalado (enfoque PaaS)."
+        correct: true
+      - label: "AWS Outposts"
+        explanation: "AWS Outposts lleva infraestructura de AWS a las instalaciones del cliente para escenarios híbridos; no es una plataforma para solo subir código."
+      - label: "Un despliegue on-premises con virtualización"
+        explanation: "On-premises significa operar recursos en tu propio centro de datos; la startup quiere que AWS se encargue de la infraestructura."
+  - prompt: "Por regulación, un hospital de Monterrey debe mantener parte de sus datos en su propio centro de datos, conectado a sus aplicaciones en AWS, con baja latencia hacia sus sistemas locales. ¿Qué modelo de despliegue y qué servicio de AWS encajan?"
+    options:
+      - label: "Despliegue en la nube, con todo ejecutándose en AWS"
+        explanation: "En el modelo de nube todas las partes de la aplicación se ejecutan en la nube; el hospital debe mantener datos en sus instalaciones."
+      - label: "On-premises (nube privada), sin conexión con la nube"
+        explanation: "On-premises deja todo en el centro de datos propio; el hospital necesita conectar sus recursos locales con la nube."
+      - label: "PaaS con AWS Elastic Beanstalk"
+        explanation: "PaaS describe cuánto administras, no dónde viven los datos; Elastic Beanstalk no lleva capacidad de AWS a las instalaciones del hospital."
+      - label: "Despliegue híbrido con AWS Outposts"
+        explanation: "Híbrido conecta la nube con infraestructura on-premises, y AWS Outposts lleva infraestructura de AWS a tus instalaciones para baja latencia o procesamiento local de datos."
+        correct: true
 ---
 
 ## ¿Por qué importa?

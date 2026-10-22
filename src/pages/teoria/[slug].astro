@@ -20,7 +20,7 @@ const navigation = await theory.navigation(slug);
 if (!navigation) throw new Error(`Unknown theory topic: ${slug}`);
 
 const { topic, domain, previous, next } = navigation;
-const { Content, sources } = await theory.renderBody(slug);
+const { Content, sources, quiz } = await theory.renderBody(slug);
 ---
 
 <PageLayout title={topic.title} description={topic.summary}>
@@ -37,6 +37,7 @@ const { Content, sources } = await theory.renderBody(slug);
       <ExamTaskList taskIds={topic.examTasks} />
       <Prose><Content /></Prose>
       <SourceList sources={sources} />
+      {quiz.length > 0 && <div data-topic-quiz data-slug={topic.slug} data-quiz={JSON.stringify(quiz)} />}
       <TopicPager previous={previous} next={next} />
     </article>
   </Container>
@@ -47,3 +48,26 @@ const { Content, sources } = await theory.renderBody(slug);
     padding-top: var(--space-8);
   }
 </style>
+
+<script>
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { theoryProgressStore } from '@/composition/theoryProgress';
+  import { openAuthModal } from '@/modules/player/presentation/authModal';
+  import { recordQuizResult } from '@/modules/theory/application/theoryProgress';
+  import type { QuizQuestion } from '@/modules/theory/domain/TheoryProgress';
+  import { renderTopicQuiz } from '@/modules/theory/presentation/topicQuiz';
+
+  const host = document.querySelector<HTMLElement>('[data-topic-quiz]');
+  if (host) {
+    const slug = host.dataset.slug!;
+    const questions: QuizQuestion[] = JSON.parse(host.dataset.quiz ?? '[]');
+    const [player, store] = await Promise.all([currentPlayer(), theoryProgressStore()]);
+    renderTopicQuiz(host, {
+      questions,
+      completed: (await store.load()).includes(slug),
+      signedIn: !player.isGuest,
+      onFinished: (result) => recordQuizResult(store, slug, result),
+      onSignIn: () => openAuthModal({ auth: playerAuth(), onSignedIn: () => window.location.reload() }),
+    });
+  }
+</script>

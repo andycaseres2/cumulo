@@ -17,6 +17,40 @@ sources:
   - "https://docs.aws.amazon.com/wellarchitected/latest/framework/cost-dp.html"
   - "https://docs.aws.amazon.com/wellarchitected/latest/framework/sus-design-principles.html"
   - "https://aws.amazon.com/well-architected-tool/"
+quiz:
+  - prompt: "Una fintech de Santiago decide desplegar cambios frecuentes, pequeños y reversibles, y gestionar su operación como código. ¿A qué pilar del AWS Well-Architected Framework corresponde esta práctica?"
+    options:
+      - label: "Operational excellence"
+        explanation: "Hacer cambios frecuentes, pequeños y reversibles y automatizar las operaciones (por ejemplo, como código) son principios de diseño de excelencia operativa."
+        correct: true
+      - label: "Security"
+        explanation: "Seguridad se centra en identidad, trazabilidad y protección de datos; los cambios pequeños y reversibles no son un principio de este pilar."
+      - label: "Reliability"
+        explanation: "Confiabilidad se centra en recuperarse de fallas y probar la recuperación; el escenario describe cómo operar y desplegar cambios."
+      - label: "Performance efficiency"
+        explanation: "Eficiencia del rendimiento trata de elegir los recursos adecuados y usarlos de forma eficiente, no de cómo se despliegan los cambios."
+  - prompt: "Una empresa de logística de Lima quiere reducir el consumo de energía y la huella ambiental de su carga de trabajo, maximizando la utilización y evitando recursos ociosos. ¿Qué pilar guía este objetivo?"
+    options:
+      - label: "Cost optimization"
+        explanation: "Optimización de costos busca entregar valor al menor precio; la meta del escenario es reducir el consumo de energía y el impacto ambiental, no el gasto."
+      - label: "Performance efficiency"
+        explanation: "Eficiencia del rendimiento busca cumplir los requisitos de rendimiento con los recursos adecuados, no reducir el impacto ambiental."
+      - label: "Sustainability"
+        explanation: "Sostenibilidad se enfoca en el impacto ambiental, en especial el consumo energético, y uno de sus principios es maximizar la utilización."
+        correct: true
+      - label: "Reliability"
+        explanation: "Confiabilidad trata de cumplir la función de forma correcta y consistente y recuperarse de fallas, no de reducir la huella ambiental."
+  - prompt: "El equipo de una tienda en línea de Buenos Aires quiere revisar su carga de trabajo con el framework. ¿Qué hace el AWS Well-Architected Tool?"
+    options:
+      - label: "Aplica automáticamente los cambios necesarios para corregir los riesgos de la arquitectura"
+        explanation: "El AWS Well-Architected Tool evalúa y recomienda; tú decides e implementas los cambios, no los aplica de forma automática."
+      - label: "Revisa y mide la carga de trabajo, identifica problemas de alto riesgo (HRI) y guarda milestones del progreso"
+        explanation: "El AWS WA Tool da un proceso consistente para revisar y medir workloads, identificar HRI, recibir un plan de mejora y guardar milestones."
+        correct: true
+      - label: "Realiza una auditoría formal de cumplimiento sobre la cuenta de AWS"
+        explanation: "AWS aclara que una revisión Well-Architected es una conversación constructiva, no una auditoría."
+      - label: "Escala automáticamente los recursos de la carga de trabajo según la demanda"
+        explanation: "Escalar recursos según la demanda no es una función del AWS Well-Architected Tool; la herramienta sirve para revisar la arquitectura, no para escalarla."
 ---
 
 ## ¿Por qué importa?
