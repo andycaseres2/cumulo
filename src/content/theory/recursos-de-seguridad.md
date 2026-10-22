@@ -16,6 +16,40 @@ sources:
   - "https://aws.amazon.com/security/vulnerability-reporting/"
   - "https://aws.amazon.com/about-aws/whats-new/2024/10/aws-trust-safety-center-re-post/"
   - "https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html"
+quiz:
+  - prompt: "Una cooperativa de ahorro de Asunción ya usa en su centro de datos un firewall de próxima generación de un fabricante conocido y quiere desplegar el mismo producto en AWS, con el cargo en su factura de AWS. ¿Dónde debe buscarlo?"
+    options:
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact sirve para descargar informes de cumplimiento de AWS como SOC, ISO o PCI; no vende software de terceros."
+      - label: "AWS Knowledge Center"
+        explanation: "El Knowledge Center en re:Post ofrece soluciones paso a paso a preguntas frecuentes; no permite comprar ni desplegar productos."
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace es un catálogo curado de software de terceros, incluidos productos de seguridad, y sus cargos aparecen en tu factura de AWS."
+        correct: true
+      - label: "AWS Security Blog"
+        explanation: "El Security Blog publica novedades y buenas prácticas; no es un lugar para comprar ni desplegar un firewall de un fabricante."
+  - prompt: "Una empresa de medios de San José detecta que una instancia EC2 con una IP de AWS envía tráfico malicioso a su red. ¿A quién debe reportarlo?"
+    options:
+      - label: "A AWS Trust & Safety, con el formulario de abuso de AWS"
+        explanation: "Cuando un recurso de AWS se usa con fines abusivos, como una instancia EC2 que envía tráfico malicioso, el canal es AWS Trust & Safety mediante el formulario de abuso."
+        correct: true
+      - label: "Abriendo un caso de soporte técnico en AWS Support"
+        explanation: "AWS Support gestiona problemas de tu propia cuenta; abrir un caso técnico para reportar abuso desde una IP de AWS es una trampa típica del examen."
+      - label: "Al programa de divulgación de vulnerabilidades de AWS"
+        explanation: "Ese programa es para reportar vulnerabilidades en los servicios de AWS, no el uso abusivo de un recurso de AWS por parte de otra persona."
+      - label: "Descargando un informe en AWS Artifact"
+        explanation: "AWS Artifact entrega informes de cumplimiento de AWS; no sirve para reportar actividad abusiva."
+  - prompt: "Un desarrollador de una startup de Medellín configuró una bucket policy de Amazon S3 que bloquea todo el acceso y necesita una solución paso a paso a este problema frecuente. ¿Qué recurso le conviene consultar?"
+    options:
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace vende software, datos y servicios de terceros; no ofrece artículos con soluciones a problemas frecuentes."
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact da acceso a informes de cumplimiento de AWS como SOC o ISO; no explica cómo corregir una bucket policy."
+      - label: "AWS Trust & Safety Center"
+        explanation: "El Trust & Safety Center explica cómo reportar abusos y los usos prohibidos de los servicios; no trata la configuración de bucket policies."
+      - label: "AWS Knowledge Center (en AWS re:Post)"
+        explanation: "El Knowledge Center reúne preguntas frecuentes de los clientes con soluciones paso a paso, por ejemplo cómo corregir una bucket policy de S3 que bloquea todo el acceso."
+        correct: true
 ---
 
 ## ¿Por qué importa?

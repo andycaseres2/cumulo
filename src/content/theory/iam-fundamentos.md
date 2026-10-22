@@ -15,6 +15,40 @@ sources:
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html"
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_last-accessed.html"
+quiz:
+  - prompt: "Una agencia de viajes de Ciudad de Panamá tiene una aplicación en una instancia de Amazon EC2 que debe leer archivos de Amazon S3. El desarrollador propone guardar access keys en el código. ¿Qué debe usar en su lugar?"
+    options:
+      - label: "Un rol de IAM asignado a la instancia"
+        explanation: "Un rol de IAM entrega credenciales temporales a la aplicación en EC2 para leer de S3 sin guardar claves en el código."
+        correct: true
+      - label: "Un grupo de usuarios de IAM"
+        explanation: "Un grupo solo agrupa usuarios de IAM para asignarles permisos; no tiene credenciales propias que la instancia pueda usar."
+      - label: "Un usuario de IAM con access keys de largo plazo"
+        explanation: "Un usuario de IAM con access keys es justo lo que se quiere evitar: son credenciales de largo plazo guardadas en el código."
+      - label: "Una política en línea en el usuario raíz"
+        explanation: "El usuario raíz tiene acceso completo y AWS recomienda no usarlo en el día a día; además, al usuario raíz no se le adjuntan políticas de IAM ni resuelve dar credenciales a la instancia."
+  - prompt: "Una cooperativa de Quito adjuntó a un usuario una política que permite todas las acciones de Amazon S3 y otra que deniega explícitamente borrar objetos. ¿Qué pasa cuando el usuario intenta borrar un objeto?"
+    options:
+      - label: "Se permite, porque un Allow anula cualquier Deny"
+        explanation: "Es la trampa típica del examen: un Allow no anula un Deny; la denegación explícita prevalece."
+      - label: "Se permite, porque la política más reciente tiene prioridad"
+        explanation: "La evaluación de políticas no depende de cuál se adjuntó primero o después; el Deny explícito decide el resultado."
+      - label: "Se deniega, porque la denegación explícita siempre gana"
+        explanation: "Una denegación explícita (Deny) siempre gana sobre cualquier Allow, así que el usuario no puede borrar el objeto."
+        correct: true
+      - label: "Se deniega solo si el usuario no tiene MFA activado"
+        explanation: "MFA protege el inicio de sesión, pero aquí el borrado se deniega por el Deny explícito, tenga o no MFA."
+  - prompt: "Una fintech de Lima necesita una política de permisos acotada a su caso exacto, que pueda editar y reutilizar en varios usuarios y roles. ¿Qué tipo de política debe crear?"
+    options:
+      - label: "Una política administrada por AWS (AWS managed)"
+        explanation: "Las políticas administradas por AWS no se pueden editar y, por ser genéricas, a menudo dan más permisos de los necesarios."
+      - label: "Una política en línea (inline)"
+        explanation: "Una política en línea vive dentro de una sola identidad (relación uno a uno), así que no se reutiliza en varias identidades."
+      - label: "Una bucket policy de Amazon S3"
+        explanation: "Una bucket policy es una política basada en recursos que se adjunta a un bucket, no a usuarios y roles."
+      - label: "Una política administrada por el cliente (customer managed)"
+        explanation: "Las políticas administradas por el cliente son personalizadas: las escribes para tu caso exacto, puedes editarlas y reutilizarlas en varias identidades."
+        correct: true
 ---
 
 ## ¿Por qué importa?

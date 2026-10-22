@@ -17,6 +17,40 @@ sources:
   - "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html"
   - "https://docs.aws.amazon.com/drs/latest/userguide/what-is-drs.html"
   - "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-out-of-scope-services.html"
+quiz:
+  - prompt: "Una cadena de farmacias de Guadalajara quiere llevar a AWS sus carpetas compartidas de Windows, que usan el protocolo SMB y se integran con Microsoft Active Directory, sin cambiar cómo trabajan los empleados. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon EFS"
+        explanation: "Amazon EFS es un sistema de archivos NFS que no es compatible con instancias EC2 Windows, así que no sirve para carpetas compartidas de Windows con SMB."
+      - label: "Amazon FSx for Windows File Server"
+        explanation: "FSx for Windows File Server está construido sobre Windows Server, usa SMB y se integra con Active Directory: es la opción para carpetas compartidas de Windows."
+        correct: true
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway presenta cintas virtuales para el software de respaldo; no ofrece carpetas compartidas de archivos para los empleados."
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery replica servidores para recuperarlos en minutos ante un desastre; no es un servidor de archivos compartidos."
+  - prompt: "Una distribuidora de Bogotá respalda sus servidores en cintas físicas y quiere dejar de comprarlas, pero sin cambiar el flujo de su software de respaldo y guardando los datos en Amazon S3 o S3 Glacier. ¿Qué tipo de AWS Storage Gateway debe usar?"
+    options:
+      - label: "Volume Gateway"
+        explanation: "Volume Gateway presenta volúmenes de bloques iSCSI para extender el almacenamiento local; no presenta cintas virtuales al software de respaldo."
+      - label: "Amazon FSx for NetApp ONTAP"
+        explanation: "FSx for NetApp ONTAP es un sistema de archivos administrado multiprotocolo; no reemplaza cintas físicas en un flujo de respaldo."
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery mantiene servidores replicados listos para arrancar en AWS; no emula cintas para el software de respaldo."
+      - label: "Tape Gateway"
+        explanation: "Tape Gateway presenta cintas virtuales a tu software de respaldo y guarda los datos en Amazon S3 o S3 Glacier, sin cambiar el flujo de respaldo."
+        correct: true
+  - prompt: "Una aseguradora de Santiago quiere definir en un solo lugar cuándo respaldar sus recursos de Amazon EC2, Amazon RDS y Amazon DynamoDB, asignar esas políticas mediante etiquetas e impedir que alguien borre los respaldos. ¿Qué servicio cumple este objetivo?"
+    options:
+      - label: "AWS Backup"
+        explanation: "AWS Backup centraliza los respaldos con backup plans asignables por etiquetas, y AWS Backup Vault Lock impide borrar respaldos o cambiar su retención."
+        correct: true
+      - label: "AWS Elastic Disaster Recovery"
+        explanation: "AWS Elastic Disaster Recovery mantiene servidores completos replicados para recuperarse en minutos; no define políticas centralizadas de respaldo por etiquetas."
+      - label: "Amazon S3 File Gateway"
+        explanation: "S3 File Gateway presenta recursos compartidos NFS o SMB respaldados en S3; no gestiona políticas de respaldo para EC2, RDS y DynamoDB."
+      - label: "Amazon FSx for OpenZFS"
+        explanation: "FSx for OpenZFS es un sistema de archivos administrado sobre OpenZFS; no centraliza ni protege respaldos de otros servicios."
 ---
 
 ## ¿Por qué importa?

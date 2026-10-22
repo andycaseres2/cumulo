@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/price-changes.html"
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-get-answers.html"
   - "https://aws.amazon.com/pricing/"
+quiz:
+  - prompt: "Una startup de Rosario financia su plataforma con un fondo fijo mensual. Quiere recibir un correo cuando el gasto pronosticado del mes vaya a superar el 80 % de ese monto. ¿Qué herramienta debe usar?"
+    options:
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets permite crear cost budgets con alertas basadas en el gasto real o pronosticado, enviadas por correo electrónico o a un tema de Amazon SNS."
+        correct: true
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer muestra pronósticos y analiza el gasto, pero las alertas al superar un umbral las envía AWS Budgets."
+      - label: "AWS Pricing Calculator"
+        explanation: "Pricing Calculator crea estimaciones antes de construir; no vigila el gasto real ni envía alertas."
+      - label: "AWS Price List API"
+        explanation: "AWS Price List API consulta precios de forma programática; no da seguimiento a tu gasto ni envía notificaciones."
+  - prompt: "Una ONG educativa de Quito aún no usa AWS y su directorio quiere saber cuánto costará al mes la plataforma de cursos antes de migrarla. ¿Qué herramienta debe usar?"
+    options:
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer analiza costos y uso que ya ocurrieron; sin historial en AWS no sirve para estimar una arquitectura que aún no existe."
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets da seguimiento al gasto y envía alertas sobre umbrales; no estima el costo de una solución antes de construirla."
+      - label: "AWS Pricing Calculator"
+        explanation: "AWS Pricing Calculator es una herramienta web gratuita para crear estimaciones de costos y modelar una solución antes de construirla."
+        correct: true
+      - label: "AWS Support Center"
+        explanation: "AWS Support Center sirve para abrir casos, como dudas sobre un cargo de la factura; no genera estimaciones de costos."
+  - prompt: "Una pyme de Asunción con Basic Support encuentra en su factura un cargo que no reconoce y quiere que AWS se lo explique. ¿Qué debe hacer?"
+    options:
+      - label: "Contratar un plan de soporte pagado para poder abrir un caso"
+        explanation: "El soporte de cuenta y facturación es gratuito para todos los titulares de cuentas, incluso con Basic Support; solo el soporte técnico personalizado requiere un plan pagado."
+      - label: "Crear un usage budget en AWS Budgets"
+        explanation: "Un usage budget pone límites de uso y alertas, pero no explica un cargo que ya apareció en la factura."
+      - label: "Revisar la estimación en AWS Pricing Calculator"
+        explanation: "Pricing Calculator solo considera los datos que ingresas para estimar; no muestra ni explica los cargos reales de tu factura."
+      - label: "Abrir un caso en AWS Support Center eligiendo Account and billing support"
+        explanation: "Para dudas o reclamos de la factura se abre un caso de Account and billing support en AWS Support Center, un soporte gratuito incluso con Basic Support."
+        correct: true
 ---
 
 ## ¿Por qué importa?

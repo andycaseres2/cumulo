@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/detective/latest/userguide/what-is-detective.html"
   - "https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html"
   - "https://docs.aws.amazon.com/awssupport/latest/user/security-checks.html"
+quiz:
+  - prompt: "Una empresa de logística de Guadalajara quiere que AWS le avise de forma continua si alguna instancia EC2 se comunica con IP asociadas a minería de criptomonedas o si hay credenciales comprometidas, sin instalar agentes. ¿Qué servicio debe activar?"
+    options:
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector escanea vulnerabilidades de software y exposición de red; no detecta comportamiento malicioso como la comunicación con IP de minería."
+      - label: "Amazon GuardDuty"
+        explanation: "Amazon GuardDuty monitorea de forma continua CloudTrail, VPC Flow Logs y logs de DNS con inteligencia de amenazas y machine learning, y detecta minería de criptomonedas y credenciales comprometidas."
+        correct: true
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie descubre datos sensibles en Amazon S3; no vigila la actividad de red de las instancias EC2."
+      - label: "AWS Trusted Advisor"
+        explanation: "AWS Trusted Advisor recomienda buenas prácticas, como MFA en raíz o puertos abiertos; no detecta amenazas activas en la cuenta."
+  - prompt: "Una fintech de Santiago necesita escanear de forma continua sus instancias EC2 y sus imágenes de contenedores en Amazon ECR en busca de vulnerabilidades conocidas (CVE). ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective investiga la causa raíz de hallazgos con un grafo de comportamiento; no escanea software en busca de CVE."
+      - label: "Amazon GuardDuty"
+        explanation: "Amazon GuardDuty detecta amenazas activas por comportamiento; el escaneo de vulnerabilidades de software corresponde a Inspector."
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie busca datos sensibles en Amazon S3; no revisa imágenes de contenedores ni instancias en busca de CVE."
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector descubre automáticamente instancias EC2, imágenes en ECR y funciones Lambda, y las escanea de forma continua en busca de CVE."
+        correct: true
+  - prompt: "Tras recibir un hallazgo de GuardDuty, el equipo de seguridad de una aerolínea de Lima quiere analizar la causa raíz y ver qué recursos se vieron afectados, con visualizaciones de un grafo de comportamiento. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Detective"
+        explanation: "Amazon Detective usa datos de CloudTrail, VPC Flow Logs y hallazgos de GuardDuty para construir un grafo de comportamiento e investigar la causa raíz."
+        correct: true
+      - label: "AWS Security Hub CSPM"
+        explanation: "AWS Security Hub CSPM agrega hallazgos y verifica estándares con puntajes de seguridad; no construye un grafo de comportamiento para investigar la causa raíz."
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector busca vulnerabilidades de software; no investiga lo que hizo un atacante a partir de un hallazgo de GuardDuty."
+      - label: "AWS Trusted Advisor"
+        explanation: "AWS Trusted Advisor ejecuta checks de buenas prácticas; no analiza la actividad relacionada con un hallazgo de seguridad."
 ---
 
 ## ¿Por qué importa?

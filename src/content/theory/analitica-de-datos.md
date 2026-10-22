@@ -10,6 +10,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/analytics.html"
   - "https://docs.aws.amazon.com/quick/latest/userguide/what-is.html"
   - "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-in-scope-services.html"
+quiz:
+  - prompt: "Una aerolínea de Medellín tiene archivos históricos de ventas en Amazon S3 y quiere consultarlos con SQL estándar sin administrar servidores, pagando solo por las consultas que ejecuta. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Kinesis"
+        explanation: "Amazon Kinesis recopila y procesa datos en streaming en tiempo real; no es para consultar con SQL archivos históricos ya guardados en S3."
+      - label: "Amazon Athena"
+        explanation: "Amazon Athena es un servicio serverless de consultas interactivas con SQL estándar sobre datos en S3, y pagas solo por las consultas que ejecutas."
+        correct: true
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight crea tableros y visualizaciones de BI; no es el servicio que ejecuta consultas SQL directamente sobre los archivos en S3."
+      - label: "AWS Glue"
+        explanation: "AWS Glue prepara datos con ETL y guarda sus metadatos en el Glue Data Catalog; no es el servicio de consultas SQL interactivas."
+  - prompt: "El área comercial de una aerolínea de Bogotá quiere capturar los clics de su sitio web a medida que llegan para detectar en tiempo real cuándo se dispara la demanda de una ruta. ¿Qué servicio de AWS corresponde?"
+    options:
+      - label: "Amazon Athena"
+        explanation: "Amazon Athena consulta con SQL datos que ya están en S3; no captura flujos de clics a medida que llegan."
+      - label: "AWS Glue"
+        explanation: "AWS Glue es ETL administrado para preparar y catalogar datos; no está pensado para capturar datos en streaming en tiempo real."
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight muestra tableros de BI; no recopila ni procesa los clics a medida que llegan."
+      - label: "Amazon Kinesis"
+        explanation: "Amazon Kinesis sirve para recopilar, procesar y analizar datos en streaming en tiempo real, como los clics de un sitio web."
+        correct: true
+  - prompt: "Una cadena de supermercados de Lima necesita un servicio ETL totalmente administrado que descubra sus datos en S3 y guarde la definición de tablas y esquemas para que Athena sepa cómo leerlos. ¿Cuál debe elegir?"
+    options:
+      - label: "AWS Glue"
+        explanation: "AWS Glue es ETL totalmente administrado y guarda los metadatos de tablas y esquemas en el AWS Glue Data Catalog, que Athena usa para leer los datos."
+        correct: true
+      - label: "Amazon Quick Sight"
+        explanation: "Amazon Quick Sight crea tableros interactivos de BI; no hace ETL ni mantiene un catálogo de metadatos."
+      - label: "Amazon OpenSearch Service"
+        explanation: "Amazon OpenSearch Service se usa para búsqueda de texto completo y análisis de logs; no es el catálogo de metadatos que usa Athena."
+      - label: "Amazon Kinesis Video Streams"
+        explanation: "Kinesis Video Streams captura video desde dispositivos conectados; no descubre datos en S3 ni guarda esquemas de tablas."
 ---
 
 ## ¿Por qué importa?

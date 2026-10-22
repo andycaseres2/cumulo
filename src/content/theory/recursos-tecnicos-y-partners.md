@@ -17,6 +17,40 @@ sources:
   - "https://aws.amazon.com/marketplace/features/governance"
   - "https://aws.amazon.com/professional-services/"
   - "https://aws.amazon.com/blogs/training-and-certification/engaging-a-solutions-architect/"
+quiz:
+  - prompt: "Una empresa de Guayaquil desarrolla un software de facturación electrónica que se integra con AWS y lo vende a clientes en AWS Marketplace. Dentro de la AWS Partner Network, ¿qué tipo de socio es?"
+    options:
+      - label: "Independent Software Vendor (ISV)"
+        explanation: "Un ISV crea software que funciona en AWS o se integra con AWS y puede venderlo, por ejemplo, en AWS Marketplace."
+        correct: true
+      - label: "System integrator (SI)"
+        explanation: "Un system integrator diseña, migra, implementa o administra soluciones para sus clientes; no se define por crear y vender su propio software."
+      - label: "AWS Professional Services"
+        explanation: "AWS Professional Services es un equipo de AWS que ayuda a diseñar, construir y migrar cargas; no es un tipo de socio de la APN."
+      - label: "AWS solutions architect"
+        explanation: "Los solutions architects son asesores técnicos de AWS que ayudan a diseñar arquitecturas; no son un tipo de socio que vende software."
+  - prompt: "El área de compras de una cadena de clínicas de Bogotá quiere que sus usuarios solo puedan comprar en AWS Marketplace los productos de software que ella aprobó. ¿Qué debe usar?"
+    options:
+      - label: "AWS Prescriptive Guidance"
+        explanation: "AWS Prescriptive Guidance ofrece guías y patrones para migrar y modernizar; no controla qué software pueden comprar los usuarios."
+      - label: "AWS Knowledge Center"
+        explanation: "El Knowledge Center tiene artículos con respuestas a preguntas frecuentes; no limita el catálogo de compras."
+      - label: "Private Marketplace"
+        explanation: "Private Marketplace crea un catálogo personalizado de productos aprobados para que los usuarios de la organización solo compren lo autorizado."
+        correct: true
+      - label: "AWS Professional Services"
+        explanation: "AWS Professional Services ejecuta proyectos como migraciones o modernización; no gobierna qué productos de Marketplace se pueden comprar."
+  - prompt: "Un equipo de TI de La Paz va a planear la migración de su sistema de citas y busca recursos de expertos de AWS con guías de implementación y patrones que incluyan pasos, arquitecturas y código. ¿Qué recurso debe consultar?"
+    options:
+      - label: "AWS re:Post"
+        explanation: "AWS re:Post es un servicio de preguntas y respuestas de la comunidad, útil para dudas puntuales, no un conjunto de guías y patrones de migración."
+      - label: "AWS Marketplace"
+        explanation: "AWS Marketplace es un catálogo para comprar software, datos y servicios de terceros; no publica guías ni patrones de migración."
+      - label: "AWS Knowledge Center"
+        explanation: "El Knowledge Center responde preguntas frecuentes sobre problemas comunes; no ofrece patrones con pasos, arquitecturas y código para migrar."
+      - label: "AWS Prescriptive Guidance"
+        explanation: "AWS Prescriptive Guidance reúne guías de planificación e implementación y patrones con pasos, arquitecturas y código para migraciones y modernizaciones."
+        correct: true
 ---
 
 ## ¿Por qué importa?

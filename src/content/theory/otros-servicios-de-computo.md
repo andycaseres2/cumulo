@@ -11,6 +11,40 @@ sources:
   - "https://docs.aws.amazon.com/lightsail/latest/userguide/what-is-amazon-lightsail.html"
   - "https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html"
   - "https://docs.aws.amazon.com/outposts/latest/userguide/what-is-outposts.html"
+quiz:
+  - prompt: "Una diseñadora independiente en Montevideo quiere publicar el sitio WordPress de su estudio de la forma más sencilla y con un precio mensual bajo y predecible. ¿Qué servicio debe elegir?"
+    options:
+      - label: "AWS Batch"
+        explanation: "AWS Batch ejecuta trabajos por lotes que esperan en cola; no está pensado para publicar un sitio web pequeño."
+      - label: "AWS Outposts"
+        explanation: "AWS Outposts instala infraestructura de AWS en las instalaciones del cliente; es excesivo para un sitio WordPress pequeño."
+      - label: "Amazon Lightsail"
+        explanation: "Amazon Lightsail es la forma más fácil de empezar, con imágenes listas como WordPress y un precio mensual bajo y predecible."
+        correct: true
+      - label: "AWS Elastic Beanstalk"
+        explanation: "Elastic Beanstalk despliega apps web sin gestionar infraestructura, pero pagas por los recursos que crea; la pista de precio mensual predecible apunta a otro servicio."
+  - prompt: "Un laboratorio genómico en São Paulo necesita ejecutar miles de análisis que pueden esperar en cola, sin instalar software de procesamiento por lotes y con aprovisionamiento automático de cómputo. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Batch"
+        explanation: "AWS Batch ejecuta cargas de cómputo por lotes de cualquier escala y aprovisiona automáticamente los recursos según los trabajos enviados."
+        correct: true
+      - label: "Amazon Lightsail"
+        explanation: "Amazon Lightsail ofrece servidores y sitios sencillos con precio predecible; no gestiona colas de trabajos por lotes."
+      - label: "AWS Outposts"
+        explanation: "AWS Outposts lleva infraestructura de AWS a tu sitio para baja latencia local; el escenario no pide procesar en sus instalaciones."
+      - label: "AWS Elastic Beanstalk"
+        explanation: "Elastic Beanstalk sirve para desplegar aplicaciones web; no administra colas de miles de trabajos por lotes."
+  - prompt: "Una minera en Antofagasta debe procesar datos en su propia planta con muy baja latencia, usando las mismas APIs de AWS y sin operar ella misma el hardware. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Local Zones"
+        explanation: "Las Local Zones están en ubicaciones de AWS cerca de grandes ciudades, no dentro de la planta del cliente."
+      - label: "Amazon Lightsail"
+        explanation: "Amazon Lightsail se ejecuta en la nube de AWS para proyectos sencillos; no instala capacidad en las instalaciones del cliente."
+      - label: "AWS Batch"
+        explanation: "AWS Batch gestiona trabajos por lotes en la nube; no lleva infraestructura de AWS a la planta de la minera."
+      - label: "AWS Outposts"
+        explanation: "AWS Outposts extiende la infraestructura y las APIs de AWS a tus instalaciones, y AWS lo opera y administra; sirve para baja latencia y procesamiento local."
+        correct: true
 ---
 
 ## ¿Por qué importa?

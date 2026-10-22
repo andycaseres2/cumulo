@@ -11,6 +11,40 @@ sources:
   - "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/cloud-practitioner-02-domain3.html"
   - "https://docs.aws.amazon.com/decision-guides/latest/sns-or-sqs-or-eventbridge/sns-or-sqs-or-eventbridge.html"
   - "https://docs.aws.amazon.com/ses/latest/dg/Welcome.html"
+quiz:
+  - prompt: "Una fintech de Bogotá desacopla su sistema de pagos con una cola. Cada transacción debe procesarse exactamente una vez y en el orden exacto en que se envió. ¿Qué debe usar?"
+    options:
+      - label: "Una cola Standard de Amazon SQS"
+        explanation: "La cola Standard ofrece orden de mejor esfuerzo y entrega al menos una vez, así que un mensaje podría llegar duplicado o fuera de orden."
+      - label: "Un tema de Amazon SNS"
+        explanation: "Amazon SNS empuja un mensaje a muchos suscriptores con pub/sub; no es una cola que garantice procesamiento exactamente una vez en orden."
+      - label: "Una cola FIFO de Amazon SQS"
+        explanation: "Las colas FIFO garantizan que los mensajes se procesen exactamente una vez y en el orden exacto en que se enviaron."
+        correct: true
+      - label: "AWS Step Functions"
+        explanation: "AWS Step Functions coordina pasos de un flujo de trabajo con decisiones y reintentos; no es una cola de mensajes entre componentes."
+  - prompt: "Una cadena de tiendas en Lima publica cada pedido nuevo una sola vez, y ese mismo mensaje debe llegar a la cola de cobros, a la cola de inventario y como SMS al cliente. ¿Qué servicio resuelve este fan-out?"
+    options:
+      - label: "Amazon SNS"
+        explanation: "Amazon SNS es pub/sub: el pedido se publica en un tema y SNS lo empuja a colas de SQS y a personas por SMS, lo que se conoce como fan-out."
+        correct: true
+      - label: "Amazon SQS"
+        explanation: "Amazon SQS guarda mensajes en una cola para que un consumidor los saque; por sí solo no envía el mismo mensaje a varios destinos ni manda SMS."
+      - label: "AWS Step Functions"
+        explanation: "AWS Step Functions orquesta pasos en orden con decisiones y reintentos; el escenario pide distribuir un mismo mensaje a muchos suscriptores."
+      - label: "Amazon SES"
+        explanation: "Amazon SES es para correos de negocio con tu propio dominio, como confirmaciones o boletines; no entrega mensajes a colas ni envía SMS."
+  - prompt: "Una app de delivery en Ciudad de México quiere coordinar su proceso: cobrar, luego asignar repartidor si el pago se aprueba o avisar al cliente si se rechaza, con reintentos ante errores y registro del estado de cada paso. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon SQS"
+        explanation: "Amazon SQS almacena mensajes hasta que un consumidor los procesa, pero no define el orden de los pasos ni las decisiones del proceso."
+      - label: "Amazon SNS"
+        explanation: "Amazon SNS envía un mensaje a muchos suscriptores; elegirlo para coordinar pasos con lógica condicional es una trampa típica del examen."
+      - label: "Amazon EventBridge"
+        explanation: "Amazon EventBridge filtra y enruta eventos con reglas hacia destinos; no organiza un proceso de varios pasos con decisiones y reintentos."
+      - label: "AWS Step Functions"
+        explanation: "AWS Step Functions coordina componentes con flujos de trabajo visuales: inicia y sigue cada paso, reintenta ante errores y registra el estado."
+        correct: true
 ---
 
 ## ¿Por qué importa?

@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"
   - "https://docs.aws.amazon.com/neptune/latest/userguide/intro.html"
   - "https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html"
+quiz:
+  - prompt: "Una app de videojuegos móviles de Bogotá guarda el progreso de millones de jugadores como datos clave-valor y necesita respuestas de milisegundos de un solo dígito aunque el tráfico se multiplique, sin administrar servidores. ¿Qué base de datos debe elegir?"
+    options:
+      - label: "Amazon Neptune"
+        explanation: "Amazon Neptune es una base de datos de grafos para datos altamente conectados; no es la opción para guardar progreso clave-valor a gran escala."
+      - label: "Amazon RDS"
+        explanation: "Amazon RDS es relacional, con tablas de esquema fijo; para datos clave-valor con millones de solicitudes, la respuesta típica es DynamoDB."
+      - label: "Amazon DynamoDB"
+        explanation: "Amazon DynamoDB es NoSQL serverless de clave-valor y documentos, con rendimiento de milisegundos de un solo dígito a cualquier escala."
+        correct: true
+      - label: "AWS Database Migration Service (AWS DMS)"
+        explanation: "AWS DMS migra bases de datos hacia AWS o entre entornos; no es una base de datos para guardar el progreso de los jugadores."
+  - prompt: "Una tienda en línea de Ciudad de México repite muchas consultas lentas a su base de datos principal. Quiere una capa de caché en memoria delante de ella, con motores como Valkey o Redis OSS. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon ElastiCache"
+        explanation: "Amazon ElastiCache es un almacén en memoria o caché distribuida compatible con Valkey, Memcached y Redis OSS, ideal como capa de caché."
+        correct: true
+      - label: "Amazon DocumentDB"
+        explanation: "Amazon DocumentDB es una base de datos de documentos compatible con MongoDB; no es una caché en memoria con Valkey o Redis OSS."
+      - label: "Amazon Neptune"
+        explanation: "Amazon Neptune es una base de datos de grafos para relaciones complejas; no sirve como capa de caché en memoria."
+      - label: "AWS Schema Conversion Tool (AWS SCT)"
+        explanation: "AWS SCT convierte el esquema de una base de datos a otro motor; no guarda datos en memoria ni actúa como caché."
+  - prompt: "Una fintech de Santiago tiene una aplicación que usa MongoDB y quiere moverla a una base de datos de documentos totalmente administrada, usando el mismo código, controladores y herramientas. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon ElastiCache"
+        explanation: "Amazon ElastiCache es un almacén en memoria y caché; no es una base de datos de documentos compatible con MongoDB."
+      - label: "Amazon DynamoDB"
+        explanation: "DynamoDB admite documentos, pero no es compatible con MongoDB; la pista \"compatible con MongoDB\" apunta a DocumentDB."
+      - label: "Amazon Neptune"
+        explanation: "Amazon Neptune es una base de datos de grafos con Gremlin, openCypher y SPARQL; no es compatible con el código de MongoDB."
+      - label: "Amazon DocumentDB (with MongoDB compatibility)"
+        explanation: "Amazon DocumentDB es una base de datos de documentos totalmente administrada y compatible con MongoDB, así que permite usar el mismo código y herramientas."
+        correct: true
 ---
 
 ## ¿Por qué importa?

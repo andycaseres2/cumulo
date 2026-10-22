@@ -7,8 +7,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const CONTENT_DIR = join(process.cwd(), 'src/content/theory');
-/** Domains whose topics already end with a quiz; grows as questions are written. */
-const DOMAINS_WITH_QUIZ = ['cloud-concepts'];
+/** Domains whose topics must all end with a quiz (every domain today). */
+const DOMAINS_WITH_QUIZ = ['cloud-concepts', 'security-compliance', 'technology-services', 'billing-pricing-support'];
 
 const topics = readdirSync(CONTENT_DIR)
   .filter((file) => file.endsWith('.md'))

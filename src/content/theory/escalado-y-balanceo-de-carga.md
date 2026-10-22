@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html"
   - "https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/introduction.html"
   - "https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.elasticity.en.html"
+quiz:
+  - prompt: "Una tienda en línea de Ciudad de México recibe una avalancha de visitas en el Buen Fin y poco tráfico de madrugada. Quiere que se lancen instancias EC2 cuando sube la demanda y se terminen cuando baja, siempre entre un mínimo y un máximo. ¿Qué servicio debe usar?"
+    options:
+      - label: "Application Load Balancer"
+        explanation: "El Application Load Balancer reparte el tráfico entre instancias, pero no agrega ni quita servidores; eso lo hace Auto Scaling."
+      - label: "Network Load Balancer"
+        explanation: "El Network Load Balancer reparte tráfico en capa 4 con rendimiento extremo, pero no lanza ni termina instancias según la demanda."
+      - label: "Amazon EC2 Auto Scaling"
+        explanation: "EC2 Auto Scaling usa grupos con capacidad mínima, máxima y deseada, y políticas de escalado que lanzan o terminan instancias según la demanda."
+        correct: true
+      - label: "Gateway Load Balancer"
+        explanation: "El Gateway Load Balancer sirve para desplegar y escalar appliances virtuales como firewalls, no para ajustar el número de instancias de una tienda."
+  - prompt: "Una aplicación web de Lima necesita enviar las solicitudes de /pagos a un grupo de servidores y las de /catalogo a otro, según la ruta de la URL. ¿Qué tipo de balanceador de carga debe usar?"
+    options:
+      - label: "Application Load Balancer (ALB)"
+        explanation: "El ALB opera en capa 7 (HTTP/HTTPS) y permite enrutamiento flexible según la ruta o el contenido de la solicitud."
+        correct: true
+      - label: "Network Load Balancer (NLB)"
+        explanation: "El NLB opera en capa 4 (TCP/UDP); el enrutamiento basado en la ruta de la URL es propio del ALB."
+      - label: "Gateway Load Balancer (GWLB)"
+        explanation: "El GWLB se usa para desplegar y escalar appliances de red, como firewalls o sistemas de detección de intrusos, no para enrutar por ruta HTTP."
+      - label: "AWS Auto Scaling"
+        explanation: "AWS Auto Scaling coordina el escalado de varios recursos mediante planes de escalado; no reparte solicitudes según la ruta de la URL."
+  - prompt: "¿Qué afirmación describe mejor la elasticidad en la nube?"
+    options:
+      - label: "Seguir funcionando aunque falle una Availability Zone"
+        explanation: "Eso es alta disponibilidad: seguir funcionando ante fallas, por ejemplo usando varias AZ. La elasticidad se refiere a ajustar la capacidad a la demanda."
+      - label: "Cambiar una instancia a un tipo de instancia más grande"
+        explanation: "Eso es escalado vertical (scale up). La elasticidad implica ajustarse automáticamente a la demanda en ambas direcciones."
+      - label: "Repartir las solicitudes entrantes entre varios destinos"
+        explanation: "Eso es lo que hace un balanceador de carga. Repartir tráfico no adquiere ni libera recursos según la demanda."
+      - label: "Adquirir recursos cuando los necesitas y liberarlos cuando ya no, idealmente de forma automática"
+        explanation: "Esa es la definición de elasticidad: crecer y también reducirse según la demanda, lo que evita pagar por capacidad ociosa."
+        correct: true
 ---
 
 ## ¿Por qué importa?

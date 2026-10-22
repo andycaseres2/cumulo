@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html"
   - "https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html"
   - "https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html"
+quiz:
+  - prompt: "Una tienda en línea de Medellín necesita guardar la contraseña de su base de datos fuera del código y que se rote automáticamente. ¿Qué servicio debe usar?"
+    options:
+      - label: "Parameter Store con un parámetro SecureString"
+        explanation: "Parameter Store puede cifrar valores con SecureString, pero no ofrece rotación automática; está pensado para configuración y valores simples."
+      - label: "AWS Secrets Manager"
+        explanation: "AWS Secrets Manager guarda secretos siempre cifrados con AWS KMS y ofrece rotación automática con integraciones nativas para bases de datos."
+        correct: true
+      - label: "La política de contraseñas de IAM"
+        explanation: "La política de contraseñas define reglas para las contraseñas de los usuarios de IAM; no guarda ni rota la contraseña de una base de datos."
+      - label: "Access keys de un usuario de IAM"
+        explanation: "Las access keys son credenciales de largo plazo para acceso programático a AWS; no son un lugar para almacenar la contraseña de la base de datos."
+  - prompt: "Tu empresa creó un usuario administrativo para el trabajo diario y solo usa el usuario raíz cuando es obligatorio. ¿Cuál de estas tareas exige iniciar sesión como usuario raíz?"
+    options:
+      - label: "Crear un nuevo usuario de IAM"
+        explanation: "Crear usuarios de IAM no está en la lista de tareas exclusivas del raíz; lo hace una identidad administrativa con los permisos adecuados."
+      - label: "Lanzar una instancia de Amazon EC2"
+        explanation: "Lanzar instancias es trabajo diario que se hace con identidades de menor privilegio; no es una tarea exclusiva del usuario raíz."
+      - label: "Crear un rol de IAM para una aplicación"
+        explanation: "Crear roles de IAM no figura entre las tareas que solo puede hacer el usuario raíz; lo hace un administrador de IAM."
+      - label: "Configurar MFA Delete en un bucket de Amazon S3"
+        explanation: "Configurar MFA Delete en un bucket de S3 está en la lista oficial de tareas que solo puede hacer el usuario raíz."
+        correct: true
+  - prompt: "El equipo de seguridad de una aseguradora de Panamá quiere activar MFA en sus identidades con la opción resistente al phishing que AWS recomienda. ¿Qué tipo de MFA debe elegir?"
+    options:
+      - label: "Passkeys y llaves de seguridad FIDO"
+        explanation: "Las passkeys y llaves de seguridad FIDO usan criptografía de clave pública, son resistentes al phishing y son la opción que AWS recomienda."
+        correct: true
+      - label: "Aplicación autenticadora virtual con códigos TOTP"
+        explanation: "La aplicación autenticadora virtual es una buena opción provisional, pero no es la opción resistente al phishing que AWS recomienda."
+      - label: "Token TOTP de hardware"
+        explanation: "El token TOTP de hardware muestra un código de seis dígitos; es un tipo válido, pero no es la opción resistente al phishing recomendada."
+      - label: "MFA por mensaje SMS"
+        explanation: "AWS ya no permite activar MFA por SMS en IAM, así que no es una opción disponible para estas identidades."
 ---
 
 ## ¿Por qué importa?

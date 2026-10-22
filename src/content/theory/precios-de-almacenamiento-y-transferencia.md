@@ -17,6 +17,40 @@ sources:
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/free-tier.html"
   - "https://aws.amazon.com/free/"
   - "https://aws.amazon.com/free/free-tier-faqs/"
+quiz:
+  - prompt: "Una plataforma de cursos de Lima revisa su factura de AWS. ¿Cuál de estos movimientos de datos en general no genera cargo por transferencia?"
+    options:
+      - label: "Los estudiantes descargan los videos desde internet"
+        explanation: "La salida de datos de AWS hacia internet se cobra por GB, con tarifas según la Región de origen."
+      - label: "El equipo sube los videos desde internet a Amazon S3"
+        explanation: "La entrada de datos desde internet hacia AWS en general no se cobra; en S3, la entrada desde internet es gratis."
+        correct: true
+      - label: "Los videos se replican a un bucket en otra Región"
+        explanation: "La transferencia entre Regiones distintas típicamente se cobra, por ejemplo al replicar un bucket a otra Región."
+      - label: "Una instancia envía datos a otra en una Availability Zone distinta de la misma Región"
+        explanation: "La transferencia entre Availability Zones de la misma Región típicamente se cobra; lo gratis en general es el tráfico dentro de la misma AZ."
+  - prompt: "Una agencia de diseño de Cali tiene reportes en Amazon S3 que muchos usuarios leen todos los días. Quiere evitar cargos por recuperación de datos. ¿Qué clase de almacenamiento debe usar?"
+    options:
+      - label: "S3 Glacier Deep Archive"
+        explanation: "Deep Archive tiene el costo de almacenamiento más bajo, pero cobra restauraciones y exige una duración mínima de 180 días; no sirve para datos que se leen a diario."
+      - label: "S3 Standard-IA"
+        explanation: "Standard-IA cuesta menos por almacenamiento, pero cobra por recuperación, así que leer los reportes a diario generaría esos cargos."
+      - label: "S3 Glacier Instant Retrieval"
+        explanation: "Glacier Instant Retrieval tiene cargo por recuperación y duración mínima de 90 días; no evita los cargos de acceso diario."
+      - label: "S3 Standard"
+        explanation: "S3 Standard cuesta más por almacenamiento que estas otras clases, pero no cobra por recuperación, lo que encaja con datos que se leen todos los días."
+        correct: true
+  - prompt: "Un equipo de Quito crea un volumen de Amazon EBS de 500 GB para una instancia EC2, pero solo escribe 50 GB de datos. ¿Cómo se cobra el almacenamiento del volumen?"
+    options:
+      - label: "Por los 50 GB escritos, en GB-mes"
+        explanation: "EBS no cobra solo lo que realmente escribes; cobra el tamaño que reservas."
+      - label: "Por los 500 GB aprovisionados, en GB-mes, hasta liberar el volumen"
+        explanation: "EBS cobra el almacenamiento aprovisionado en GB-mes: pagas el tamaño que reservas, no lo que escribes, hasta que liberas el volumen."
+        correct: true
+      - label: "Solo por las solicitudes de lectura y escritura"
+        explanation: "El cobro por tipo de solicitud (PUT, GET, LIST) es una dimensión de precio de Amazon S3; en EBS se paga el almacenamiento aprovisionado."
+      - label: "Solo por los snapshots que se creen del volumen"
+        explanation: "Los snapshots se cobran aparte por el espacio que ocupan; el volumen en sí se cobra por su tamaño aprovisionado."
 ---
 
 ## ¿Por qué importa?

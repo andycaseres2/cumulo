@@ -16,6 +16,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html"
   - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.html"
   - "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html"
+quiz:
+  - prompt: "Una clínica de Quito debe cumplir un requisito regulatorio: sus claves de cifrado tienen que estar en un HSM dedicado de un solo inquilino, y la clínica debe controlar por completo las claves y los usuarios del HSM. ¿Qué servicio debe elegir?"
+    options:
+      - label: "AWS KMS"
+        explanation: "AWS KMS es un servicio administrado multiinquilino donde el control de las claves es compartido; no ofrece un HSM dedicado a un solo cliente."
+      - label: "AWS Certificate Manager"
+        explanation: "AWS Certificate Manager crea y renueva certificados SSL/TLS; no proporciona un HSM dedicado para guardar claves."
+      - label: "AWS CloudHSM"
+        explanation: "AWS CloudHSM da HSM dedicados de un solo inquilino en los que el cliente controla por completo las claves y los usuarios del HSM, justo lo que exige el requisito."
+        correct: true
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie descubre datos sensibles en Amazon S3; no guarda ni administra claves de cifrado."
+  - prompt: "Una cadena de tiendas de Lima guarda miles de archivos en Amazon S3 y necesita descubrir en cuáles hay información de identificación personal (PII) de sus clientes. ¿Qué servicio de AWS debe usar?"
+    options:
+      - label: "Amazon Macie"
+        explanation: "Amazon Macie descubre datos sensibles en Amazon S3, como PII, usando machine learning y coincidencia de patrones."
+        correct: true
+      - label: "Amazon GuardDuty"
+        explanation: "Amazon GuardDuty detecta amenazas y actividad maliciosa en la cuenta; no clasifica el contenido de los objetos de S3 en busca de PII."
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector busca vulnerabilidades de software en cargas de trabajo; no identifica datos personales guardados en S3."
+      - label: "AWS KMS"
+        explanation: "AWS KMS crea y controla claves para cifrar datos; cifrar los archivos no te dice en cuáles hay PII."
+  - prompt: "Una startup de Santiago publica su portal detrás de Elastic Load Balancing y quiere servirlo por HTTPS con un certificado que se renueve automáticamente, sin pagar extra por el certificado. ¿Qué debe hacer?"
+    options:
+      - label: "Importar en ACM un certificado comprado a otra autoridad"
+        explanation: "ACM no renueva automáticamente los certificados importados; el equipo tendría que renovarlo e importarlo de nuevo por su cuenta."
+      - label: "Guardar la clave del sitio en AWS CloudHSM"
+        explanation: "AWS CloudHSM da un HSM dedicado para controlar claves, pero no emite ni renueva certificados SSL/TLS para el sitio."
+      - label: "Dejar el cifrado SSE-S3 por defecto en los buckets"
+        explanation: "SSE-S3 cifra los objetos en reposo dentro de S3; no protege el tráfico en tránsito del portal ni habilita HTTPS."
+      - label: "Solicitar un certificado público en ACM con validación por DNS"
+        explanation: "ACM no cobra por los certificados públicos que usas con servicios integrados, como Elastic Load Balancing, y renueva automáticamente los que emitió con validación por DNS, como los asociados a Elastic Load Balancing."
+        correct: true
 ---
 
 ## ¿Por qué importa?
@@ -68,7 +102,7 @@ Datos clave verificados:
 
 Un **certificado SSL/TLS** demuestra la identidad de un sitio y permite el HTTPS. **AWS Certificate Manager (ACM)** crea, guarda y **renueva** certificados públicos y privados.
 
-- **No hay cargo adicional por los certificados SSL/TLS que administras con ACM**; pagas los recursos que usas.
+- **No hay cargo adicional por los certificados públicos que usas con servicios integrados de ACM** (por ejemplo, Elastic Load Balancing o Amazon CloudFront); pagas los recursos que usas. Los certificados públicos exportables y los privados de AWS Private CA sí tienen costo.
 - **Renovación administrada**: ACM renueva automáticamente los certificados que emitió (con validación por DNS), por ejemplo los asociados a Elastic Load Balancing o Amazon CloudFront. Los **certificados importados no se renuevan** automáticamente.
 - Los certificados son regionales; para usarlos con CloudFront deben estar en la Región US East (N. Virginia).
 

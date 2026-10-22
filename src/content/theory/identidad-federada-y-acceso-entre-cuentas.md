@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html"
   - "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html"
   - "https://docs.aws.amazon.com/directoryservice/latest/admin-guide/what_is.html"
+quiz:
+  - prompt: "Una aseguradora de Lima tiene 300 empleados y seis cuentas de AWS. Quiere que cada empleado entre desde un solo portal a las cuentas que tiene asignadas, con credenciales de corto plazo. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Cognito user pools"
+        explanation: "Los user pools de Amazon Cognito son un directorio para usuarios de aplicaciones web y móviles, no para que los empleados entren a varias cuentas de AWS."
+      - label: "AWS IAM Identity Center"
+        explanation: "IAM Identity Center es la solución recomendada para el acceso de la fuerza laboral a varias cuentas, con un portal de acceso y credenciales de corto plazo."
+        correct: true
+      - label: "Un usuario de IAM por empleado en cada cuenta"
+        explanation: "Crear usuarios de IAM duplicados en cada cuenta es inmanejable con 300 empleados y seis cuentas; es justo la trampa que se quiere evitar."
+      - label: "Simple AD de AWS Directory Service"
+        explanation: "Simple AD es un directorio compatible con funciones básicas de Active Directory para casos pequeños; no ofrece un portal de acceso a varias cuentas de AWS."
+  - prompt: "Una cadena de farmacias de Bogotá lanza una app móvil donde miles de clientes deben registrarse e iniciar sesión, incluso con su cuenta de Google. ¿Qué servicio de AWS gestiona estas identidades?"
+    options:
+      - label: "AWS IAM Identity Center"
+        explanation: "IAM Identity Center está pensado para la fuerza laboral (empleados y contratistas), no para los clientes de una app móvil."
+      - label: "AWS Managed Microsoft AD"
+        explanation: "AWS Managed Microsoft AD es un Active Directory administrado para usuarios y equipos Windows, no un directorio de clientes de una app."
+      - label: "Un rol de IAM entre cuentas"
+        explanation: "Un rol entre cuentas permite que identidades de una cuenta de AWS trabajen en otra; no ofrece registro ni inicio de sesión para clientes."
+      - label: "Amazon Cognito"
+        explanation: "Amazon Cognito es la plataforma de identidad para apps web y móviles; sus user pools permiten registro e inicio de sesión, también con proveedores sociales como Google."
+        correct: true
+  - prompt: "Una empresa de software de Santiago quiere que sus desarrolladores de la cuenta de desarrollo trabajen en la cuenta de producción sin crear usuarios duplicados. ¿Qué debe crear en la cuenta de producción?"
+    options:
+      - label: "Un rol de IAM cuya política de confianza nombre a la cuenta de desarrollo"
+        explanation: "Un rol entre cuentas con una trust policy que nombra a la cuenta de origen permite asumirlo con sts:AssumeRole y recibir credenciales temporales."
+        correct: true
+      - label: "Usuarios de IAM con access keys para cada desarrollador"
+        explanation: "Crear usuarios en la cuenta de producción duplica identidades y reparte claves de largo plazo, justo lo que se quiere evitar."
+      - label: "Un identity pool de Amazon Cognito"
+        explanation: "Los identity pools dan credenciales temporales a usuarios de una app web o móvil, no a desarrolladores que trabajan entre cuentas de AWS."
+      - label: "Un AD Connector"
+        explanation: "AD Connector es un proxy que redirige inicios de sesión a un Active Directory local; no da acceso entre cuentas de AWS."
 ---
 
 ## ¿Por qué importa?

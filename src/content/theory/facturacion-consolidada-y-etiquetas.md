@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html"
   - "https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html"
   - "https://docs.aws.amazon.com/cur/latest/userguide/what-is-data-exports.html"
+quiz:
+  - prompt: "Una cadena de farmacias de Guadalajara tiene cinco cuentas de AWS y cada mes recibe cinco facturas distintas. Quiere una sola factura y que el uso de todas las cuentas se sume para compartir descuentos por volumen, sin pagar más. ¿Qué debe usar?"
+    options:
+      - label: "AWS Budgets"
+        explanation: "AWS Budgets da seguimiento al gasto y envía alertas; no une las facturas de varias cuentas ni combina su uso para compartir descuentos."
+      - label: "Facturación consolidada de AWS Organizations"
+        explanation: "La facturación consolidada entrega una sola factura pagada por la cuenta de administración, suma el uso de todas las cuentas para compartir descuentos por volumen y es gratuita."
+        correct: true
+      - label: "AWS Cost Explorer"
+        explanation: "AWS Cost Explorer sirve para visualizar y analizar costos en la consola; no convierte varias facturas en una ni combina el uso entre cuentas."
+      - label: "Etiquetas de asignación de costos"
+        explanation: "Las etiquetas organizan los costos por proyecto o centro de costo, pero no unen las facturas ni hacen que el uso de las cuentas se sume."
+  - prompt: "El equipo de finanzas de una empresa de Santiago etiquetó sus recursos con la clave Proyecto, pero la etiqueta no aparece en AWS Cost Explorer. La empresa usa AWS Organizations. ¿Qué debe hacer?"
+    options:
+      - label: "Pedir a cada cuenta miembro que active la etiqueta en su propia consola"
+        explanation: "En una organización, solo la cuenta de administración accede al administrador de etiquetas de asignación de costos, así que las cuentas miembro no pueden activarla."
+      - label: "Cambiar el nombre de la clave para que use el prefijo aws:"
+        explanation: "El prefijo aws: corresponde a etiquetas generadas por AWS; las etiquetas que tú creas son user-defined y de todos modos deben activarse."
+      - label: "Crear una exportación CUR 2.0 en AWS Data Exports"
+        explanation: "El CUR desglosa costos por las etiquetas que activaste; crear la exportación no activa la etiqueta ni la hace aparecer en Cost Explorer."
+      - label: "Activarla como etiqueta de asignación de costos desde la cuenta de administración"
+        explanation: "Las etiquetas deben activarse en la consola de Billing and Cost Management antes de aparecer en Cost Explorer, y en una organización eso lo hace la cuenta de administración."
+        correct: true
+  - prompt: "Una empresa de retail de Bogotá necesita el conjunto más completo de datos de costo y uso, desglosado por hora y por etiquetas, entregado en un bucket de Amazon S3 para consultarlo con Amazon Athena. ¿Qué debe configurar?"
+    options:
+      - label: "Una exportación de AWS Cost and Usage Report (CUR 2.0) en AWS Data Exports"
+        explanation: "El CUR contiene el conjunto más completo de datos de costo y uso, se entrega en S3, desglosa por hora y por etiquetas activadas y se consulta con Athena; CUR 2.0 en Data Exports es la forma recomendada."
+        correct: true
+      - label: "AWS Cost Explorer"
+        explanation: "Cost Explorer sirve para visualizar y analizar costos en la consola; el detalle más granular como archivos en S3 lo entrega el CUR."
+      - label: "La facturación consolidada de AWS Organizations"
+        explanation: "La facturación consolidada une las facturas y comparte descuentos, pero no entrega por sí sola archivos detallados por hora y etiqueta en S3."
+      - label: "Las facturas de las cuentas miembro"
+        explanation: "En una organización, las facturas de las cuentas miembro son solo informativas; no son el conjunto de datos detallado que se entrega en S3 para consultar con Athena."
 ---
 
 ## ¿Por qué importa?

@@ -19,6 +19,40 @@ sources:
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-instance-termination-notices.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-hosts-overview.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-capacity-reservations.html"
+quiz:
+  - prompt: "Una empresa de Bogotá tiene uso constante de Amazon EC2 en varias familias y Regiones, además de AWS Fargate y AWS Lambda. Quiere un descuento a cambio de un compromiso de 1 o 3 años que cubra todo ese uso. ¿Qué opción debe elegir?"
+    options:
+      - label: "Compute Savings Plans"
+        explanation: "Compute Savings Plans aplican a EC2 sin importar familia, tamaño, sistema operativo, tenencia o Región, y también a AWS Fargate y AWS Lambda."
+        correct: true
+      - label: "EC2 Instance Savings Plans"
+        explanation: "EC2 Instance Savings Plans exigen comprometerte con una familia de instancias en una Región, así que no dan la flexibilidad entre familias y Regiones que se pide."
+      - label: "Standard Reserved Instances zonales"
+        explanation: "Una RI zonal solo aplica a una AZ y a un tamaño exacto; no cubre varias familias y Regiones ni el uso de Fargate y Lambda."
+      - label: "Spot Instances"
+        explanation: "Spot no implica compromiso de 1 o 3 años y sus instancias pueden interrumpirse; no es un descuento por compromiso sobre todo el uso."
+  - prompt: "Una tienda en línea de Medellín corre cada noche un proceso de reportes que puede repetirse sin problema si se interrumpe. Quiere el mayor ahorro posible frente a On-Demand. ¿Qué opción de compra debe usar?"
+    options:
+      - label: "On-Demand Instances"
+        explanation: "On-Demand es el precio base, sin descuento; conviene para cargas que no pueden interrumpirse, no para maximizar el ahorro de un proceso tolerante a interrupciones."
+      - label: "Spot Instances"
+        explanation: "Spot usa capacidad sobrante de EC2 con descuentos de hasta el 90 % y puede interrumpirse con aviso de dos minutos, algo aceptable para un proceso que puede repetirse."
+        correct: true
+      - label: "On-Demand Capacity Reservations"
+        explanation: "Las Capacity Reservations garantizan capacidad en una AZ, pero por sí solas no dan descuento."
+      - label: "Dedicated Hosts"
+        explanation: "Dedicated Hosts dan un servidor físico completo, útil para licencias por socket o núcleo; no son la opción de mayor ahorro para un proceso interrumpible."
+  - prompt: "Una aseguradora de Lima quiere llevar a EC2 un software cuya licencia propia se cobra por socket y por núcleo físico, así que necesita visibilidad de los sockets y núcleos del servidor. ¿Qué opción debe elegir?"
+    options:
+      - label: "Dedicated Instances"
+        explanation: "Dedicated Instances usan hardware dedicado a una sola cuenta, pero no dan visibilidad de sockets y núcleos y solo tienen soporte parcial de BYOL."
+      - label: "Convertible Reserved Instances"
+        explanation: "Una Reserved Instance es un descuento de facturación, no un servidor; no da visibilidad del servidor físico para licenciar por socket o núcleo."
+      - label: "Spot Instances"
+        explanation: "Spot da descuento sobre capacidad sobrante que puede interrumpirse; no ofrece visibilidad de sockets y núcleos para licencias propias."
+      - label: "Dedicated Hosts"
+        explanation: "Dedicated Hosts dan un servidor físico completo con visibilidad de sockets y núcleos, y permiten usar licencias propias (BYOL) por socket o núcleo."
+        correct: true
 ---
 
 ## ¿Por qué importa?

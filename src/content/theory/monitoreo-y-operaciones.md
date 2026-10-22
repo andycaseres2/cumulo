@@ -19,6 +19,40 @@ sources:
   - "https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html"
   - "https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html"
   - "https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor-check-reference.html"
+quiz:
+  - prompt: "Una empresa de logística en Panamá descubre que alguien borró un bucket de S3 durante el fin de semana. Necesita saber qué usuario lo hizo y cuándo. ¿Qué servicio debe consultar?"
+    options:
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch monitorea rendimiento con métricas, logs y alarmas; la pregunta de quién hizo qué acción corresponde a la auditoría."
+      - label: "AWS Systems Manager"
+        explanation: "AWS Systems Manager sirve para operar nodos a escala, con parches y comandos remotos; no registra quién borró un recurso."
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra como eventos las acciones de usuarios, roles y servicios, y responde quién hizo qué, sobre qué recurso y cuándo."
+        correct: true
+      - label: "AWS Health Dashboard"
+        explanation: "AWS Health Dashboard muestra la salud de los servicios de AWS y los eventos que afectan a tu cuenta; no identifica qué usuario borró un bucket."
+  - prompt: "El equipo de TI de una cadena de farmacias en Guayaquil pierde horas aplicando parches servidor por servidor en cientos de instancias EC2 y quiere conectarse a ellas sin abrir el puerto 22. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Systems Manager"
+        explanation: "AWS Systems Manager aplica parches a muchos servidores a la vez y, con Session Manager, permite conectarse sin abrir puertos de entrada ni usar SSH."
+        correct: true
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch recopila métricas y logs y dispara alarmas, pero no es la herramienta para parchar servidores ni conectarse a ellos."
+      - label: "AWS Service Catalog"
+        explanation: "AWS Service Catalog permite que los usuarios lancen solo productos de TI aprobados; no aplica parches a instancias existentes."
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer da recomendaciones de ajuste de tamaño según el uso; no ejecuta parches ni da acceso remoto a los nodos."
+  - prompt: "Una startup de Medellín sospecha que sus instancias EC2 están sobredimensionadas y quiere recomendaciones de rightsizing basadas en las métricas de uso real. ¿Qué servicio debe activar?"
+    options:
+      - label: "Service Quotas"
+        explanation: "Service Quotas sirve para ver las cuotas de los servicios y pedir aumentos; no analiza si una instancia está sobredimensionada."
+      - label: "AWS Compute Optimizer"
+        explanation: "AWS Compute Optimizer analiza la configuración y las métricas de uso para recomendar el ajuste de tamaño e identificar recursos inactivos."
+        correct: true
+      - label: "AWS License Manager"
+        explanation: "AWS License Manager administra licencias de software de proveedores como Microsoft u Oracle; no evalúa el tamaño de las instancias."
+      - label: "AWS Health Dashboard"
+        explanation: "AWS Health Dashboard informa sobre eventos y fallas de los servicios de AWS; no da recomendaciones de rightsizing."
 ---
 
 ## ¿Por qué importa?

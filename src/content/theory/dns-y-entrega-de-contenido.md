@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/global-accelerator/latest/dg/what-is-global-accelerator.html"
   - "https://aws.amazon.com/global-accelerator/faqs/"
   - "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html"
+quiz:
+  - prompt: "Un estudio de videojuegos de Bogotá lanza un juego en línea que usa conexiones UDP y necesita direcciones IP estáticas como punto de entrada fijo, con baja latencia para jugadores de varios países. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon CloudFront"
+        explanation: "CloudFront es una CDN que cachea contenido HTTP/HTTPS; no acelera tráfico UDP de un juego en línea por la red global de AWS."
+      - label: "Amazon API Gateway"
+        explanation: "API Gateway administra APIs REST, HTTP y WebSocket; no acelera tráfico UDP ni entrega direcciones IP estáticas anycast."
+      - label: "Amazon Route 53"
+        explanation: "Route 53 resuelve nombres de dominio y enruta por DNS, pero no reenvía los paquetes del juego por la red global de AWS desde IP estáticas."
+      - label: "AWS Global Accelerator"
+        explanation: "Global Accelerator entrega direcciones IP estáticas anycast y acelera tráfico TCP/UDP por la red global de AWS, ideal para juegos."
+        correct: true
+  - prompt: "Una tienda en línea de Bogotá vende en Colombia, México y Chile y quiere que Amazon Route 53 muestre a cada usuario la versión del sitio de su país, según desde dónde se conecta. ¿Qué routing policy debe usar?"
+    options:
+      - label: "Latency"
+        explanation: "Latency envía al usuario a la Región con menor latencia, no decide según el país del usuario."
+      - label: "Geolocation"
+        explanation: "Geolocation enruta según la ubicación del usuario, lo que permite servir contenido distinto por país."
+        correct: true
+      - label: "Weighted"
+        explanation: "Weighted reparte el tráfico en proporciones, por ejemplo 90 % / 10 %, sin tener en cuenta el país del usuario."
+      - label: "Failover"
+        explanation: "Failover arma un esquema activo-pasivo que envía tráfico al respaldo si el principal falla; no elige por país."
+  - prompt: "Las imágenes y videos de un e-commerce de Santiago están en un bucket de Amazon S3 en una sola Región, y cargan lento para clientes de otros países. Quiere guardar copias en caché cerca de los usuarios y reducir la carga en el origen. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon CloudFront"
+        explanation: "CloudFront es la CDN de AWS: cachea el contenido en edge locations cercanas al usuario y lo obtiene del origen, como un bucket de S3, solo cuando no está en caché."
+        correct: true
+      - label: "AWS Global Accelerator"
+        explanation: "Global Accelerator acelera tráfico TCP/UDP desde el borde, pero no cachea contenido, que es lo que pide el escenario."
+      - label: "Amazon API Gateway"
+        explanation: "API Gateway es la puerta de entrada para APIs hacia backends como Lambda; no es una CDN para cachear imágenes y videos."
+      - label: "Amazon Route 53"
+        explanation: "Route 53 traduce nombres de dominio y enruta tráfico, pero no guarda copias del contenido cerca de los usuarios."
 ---
 
 ## ¿Por qué importa?

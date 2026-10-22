@@ -15,6 +15,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/end-user-computing.html"
   - "https://aws.amazon.com/workspaces/secure-browser/"
   - "https://docs.aws.amazon.com/iot/latest/developerguide/what-is-aws-iot.html"
+quiz:
+  - prompt: "Una aseguradora en Quito quiere enviar a escala confirmaciones de pago, recordatorios y boletines de marketing desde su propio dominio de correo. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon AppStream 2.0"
+        explanation: "Amazon AppStream 2.0 entrega aplicaciones de escritorio por streaming; no es una plataforma de correo electrónico."
+      - label: "Amazon SES"
+        explanation: "Amazon SES permite enviar y recibir correos con tus propias direcciones y dominios, tanto transaccionales como de marketing, a escala."
+        correct: true
+      - label: "Amazon WorkSpaces"
+        explanation: "Amazon WorkSpaces aprovisiona escritorios virtuales en la nube; no envía correos masivos desde tu dominio."
+      - label: "AWS IoT Core"
+        explanation: "AWS IoT Core conecta dispositivos IoT con servicios de AWS; no sirve para campañas de correo."
+  - prompt: "Una universidad de Córdoba quiere que sus estudiantes usen un programa de diseño exigente en GPU desde un navegador HTML5, sin instalarlo y sin entregarles un escritorio completo. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon WorkSpaces"
+        explanation: "Amazon WorkSpaces entrega un escritorio virtual completo; el escenario pide solo la aplicación, sin escritorio completo."
+      - label: "Amazon Connect"
+        explanation: "Amazon Connect es un centro de contacto en la nube para atender clientes por voz, chat o SMS; no entrega aplicaciones de escritorio."
+      - label: "Amazon WorkSpaces Secure Browser"
+        explanation: "Amazon WorkSpaces Secure Browser da acceso seguro a sitios web internos y aplicaciones SaaS; el programa de diseño es una aplicación de escritorio."
+      - label: "Amazon AppStream 2.0"
+        explanation: "Amazon AppStream 2.0 hace streaming de aplicaciones de escritorio individuales, incluso a un navegador HTML5, y es útil para software exigente en GPU y programas de clase."
+        correct: true
+  - prompt: "Una empresa de transporte de Rosario instalará sensores en sus camiones que publicarán datos por MQTT, y quiere enviar esos datos a otros servicios de AWS mediante reglas. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS IoT Core"
+        explanation: "AWS IoT Core conecta dispositivos IoT con servicios de AWS, soporta MQTT con un message broker de publicación y suscripción, y enruta datos con reglas."
+        correct: true
+      - label: "Amazon Connect"
+        explanation: "Amazon Connect conecta clientes con agentes de un centro de contacto; no recibe datos de sensores."
+      - label: "Amazon SES"
+        explanation: "Amazon SES envía y recibe correo electrónico; no es un servicio para conectar dispositivos por MQTT."
+      - label: "Amazon WorkSpaces Secure Browser"
+        explanation: "Amazon WorkSpaces Secure Browser es un navegador empresarial remoto para personas; no conecta sensores ni dispositivos IoT."
 ---
 
 ## ¿Por qué importa?

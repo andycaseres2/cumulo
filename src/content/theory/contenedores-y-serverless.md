@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/eks/latest/userguide/fargate.html"
   - "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html"
   - "https://docs.aws.amazon.com/lightsail/latest/userguide/what-is-amazon-lightsail.html"
+quiz:
+  - prompt: "Una plataforma de delivery de Medellín quiere ejecutar una función corta que genere una miniatura cada vez que un cliente sube la foto de un recibo a Amazon S3, pagando por solicitud y tiempo de ejecución, sin administrar servidores. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon ECR"
+        explanation: "Amazon ECR solo guarda imágenes de contenedor; no ejecuta código cuando ocurre un evento."
+      - label: "Amazon EC2"
+        explanation: "Amazon EC2 te da control total del servidor, pero tú lo administras y pagas por tenerlo encendido aunque no haya eventos."
+      - label: "AWS Lambda"
+        explanation: "Lambda ejecuta funciones basadas en eventos, como una subida a S3, sin aprovisionar servidores y con pago por solicitud y tiempo de ejecución."
+        correct: true
+      - label: "Amazon ECS"
+        explanation: "Amazon ECS orquesta contenedores; no es un servicio de funciones que se dispare directamente con cada subida a S3."
+  - prompt: "El equipo de una fintech de Quito ya usa Kubernetes on-premises y quiere llevar sus aplicaciones a AWS sin reescribirlas, usando las herramientas de la comunidad, con un plano de control administrado por AWS. ¿Qué servicio debe elegir?"
+    options:
+      - label: "Amazon EKS"
+        explanation: "Amazon EKS es Kubernetes administrado: AWS gestiona el plano de control y, al ser compatible con Kubernetes, puedes usar herramientas y aplicaciones de la comunidad sin reescribirlas."
+        correct: true
+      - label: "Amazon ECS"
+        explanation: "Amazon ECS usa el orquestador propio de AWS, no Kubernetes; el escenario menciona Kubernetes, lo que apunta a EKS."
+      - label: "Amazon ECR"
+        explanation: "Amazon ECR es un registro de imágenes de contenedor; guarda las imágenes, pero no orquesta ni ejecuta los contenedores."
+      - label: "AWS Lambda"
+        explanation: "Lambda ejecuta funciones basadas en eventos; no es un orquestador de Kubernetes para aplicaciones en contenedores."
+  - prompt: "Una startup de Asunción orquesta sus contenedores con Amazon ECS y quiere dejar de aprovisionar, configurar y escalar instancias EC2 para ejecutarlos; solo quiere indicar CPU y memoria por tarea. ¿Qué debe usar?"
+    options:
+      - label: "Amazon ECR"
+        explanation: "Amazon ECR guarda imágenes de contenedor; no aporta la capacidad de cómputo donde se ejecutan las tareas."
+      - label: "Instancias Amazon EC2 más grandes"
+        explanation: "Cambiar a instancias EC2 más grandes sigue obligando a la startup a elegirlas y administrarlas, justo lo que quiere evitar."
+      - label: "AWS Lambda"
+        explanation: "Lambda ejecuta funciones basadas en eventos; no es la opción de capacidad sobre la que corren las tareas de Amazon ECS."
+      - label: "AWS Fargate"
+        explanation: "Fargate es un motor de cómputo serverless para contenedores de ECS y EKS: indicas CPU y memoria y no aprovisionas ni escalas máquinas virtuales."
+        correct: true
 ---
 
 ## ¿Por qué importa?

@@ -15,6 +15,40 @@ sources:
   - "https://docs.aws.amazon.com/waf/latest/developerguide/ddos-advanced-summary-protected-resources.html"
   - "https://docs.aws.amazon.com/waf/latest/developerguide/fms-chapter.html"
   - "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html"
+quiz:
+  - prompt: "Una tienda de electrónica de Buenos Aires detecta que un bot intenta inyectar código SQL en el buscador de su sitio, servido con Amazon CloudFront. ¿Qué servicio debe usar para filtrar esas solicitudes?"
+    options:
+      - label: "Un security group"
+        explanation: "Los security groups trabajan con IP y puertos en las capas 3 y 4; no inspeccionan el contenido HTTP donde viaja la inyección SQL."
+      - label: "AWS WAF"
+        explanation: "AWS WAF filtra solicitudes HTTP(S) en la capa 7 y tiene reglas para detectar inyección SQL; se asocia a recursos como CloudFront."
+        correct: true
+      - label: "AWS Shield Standard"
+        explanation: "Shield Standard protege contra los ataques DDoS más comunes de capas 3 y 4; no filtra el contenido de las solicitudes web."
+      - label: "Una network ACL"
+        explanation: "Las network ACLs filtran por IP y puertos a nivel de subred; no detectan inyección SQL dentro de una solicitud HTTP."
+  - prompt: "Un banco digital de Montevideo quiere protección DDoS ampliada para sus balanceadores de carga, con acceso a un equipo de respuesta especializado y protección de costos ante picos causados por un ataque. ¿Qué debe contratar?"
+    options:
+      - label: "AWS Shield Standard"
+        explanation: "Shield Standard es automático y sin cargo adicional, pero no incluye el Shield Response Team ni protección de costos."
+      - label: "AWS Firewall Manager"
+        explanation: "Firewall Manager centraliza políticas en varias cuentas; por sí solo no ofrece el equipo de respuesta ni la protección de costos."
+      - label: "Una network ACL"
+        explanation: "Una network ACL permite o deniega tráfico por IP y puertos en una subred; no incluye equipo de respuesta ni protección de costos."
+      - label: "AWS Shield Advanced"
+        explanation: "Shield Advanced es la suscripción de pago con protección ampliada, acceso al Shield Response Team (SRT) y protección de costos ante picos por un ataque."
+        correct: true
+  - prompt: "Una empresa de retail de Guadalajara tiene 15 cuentas en AWS Organizations y quiere definir sus reglas de AWS WAF una sola vez y aplicarlas en todas las cuentas, incluso en las nuevas. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Firewall Manager"
+        explanation: "Firewall Manager define políticas de protección una sola vez y las aplica automáticamente en todas las cuentas y recursos de la organización, incluso los nuevos."
+        correct: true
+      - label: "AWS Shield Standard"
+        explanation: "Shield Standard protege automáticamente contra DDoS de capas 3 y 4; no administra reglas de WAF entre cuentas."
+      - label: "Un security group"
+        explanation: "Un security group controla tráfico a nivel de instancia por IP y puertos; no aplica reglas de WAF en toda la organización."
+      - label: "Una web ACL de AWS WAF en una sola cuenta"
+        explanation: "Una web ACL se asocia a recursos concretos; elegir solo WAF cuando se piden reglas en todas las cuentas es una trampa típica del examen."
 ---
 
 ## ¿Por qué importa?

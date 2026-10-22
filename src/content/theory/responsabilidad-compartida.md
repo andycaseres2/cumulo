@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html"
   - "https://docs.aws.amazon.com/lambda/latest/dg/lambda-security.html"
   - "https://docs.aws.amazon.com/whitepapers/latest/security-overview-aws-lambda/the-shared-responsibility-model.html"
+quiz:
+  - prompt: "Una fintech de Santiago de Chile ejecuta su app de pagos en instancias de Amazon EC2. Según el modelo de responsabilidad compartida, ¿qué tarea le corresponde a la fintech?"
+    options:
+      - label: "La seguridad física de los centros de datos"
+        explanation: "La seguridad física de los centros de datos es parte de la seguridad DE la nube, que es responsabilidad de AWS."
+      - label: "El sistema operativo del host y la capa de virtualización"
+        explanation: "El sistema operativo del host y la virtualización los protege y parcha AWS; no son tarea de la fintech."
+      - label: "Parchar el sistema operativo invitado de las instancias"
+        explanation: "En Amazon EC2 el cliente instala, configura y parcha el sistema operativo invitado; es el modelo donde más le toca al cliente."
+        correct: true
+      - label: "La infraestructura de red global de AWS"
+        explanation: "El hardware y la infraestructura de red global son responsabilidad de AWS como parte de la seguridad DE la nube."
+  - prompt: "Una aseguradora de Bogotá migra su base de datos a Amazon RDS. ¿Qué tarea pasa a ser responsabilidad de AWS?"
+    options:
+      - label: "Parchar el sistema operativo y el motor de base de datos"
+        explanation: "En Amazon RDS, AWS opera el sistema operativo y el motor de base de datos y aplica sus parches durante la ventana de mantenimiento."
+        correct: true
+      - label: "Elegir la ventana de mantenimiento"
+        explanation: "En RDS el cliente decide la ventana de mantenimiento; AWS realiza el mantenimiento dentro de ella."
+      - label: "Configurar los security groups que controlan quién se conecta"
+        explanation: "Los security groups que controlan las conexiones a la base de datos siguen siendo responsabilidad del cliente en RDS."
+      - label: "Gestionar los usuarios de la base de datos"
+        explanation: "Los usuarios de la base de datos los gestiona el cliente, junto con el cifrado y los permisos de IAM."
+  - prompt: "El equipo de cumplimiento de una minera de Antofagasta clasifica sus controles de TI en AWS. ¿Cuál de estos es un ejemplo de control heredado?"
+    options:
+      - label: "Parchar el sistema operativo invitado y las aplicaciones"
+        explanation: "La gestión de parches es un control compartido: AWS corrige su infraestructura y el cliente parcha su sistema operativo invitado y aplicaciones."
+      - label: "Capacitar en seguridad a los empleados"
+        explanation: "La concientización y capacitación es un control compartido: AWS capacita a sus empleados y el cliente a los suyos."
+      - label: "Decidir en qué entornos de seguridad se enrutan o separan ciertos datos"
+        explanation: "Esta decisión depende solo del cliente y de su aplicación, por eso es un control específico del cliente."
+      - label: "Los controles físicos y ambientales de los centros de datos"
+        explanation: "Los controles físicos y ambientales de los centros de datos son el ejemplo de control heredado: el cliente los hereda por completo de AWS."
+        correct: true
 ---
 
 ## ¿Por qué importa?

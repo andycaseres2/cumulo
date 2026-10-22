@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html"
   - "https://docs.aws.amazon.com/vpc/latest/userguide/infrastructure-security.html"
   - "https://docs.aws.amazon.com/inspector/latest/user/what-is-inspector.html"
+quiz:
+  - prompt: "Una clínica en Asunción detecta tráfico malicioso desde un rango específico de direcciones IP y quiere denegarlo para toda una subred de su VPC. ¿Qué debe usar?"
+    options:
+      - label: "Un security group"
+        explanation: "Un security group solo tiene reglas de permitir y actúa a nivel de instancia; no puede denegar un rango de IP específico."
+      - label: "Una network ACL"
+        explanation: "Una network ACL controla el tráfico de toda una subred y admite reglas de permitir y de denegar, ideal para bloquear un rango de IP."
+        correct: true
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector escanea vulnerabilidades y exposición de red; detecta debilidades pero no bloquea tráfico."
+      - label: "Un NAT gateway"
+        explanation: "Un NAT gateway da salida a internet a subredes privadas; no sirve para denegar tráfico de direcciones IP específicas."
+  - prompt: "La base de datos de un portal de pacientes está en una subred privada y necesita descargar parches desde internet, sin que nadie desde afuera pueda iniciar una conexión hacia ella. ¿Qué componente debe usar?"
+    options:
+      - label: "Una ruta directa a un internet gateway"
+        explanation: "Una ruta directa a un internet gateway convertiría la subred en pública, y las bases de datos deben quedar en subredes privadas."
+      - label: "VPC peering"
+        explanation: "VPC peering conecta dos VPC para enrutar tráfico entre ellas; no da salida a internet para descargar parches."
+      - label: "VPC Flow Logs"
+        explanation: "VPC Flow Logs registran información del tráfico IP de las interfaces de red; no permiten salir a internet."
+      - label: "Un NAT gateway"
+        explanation: "Un NAT gateway permite que instancias de una subred privada se conecten fuera de la VPC, por ejemplo para parches, sin aceptar conexiones iniciadas desde afuera."
+        correct: true
+  - prompt: "El área de cumplimiento de un banco en La Paz quiere escanear de forma continua sus instancias EC2 y funciones Lambda en busca de vulnerabilidades de software y exposición de red no intencionada. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Inspector"
+        explanation: "Amazon Inspector descubre cargas de trabajo y las escanea de forma continua en busca de vulnerabilidades de software y exposición de red, generando hallazgos con recomendaciones."
+        correct: true
+      - label: "Un security group"
+        explanation: "Un security group es un firewall virtual que controla el tráfico de las instancias; no escanea vulnerabilidades de software."
+      - label: "Una network ACL"
+        explanation: "Una network ACL permite o deniega tráfico a nivel de subred; controla tráfico pero no detecta vulnerabilidades."
+      - label: "VPC Flow Logs"
+        explanation: "VPC Flow Logs registran el tráfico IP de las interfaces de red; no analizan vulnerabilidades de software en EC2 ni Lambda."
 ---
 
 ## ¿Por qué importa?

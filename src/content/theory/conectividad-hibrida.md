@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/aws-direct-connect.html"
   - "https://docs.aws.amazon.com/vpc/latest/tgw/what-is-transit-gateway.html"
   - "https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html"
+quiz:
+  - prompt: "Un grupo de supermercados de Lima necesita conectar hoy mismo su centro de datos con sus VPC, con tráfico cifrado por internet, mientras evalúa otras opciones a mediano plazo. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Direct Connect"
+        explanation: "Direct Connect requiere trabajo físico en una ubicación de Direct Connect o con un socio, así que su puesta en marcha es más lenta y no sirve para conectar hoy mismo."
+      - label: "AWS Site-to-Site VPN"
+        explanation: "Site-to-Site VPN une la red on-premises con las VPC mediante túneles IPsec cifrados sobre internet y se configura rápido."
+        correct: true
+      - label: "AWS Client VPN"
+        explanation: "Client VPN conecta a usuarios individuales desde sus dispositivos; no une la red completa de un centro de datos con las VPC."
+      - label: "AWS PrivateLink"
+        explanation: "PrivateLink da acceso privado desde tu VPC a servicios específicos mediante VPC endpoints; no conecta tu centro de datos con AWS."
+  - prompt: "Una aseguradora de Santiago quiere mover grandes volúmenes de datos entre su centro de datos y AWS con un rendimiento constante y sin pasar por proveedores de internet. Puede esperar la instalación física. ¿Qué servicio debe elegir?"
+    options:
+      - label: "AWS Site-to-Site VPN"
+        explanation: "Site-to-Site VPN viaja por internet público, así que su rendimiento depende de internet y no cumple el requisito de no pasar por proveedores de internet."
+      - label: "AWS Client VPN"
+        explanation: "Client VPN está pensado para que usuarios individuales se conecten desde cualquier lugar por internet, no para transferir grandes volúmenes entre redes."
+      - label: "AWS PrivateLink"
+        explanation: "PrivateLink conecta tu VPC con servicios como si estuvieran dentro de ella; no es un enlace entre tu centro de datos y AWS."
+      - label: "AWS Direct Connect"
+        explanation: "Direct Connect une tu red interna con AWS mediante una conexión física dedicada, sin pasar por proveedores de internet, con mayor ancho de banda y una experiencia de red más consistente."
+        correct: true
+  - prompt: "Una empresa de retail de Guadalajara tiene decenas de VPC y varias redes on-premises, y conectarlas una por una se volvió inmanejable. Quiere que cada red se conecte una sola vez a un punto central. ¿Qué servicio cumple con esto?"
+    options:
+      - label: "AWS Transit Gateway"
+        explanation: "Transit Gateway es un hub de tránsito de red que interconecta VPC y redes on-premises en un modelo hub-and-spoke, donde cada red se conecta una sola vez."
+        correct: true
+      - label: "AWS PrivateLink"
+        explanation: "PrivateLink da acceso privado a servicios específicos mediante VPC endpoints; no interconecta redes completas como un hub central."
+      - label: "AWS Client VPN"
+        explanation: "Client VPN da acceso a usuarios remotos individuales; no funciona como punto central para interconectar muchas VPC y redes."
+      - label: "AWS Direct Connect"
+        explanation: "Direct Connect ofrece una conexión física dedicada entre tu red y AWS, pero por sí solo no es un hub que interconecte muchas VPC entre sí."
 ---
 
 ## ¿Por qué importa?

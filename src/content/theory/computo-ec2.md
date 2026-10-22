@@ -10,6 +10,40 @@ sources:
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html"
   - "https://aws.amazon.com/ec2/instance-types/"
   - "https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html"
+quiz:
+  - prompt: "Una cadena de farmacias de Santiago procesa cada noche, por lotes, miles de recetas digitalizadas con un uso muy intensivo de CPU. ¿Qué familia de instancias EC2 debe elegir?"
+    options:
+      - label: "Uso general"
+        explanation: "La familia de uso general equilibra cómputo, memoria y red; se elige cuando el escenario no destaca un recurso, y aquí destaca la CPU."
+      - label: "Optimizadas para cómputo"
+        explanation: "Las instancias optimizadas para cómputo usan procesadores de alto rendimiento y son típicas para procesamiento por lotes con mucha CPU."
+        correct: true
+      - label: "Optimizadas para memoria"
+        explanation: "Las instancias optimizadas para memoria son para grandes conjuntos de datos en memoria; el escenario pide procesamiento intensivo de CPU."
+      - label: "Optimizadas para almacenamiento"
+        explanation: "Las instancias optimizadas para almacenamiento priorizan la E/S rápida en el almacenamiento local; el cuello de botella aquí es la CPU."
+  - prompt: "Una empresa de software de Monterrey quiere lanzar 20 instancias EC2 idénticas, todas con el mismo sistema operativo y el mismo software ya instalado. ¿Qué componente de EC2 define ese sistema operativo y software?"
+    options:
+      - label: "El tipo de instancia"
+        explanation: "El tipo de instancia define el hardware (CPU, memoria, almacenamiento y red); no define el sistema operativo ni el software."
+      - label: "El security group"
+        explanation: "El security group es un firewall virtual que controla qué tráfico llega a la instancia; no contiene el sistema operativo."
+      - label: "El par de claves (key pair)"
+        explanation: "El par de claves son credenciales para iniciar sesión de forma segura; no definen el software de la instancia."
+      - label: "La AMI (Amazon Machine Image)"
+        explanation: "La AMI es una plantilla preconfigurada con el sistema operativo y el software; con la misma AMI lanzas muchas instancias idénticas."
+        correct: true
+  - prompt: "Un equipo de TI de Cali lanza una instancia de Amazon EC2 para su sitio web. ¿Quién es responsable de aplicar los parches del sistema operativo de esa instancia?"
+    options:
+      - label: "El cliente, porque EC2 es IaaS y le da control total del sistema operativo"
+        explanation: "En EC2 tú configuras, actualizas y aseguras el sistema operativo; por eso EC2 es un ejemplo de infraestructura como servicio (IaaS)."
+        correct: true
+      - label: "AWS, porque EC2 es un servicio totalmente administrado"
+        explanation: "EC2 no es un servicio administrado donde AWS parcha tu sistema operativo; esa es una trampa típica del examen."
+      - label: "AWS, siempre que la instancia sea del tipo de uso general"
+        explanation: "La familia de instancia solo define el hardware; no cambia quién es responsable de parchar el sistema operativo."
+      - label: "AWS, porque la AMI se actualiza sola en cada instancia"
+        explanation: "La AMI es una plantilla para lanzar instancias; una vez lanzada la instancia, mantener el sistema operativo es tu responsabilidad."
 ---
 
 ## ¿Por qué importa?

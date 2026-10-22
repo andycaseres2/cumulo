@@ -16,11 +16,45 @@ sources:
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_getting-report.html"
   - "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_last-accessed.html"
   - "https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html"
+quiz:
+  - prompt: "El área de cumplimiento de un banco digital de Ciudad de México pide descargar los informes SOC y el informe de cumplimiento PCI de AWS para su auditoría. ¿Dónde los obtiene?"
+    options:
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra las llamadas a la API de tu cuenta; no contiene los informes de cumplimiento de AWS."
+      - label: "AWS Config"
+        explanation: "AWS Config registra la configuración de tus recursos y evalúa reglas; no publica informes SOC ni PCI de AWS."
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact es el portal de autoservicio para descargar bajo demanda y sin costo informes como SOC, PCI e ISO."
+        correct: true
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch monitorea métricas, logs y alarmas de tus recursos; no ofrece documentos de cumplimiento de AWS."
+  - prompt: "Un auditor pregunta a una aseguradora de Bogotá qué usuario eliminó una tabla de Amazon DynamoDB el martes y desde dónde lo hizo. ¿Qué servicio responde a esa pregunta?"
+    options:
+      - label: "AWS CloudTrail"
+        explanation: "AWS CloudTrail registra como eventos las llamadas a la API de usuarios, roles y servicios, y responde quién hizo qué, cuándo y desde dónde."
+        correct: true
+      - label: "Amazon CloudWatch"
+        explanation: "Amazon CloudWatch reúne métricas, logs y alarmas para saber cómo está funcionando algo; la auditoría de quién hizo cada llamada a la API es de CloudTrail."
+      - label: "AWS Config"
+        explanation: "AWS Config muestra cómo estaba configurado un recurso y cómo cambió; quién hizo el cambio lo responde CloudTrail."
+      - label: "AWS Artifact"
+        explanation: "AWS Artifact entrega informes y acuerdos de cumplimiento de AWS; no registra la actividad de tu cuenta."
+  - prompt: "Un auditor pide a una cooperativa de Asunción un archivo CSV con todos los usuarios de la cuenta y el estado de sus contraseñas, access keys y dispositivos MFA. ¿Qué debe generar?"
+    options:
+      - label: "La información de último acceso de IAM"
+        explanation: "La información de último acceso muestra qué servicios y acciones usó cada identidad para recortar permisos; no es el CSV con el estado de credenciales."
+      - label: "Un informe de AWS Artifact"
+        explanation: "AWS Artifact entrega informes de cumplimiento de AWS, como SOC o ISO; no lista a los usuarios de tu cuenta."
+      - label: "Una regla de AWS Config"
+        explanation: "Una regla de AWS Config evalúa si los recursos cumplen una configuración; no produce el CSV con contraseñas, access keys y MFA de cada usuario."
+      - label: "El credential report de IAM"
+        explanation: "El credential report es un archivo CSV con todos los usuarios de la cuenta y el estado de sus contraseñas, access keys y dispositivos MFA, listo para entregar a un auditor."
+        correct: true
 ---
 
 ## ¿Por qué importa?
 
-Un banco digital en Ciudad de México quiere migrar a AWS. Antes, su área de cumplimiento pregunta tres cosas: "¿AWS tiene certificaciones como ISO 27001 o PCI DSS?", "¿qué servicios podemos usar para procesar tarjetas?" y "si un auditor pregunta quién borró una tabla el martes, ¿cómo lo demostramos?". Responder bien exige saber **dónde está la documentación de cumplimiento** y **qué servicio registra cada tipo de evidencia**.
+Un banco digital en Ciudad de México quiere migrar a AWS. Antes, su área de cumplimiento pregunta tres cosas: "¿AWS tiene certificaciones como ISO 27001 o PCI DSS?", "¿qué servicios podemos usar para procesar tarjetas?" y "si un auditor pregunta quién borró una tabla de Amazon DynamoDB el martes, ¿cómo lo demostramos?". Responder bien exige saber **dónde está la documentación de cumplimiento** y **qué servicio registra cada tipo de evidencia**.
 
 ## Dónde encontrar información de cumplimiento
 

@@ -18,6 +18,40 @@ sources:
   - "https://docs.aws.amazon.com/health/latest/ug/what-is-aws-health.html"
   - "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-get-answers.html"
   - "https://aws.amazon.com/about-aws/whats-new/2024/10/aws-trust-safety-center-re-post/"
+quiz:
+  - prompt: "Una fintech de Ciudad de México pasa su app de pagos a producción. Necesita el plan mínimo recomendado para producción, con soporte técnico 24/7 y respuesta en menos de 30 minutos cuando hay una caída crítica del negocio. ¿Qué plan debe contratar?"
+    options:
+      - label: "Basic Support"
+        explanation: "Basic Support está incluido para todos, pero solo cubre cuenta y facturación; no incluye casos de soporte técnico."
+      - label: "AWS Enterprise Support"
+        explanation: "Enterprise Support apunta a cargas críticas para el negocio con TAM designado; cumple, pero no es el plan mínimo recomendado para producción."
+      - label: "AWS Business Support+"
+        explanation: "Business Support+ es el mínimo recomendado para producción, con soporte técnico 24/7 y respuesta en menos de 30 minutos en caídas críticas del negocio."
+        correct: true
+      - label: "AWS Unified Operations"
+        explanation: "Unified Operations está pensado para cargas de misión crítica con respuesta en menos de 5 minutos; excede el mínimo que se pide."
+  - prompt: "El directorio de una aerolínea de Santiago quiere, para sus cargas críticas, un asesor técnico de AWS designado que conozca su cuenta y lidere revisiones Well-Architected. Entre los planes de la guía vigente, ¿cuál es el primero que lo incluye?"
+    options:
+      - label: "AWS Enterprise Support"
+        explanation: "El Technical Account Manager (TAM) designado, que conoce tu cuenta y lidera revisiones Well-Architected, aparece desde Enterprise Support."
+        correct: true
+      - label: "AWS Business Support+"
+        explanation: "Business Support+ ofrece asistencia con IA y acceso 24/7 a expertos, pero no incluye un TAM designado."
+      - label: "Basic Support"
+        explanation: "Basic Support no incluye soporte técnico ni contacto designado; da acceso a servicio al cliente, documentación y AWS re:Post."
+      - label: "Developer Support"
+        explanation: "Developer Support se discontinúa el 1 de enero de 2027 y no forma parte de los cuatro planes de la guía vigente del examen."
+  - prompt: "Una empresa de Montevideo detecta escaneos de puertos que vienen de recursos alojados en AWS que no son suyos. ¿A quién debe reportarlo?"
+    options:
+      - label: "A AWS Support, abriendo un caso técnico en AWS Support Center"
+        explanation: "AWS Support Center gestiona casos de soporte de tu cuenta, pero AWS Support no gestiona los reportes de abuso."
+      - label: "Al AWS Health Dashboard"
+        explanation: "El AWS Health Dashboard informa sobre eventos que afectan a tus recursos y a los servicios de AWS; no recibe reportes de abuso."
+      - label: "A AWS Trusted Advisor"
+        explanation: "Trusted Advisor inspecciona tu propio entorno y recomienda mejoras; no sirve para reportar actividad abusiva de recursos de otros."
+      - label: "Al equipo de AWS Trust & Safety, mediante el formulario de reporte de abuso"
+        explanation: "El abuso de recursos de AWS, como escaneo de puertos, se reporta a AWS Trust & Safety con su formulario, incluso sin tener una cuenta de AWS."
+        correct: true
 ---
 
 ## ¿Por qué importa?

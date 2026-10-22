@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/whitepapers/latest/organizing-your-aws-environment/benefits-of-using-multiple-aws-accounts.html"
   - "https://docs.aws.amazon.com/controltower/latest/userguide/what-is-control-tower.html"
   - "https://docs.aws.amazon.com/ram/latest/userguide/what-is.html"
+quiz:
+  - prompt: "Una cadena de farmacias de Bogotá usa AWS Organizations y quiere que nadie en las cuentas de la OU Producción, ni siquiera un administrador con AdministratorAccess, pueda lanzar recursos fuera de las Regiones aprobadas. ¿Qué debe usar?"
+    options:
+      - label: "AWS RAM"
+        explanation: "AWS RAM comparte recursos entre cuentas; no limita los permisos máximos de las identidades de una OU."
+      - label: "La factura consolidada de Organizations"
+        explanation: "La factura consolidada agrupa los costos de las cuentas; no restringe qué Regiones pueden usar."
+      - label: "Una política de control de servicios (SCP) en la OU"
+        explanation: "Una SCP adjunta a la OU fija el máximo de permisos de sus cuentas miembro, así que ni un administrador con AdministratorAccess podrá usar Regiones no aprobadas."
+        correct: true
+      - label: "Account Factory de AWS Control Tower"
+        explanation: "Account Factory sirve para crear cuentas nuevas ya configuradas; no es el mecanismo que limita las Regiones en una OU existente."
+  - prompt: "Una aseguradora de Quito quiere montar en poco tiempo un entorno multicuenta con buenas prácticas de seguridad: una landing zone predefinida, controles preventivos y detectivos preempaquetados y un dashboard. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Control Tower"
+        explanation: "AWS Control Tower configura una landing zone predefinida con controles preventivos, detectivos y proactivos, Account Factory y un dashboard."
+        correct: true
+      - label: "AWS Organizations por sí solo"
+        explanation: "AWS Organizations es el servicio base para agrupar cuentas, pero la estructura la diseñas tú; no trae una landing zone lista."
+      - label: "AWS RAM"
+        explanation: "AWS RAM comparte recursos entre cuentas; no crea ni gobierna un entorno multicuenta."
+      - label: "Una política de control de servicios (SCP)"
+        explanation: "Una SCP limita permisos máximos que tú escribes; por sí sola no crea una landing zone ni un dashboard de gobierno."
+  - prompt: "Una minera de Lima tiene una cuenta de red central con una Amazon VPC y quiere que sus otras cuentas de la organización usen esas subredes sin duplicarlas en cada cuenta. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Control Tower"
+        explanation: "AWS Control Tower configura y gobierna la landing zone; no es el servicio para compartir subredes entre cuentas."
+      - label: "Una política de control de servicios (SCP)"
+        explanation: "Una SCP solo limita permisos máximos y no otorga acceso, así que no permite que otras cuentas usen las subredes."
+      - label: "La factura consolidada de Organizations"
+        explanation: "La factura consolidada agrupa los pagos de las cuentas; no comparte recursos de red entre ellas."
+      - label: "AWS Resource Access Manager (AWS RAM)"
+        explanation: "AWS RAM comparte recursos entre cuentas, como subredes de Amazon VPC desde una cuenta de red central, sin duplicarlos y sin cargo adicional."
+        correct: true
 ---
 
 ## ¿Por qué importa?

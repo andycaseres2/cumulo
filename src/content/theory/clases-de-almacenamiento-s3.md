@@ -11,6 +11,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonS3/latest/userguide/glacier-storage-classes.html"
   - "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html"
   - "https://aws.amazon.com/s3/pricing/"
+quiz:
+  - prompt: "Una clínica de Lima debe conservar durante años las radiografías de sus pacientes. Se consultan más o menos una vez por trimestre, pero cuando un médico las abre deben cargar en milisegundos. No se pueden recrear. ¿Qué clase de S3 conviene?"
+    options:
+      - label: "S3 Glacier Flexible Retrieval"
+        explanation: "S3 Glacier Flexible Retrieval requiere restaurar los objetos y tarda de minutos a horas; no cumple el acceso en milisegundos."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "S3 Glacier Deep Archive es la opción más barata, pero la recuperación tarda horas; no sirve si los médicos necesitan milisegundos."
+      - label: "S3 Glacier Instant Retrieval"
+        explanation: "S3 Glacier Instant Retrieval es para archivo consultado cerca de una vez por trimestre, con acceso en milisegundos y en varias AZ."
+        correct: true
+      - label: "S3 One Zone-IA"
+        explanation: "S3 One Zone-IA guarda los datos en una sola AZ y AWS lo recomienda para datos que se pueden recrear; las radiografías no se pueden recrear."
+  - prompt: "Una plataforma educativa de Quito no sabe con qué frecuencia se consultarán sus videos y quiere que S3 los mueva solo entre niveles de acceso, sin cargos por recuperación. ¿Qué clase debe usar?"
+    options:
+      - label: "S3 Intelligent-Tiering"
+        explanation: "S3 Intelligent-Tiering es para patrones desconocidos o cambiantes: mueve cada objeto entre niveles y no cobra recuperación, solo un cargo de monitoreo por objeto."
+        correct: true
+      - label: "S3 Standard-IA"
+        explanation: "S3 Standard-IA es para acceso poco frecuente conocido, cobra por GB recuperado y no mueve los objetos entre niveles por sí misma."
+      - label: "S3 One Zone-IA"
+        explanation: "S3 One Zone-IA guarda los datos en una sola AZ, cobra por GB recuperado y no mueve los objetos automáticamente según su uso."
+      - label: "S3 Glacier Deep Archive"
+        explanation: "S3 Glacier Deep Archive es para datos consultados menos de una vez al año, con recuperación de horas; no se adapta a un patrón desconocido."
+  - prompt: "Una fintech de Buenos Aires guarda logs en S3: los consulta a diario el primer mes, luego casi nunca, y debe borrarlos al cumplir un año. Quiere que esto ocurra de forma automática. ¿Qué debe configurar?"
+    options:
+      - label: "Guardar todos los logs en S3 Glacier Deep Archive desde el primer día"
+        explanation: "Deep Archive tarda horas en recuperar y tiene una duración mínima de 180 días; no sirve para logs consultados a diario ni los borra solo."
+      - label: "Guardar todos los logs en S3 Express One Zone"
+        explanation: "S3 Express One Zone es para aplicaciones muy sensibles a la latencia en una sola AZ; no mueve los objetos a clases más baratas ni los elimina."
+      - label: "Pedir restauraciones Expedited de S3 Glacier Flexible Retrieval"
+        explanation: "Una restauración Expedited crea una copia temporal de un objeto archivado; no mueve los logs entre clases ni los elimina al vencer."
+      - label: "Una S3 Lifecycle configuration con acciones de transición y expiración"
+        explanation: "Las transition actions mueven los logs a una clase más barata tras cierto tiempo y las expiration actions los eliminan al cumplir el año."
+        correct: true
 ---
 
 ## ¿Por qué importa?

@@ -12,6 +12,40 @@ sources:
   - "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html"
   - "https://aws.amazon.com/q/"
   - "https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html"
+quiz:
+  - prompt: "Una financiera de Santiago de Chile recibe miles de solicitudes de crédito escaneadas y quiere extraer automáticamente el texto, los campos de los formularios y las tablas, sin experiencia en ML. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon Polly"
+        explanation: "Amazon Polly convierte texto en voz con sonido natural; no lee documentos escaneados."
+      - label: "Amazon Textract"
+        explanation: "Amazon Textract extrae texto y datos de documentos escaneados, incluidos formularios y tablas, más allá de un OCR simple."
+        correct: true
+      - label: "Amazon Comprehend"
+        explanation: "Amazon Comprehend analiza el significado de un texto que ya tienes, como su sentimiento o frases clave; no extrae datos de documentos escaneados."
+      - label: "Amazon Translate"
+        explanation: "Amazon Translate traduce texto entre idiomas; el escenario pide extraer campos y tablas de documentos, no cambiar su idioma."
+  - prompt: "Un e-commerce de Lima quiere saber si las reseñas escritas por sus clientes son positivas o negativas y qué frases clave se repiten. ¿Qué servicio de IA preentrenado debe usar?"
+    options:
+      - label: "Amazon Translate"
+        explanation: "Amazon Translate cambia el idioma del texto; no determina si una reseña es positiva o negativa."
+      - label: "Amazon Lex"
+        explanation: "Amazon Lex sirve para crear chatbots e interfaces conversacionales; no está pensado para analizar el sentimiento de reseñas."
+      - label: "Amazon Transcribe"
+        explanation: "Amazon Transcribe convierte voz en texto; las reseñas ya están escritas y lo que se necesita es analizar su significado."
+      - label: "Amazon Comprehend"
+        explanation: "Amazon Comprehend analiza texto: detecta idioma, frases clave, entidades y sentimiento positivo o negativo."
+        correct: true
+  - prompt: "Un banco digital necesita un modelo a la medida, entrenado con su propio historial de clientes, que prediga quién podría dejar de pagar su tarjeta. ¿Qué servicio de AWS debe usar?"
+    options:
+      - label: "Amazon SageMaker AI"
+        explanation: "Amazon SageMaker AI es un servicio de ML totalmente administrado para construir, entrenar y desplegar modelos propios, como uno que prediga impagos."
+        correct: true
+      - label: "Amazon Rekognition"
+        explanation: "Amazon Rekognition es un servicio preentrenado para analizar imágenes y videos; no entrena un modelo de impagos con tus datos."
+      - label: "Amazon Polly"
+        explanation: "Amazon Polly es un servicio preentrenado que convierte texto en voz; no predice comportamiento de clientes."
+      - label: "Amazon Q Developer"
+        explanation: "Amazon Q Developer es un asistente de IA generativa que ayuda a desarrolladores a escribir y entender código; no es el servicio para entrenar un modelo propio de predicción."
 ---
 
 ## ¿Por qué importa?

@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/sdkref/latest/guide/overview.html"
   - "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/types-of-cloud-computing.html"
   - "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html"
+quiz:
+  - prompt: "Una fintech de Lima necesita ambientes de desarrollo, pruebas y producción idénticos. Quiere describir todos sus recursos en plantillas JSON o YAML guardadas en control de versiones y crearlos como una sola unidad. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Management Console"
+        explanation: "La consola es cómoda para tareas puntuales, pero los clics no se pueden repetir de forma exacta ni versionar como una plantilla."
+      - label: "AWS SDKs"
+        explanation: "Los SDK se usan dentro del código de una aplicación para llamar a los servicios; no aprovisionan infraestructura a partir de plantillas JSON o YAML."
+      - label: "AWS CloudFormation"
+        explanation: "CloudFormation crea los recursos descritos en una plantilla JSON o YAML como un stack gestionado como una sola unidad, de forma consistente y repetible."
+        correct: true
+      - label: "Query API directa"
+        explanation: "La Query API son llamadas HTTPS de bajo nivel en las que tu aplicación firma las solicitudes; no trabaja con plantillas ni stacks."
+  - prompt: "La app de una aseguradora de Montevideo, escrita en Python, debe subir archivos a AWS desde su propio código, sin tener que firmar solicitudes ni manejar reintentos a mano. ¿Qué debe usar?"
+    options:
+      - label: "AWS CLI"
+        explanation: "La CLI se usa con comandos en la terminal y para scripts; el acceso desde el código de una aplicación corresponde al SDK."
+      - label: "AWS SDK para Python (Boto3)"
+        explanation: "Los SDK son librerías por lenguaje que se usan dentro del código de la aplicación y se encargan de firmar las solicitudes, reintentar y manejar errores."
+        correct: true
+      - label: "AWS CloudFormation"
+        explanation: "CloudFormation aprovisiona infraestructura a partir de plantillas; no es una librería para que una aplicación suba archivos desde su código."
+      - label: "AWS Management Console"
+        explanation: "La consola es una interfaz web para usar a mano en el navegador; la aplicación no puede usarla desde su código."
+  - prompt: "Una cadena de farmacias de Caracas mantiene su centro de datos propio y lo conecta con recursos que despliega en AWS. ¿Qué modelo de despliegue está usando?"
+    options:
+      - label: "Nube"
+        explanation: "En el modelo de nube toda la aplicación se ejecuta en la nube, pero esta empresa conserva su centro de datos propio."
+      - label: "On-premises (nube privada)"
+        explanation: "On-premises despliega los recursos solo en instalaciones propias con virtualización, sin usar recursos en AWS."
+      - label: "Infraestructura como código"
+        explanation: "La infraestructura como código es una forma de aprovisionar recursos con archivos de texto, no un modelo de despliegue."
+      - label: "Híbrido"
+        explanation: "El modelo híbrido conecta recursos en la nube con infraestructura existente fuera de ella, normalmente un centro de datos propio."
+        correct: true
 ---
 
 ## ¿Por qué importa?

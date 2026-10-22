@@ -14,6 +14,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html"
   - "https://docs.aws.amazon.com/local-zones/latest/ug/what-is-aws-local-zones.html"
   - "https://aws.amazon.com/blogs/architecture/what-to-consider-when-selecting-a-region-for-your-workloads/"
+quiz:
+  - prompt: "Un banco de Bogotá quiere que su app móvil siga funcionando aunque un centro de datos se quede sin energía. ¿Cuál es el enfoque típico para lograr esta alta disponibilidad?"
+    options:
+      - label: "Ejecutar la app en ubicaciones de borde de CloudFront"
+        explanation: "Las ubicaciones de borde se usan principalmente para entregar contenido en caché con CloudFront, no para ejecutar toda la aplicación."
+      - label: "Elegir la Región más cercana a los usuarios"
+        explanation: "La cercanía reduce la latencia, pero desplegar en una sola ubicación no protege contra la falla de un centro de datos."
+      - label: "Desplegar la app en varias Availability Zones de la Región"
+        explanation: "Las AZ no comparten puntos únicos de falla; si una AZ tiene un problema, las instancias de las otras siguen atendiendo."
+        correct: true
+      - label: "Usar instancias más grandes en una sola Availability Zone"
+        explanation: "Una instancia más grande en una sola AZ sigue dependiendo de esa AZ; si falla, la app deja de funcionar."
+  - prompt: "Una regulación exige a una aseguradora de Lima que los datos de sus clientes permanezcan en un país determinado. Al elegir la Región de AWS, ¿qué factor debe pesar más?"
+    options:
+      - label: "Cumplimiento y residencia de datos"
+        explanation: "Cuando hay una regulación sobre dónde deben estar los datos, el cumplimiento y la residencia de datos pesan más que los demás factores."
+        correct: true
+      - label: "Precio de la Región"
+        explanation: "Los precios varían entre Regiones, pero una Región más barata no sirve si incumple la regulación sobre la ubicación de los datos."
+      - label: "Cercanía a los usuarios"
+        explanation: "La cercanía mejora la latencia, pero no garantiza cumplir la exigencia legal sobre dónde se guardan los datos."
+      - label: "Cantidad de servicios disponibles"
+        explanation: "Los servicios disponibles importan, pero ante una regulación de residencia de datos el cumplimiento pesa más."
+  - prompt: "¿Qué componente de la infraestructura global de AWS usa Amazon CloudFront para entregar contenido en caché a los usuarios con menor latencia?"
+    options:
+      - label: "Availability Zones"
+        explanation: "Las Availability Zones son centros de datos dentro de una Región que aportan alta disponibilidad; no son los puntos de caché de CloudFront."
+      - label: "AWS Local Zones"
+        explanation: "Las Local Zones son extensiones de una Región que acercan cómputo y otros servicios a grandes ciudades; no son la red de caché de CloudFront."
+      - label: "Regiones"
+        explanation: "Una Región es un área geográfica con varias AZ; el contenido en caché de CloudFront se entrega desde otro tipo de ubicación."
+      - label: "Ubicaciones de borde (edge locations)"
+        explanation: "CloudFront dirige cada solicitud a la ubicación de borde con menor latencia y entrega desde ahí el contenido que ya está en caché."
+        correct: true
 ---
 
 ## ¿Por qué importa?

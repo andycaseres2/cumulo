@@ -11,6 +11,40 @@ sources:
   - "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
   - "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html"
   - "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html"
+quiz:
+  - prompt: "Una aseguradora de Guadalajara migra su base de datos MySQL a AWS y quiere que AWS se encargue de los parches, los respaldos, la detección de fallas y la recuperación, con la menor administración posible. ¿Qué opción debe elegir?"
+    options:
+      - label: "Instalar MySQL en una instancia Amazon EC2"
+        explanation: "Con una base de datos en EC2 tú instalas, parchas, respaldas y escalas el sistema operativo y el motor; da control total, pero más trabajo."
+      - label: "Amazon RDS for MySQL"
+        explanation: "Amazon RDS es una base de datos relacional administrada que gestiona respaldos, parches, detección de fallas y recuperación, y es compatible con MySQL."
+        correct: true
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse para analizar grandes volúmenes de datos históricos; no es la opción para el sistema transaccional de pólizas."
+      - label: "Amazon DynamoDB"
+        explanation: "DynamoDB es una base de datos NoSQL; no ejecuta el motor MySQL relacional que la aseguradora ya usa."
+  - prompt: "Un banco de Lima usa Amazon RDS y necesita alta disponibilidad: una instancia de reserva en otra Availability Zone, con replicación síncrona y conmutación por error si falla la principal. ¿Qué debe activar?"
+    options:
+      - label: "Réplicas de lectura"
+        explanation: "Las réplicas de lectura usan replicación asíncrona y su objetivo principal es escalar lecturas, no la conmutación por error con una reserva síncrona."
+      - label: "Snapshots manuales"
+        explanation: "Los snapshots manuales sirven para restaurar la base de datos; no mantienen una instancia de reserva lista para la conmutación por error."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es un data warehouse para análisis de datos históricos; no da alta disponibilidad a una instancia de RDS."
+      - label: "Multi-AZ"
+        explanation: "Multi-AZ replica de forma síncrona hacia una instancia de reserva en otra AZ y ofrece conmutación por error para alta disponibilidad."
+        correct: true
+  - prompt: "Una startup de Bogotá usa PostgreSQL y busca un motor relacional totalmente administrado y compatible, con mayor rendimiento que PostgreSQL estándar y datos copiados en tres Availability Zones. ¿Cuál debe elegir?"
+    options:
+      - label: "Amazon Aurora"
+        explanation: "Amazon Aurora es compatible con MySQL y PostgreSQL, ofrece hasta 6 veces el throughput de esos motores estándar y guarda copias en tres AZ."
+        correct: true
+      - label: "PostgreSQL instalado en Amazon EC2"
+        explanation: "En EC2 tú administras el sistema operativo, el motor, los respaldos y el escalado; no es un motor totalmente administrado."
+      - label: "Amazon Redshift"
+        explanation: "Amazon Redshift es el data warehouse de AWS para consultas analíticas; no es un motor transaccional compatible con PostgreSQL como pide el escenario."
+      - label: "Amazon DynamoDB"
+        explanation: "DynamoDB es NoSQL y no admite JOIN; no es compatible con el código y las herramientas de PostgreSQL."
 ---
 
 ## ¿Por qué importa?

@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html"
   - "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-store-lifetime.html"
+quiz:
+  - prompt: "Una startup de streaming de Buenos Aires necesita que varias instancias EC2 Linux monten por NFS la misma carpeta compartida de configuraciones y lean y escriban en ella a la vez, sin aprovisionar capacidad. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon EBS"
+        explanation: "Un volumen EBS por lo general se adjunta a una sola instancia y solo algunos tipos admiten Multi-Attach; no es la opción para una carpeta compartida por NFS."
+      - label: "Instance store"
+        explanation: "El instance store es almacenamiento temporal en el disco físico del host de una instancia; no se comparte entre instancias."
+      - label: "Amazon EFS"
+        explanation: "Amazon EFS ofrece archivos por NFS con acceso paralelo desde muchas instancias y crece y se reduce automáticamente, justo lo que pide la carpeta compartida."
+        correct: true
+      - label: "Amazon S3"
+        explanation: "Amazon S3 es almacenamiento de objetos al que se accede por API y URLs; no se monta como sistema de archivos NFS en las instancias."
+  - prompt: "Una empresa de logística de Quito guarda datos de trabajo en el instance store de una instancia EC2. ¿Qué pasa con esos datos si detiene la instancia?"
+    options:
+      - label: "Se pierden, porque el instance store es almacenamiento temporal"
+        explanation: "Los datos del instance store sobreviven a un reinicio, pero se pierden si la instancia se detiene, hiberna o termina."
+        correct: true
+      - label: "Se conservan, igual que en un volumen EBS"
+        explanation: "La persistencia independiente de la instancia es una característica de EBS; el instance store solo dura mientras vive la instancia."
+      - label: "Se copian automáticamente a Amazon S3"
+        explanation: "AWS no copia automáticamente el instance store a S3; por eso los datos valiosos deben guardarse en EBS, S3 o EFS."
+      - label: "Se mueven a otra instancia en la misma Availability Zone"
+        explanation: "El instance store es un disco físico del host y no se puede mover a otra instancia; separar y adjuntar es algo propio de EBS."
+  - prompt: "Amazon S3 está diseñado para una durabilidad del 99.999999999 % (once nueves). ¿Qué describe esa cifra?"
+    options:
+      - label: "El tiempo que tarda S3 en entregar un objeto"
+        explanation: "La durabilidad no mide la velocidad de respuesta; las clases de S3 se diferencian por tiempos de recuperación, que es otro concepto."
+      - label: "La protección contra la pérdida de los objetos guardados"
+        explanation: "Durabilidad significa no perder los datos; S3 la logra guardando copias redundantes de los objetos en varios dispositivos y, en la mayoría de sus clases, en varias Availability Zones."
+        correct: true
+      - label: "La posibilidad de acceder a los objetos cuando los necesitas"
+        explanation: "Poder acceder a los datos cuando los necesitas es la disponibilidad, que en S3 Standard es del 99.99 %, no la durabilidad."
+      - label: "El porcentaje de objetos que son públicos por defecto"
+        explanation: "Por defecto, los buckets y sus objetos de S3 son privados; la cifra de once nueves no tiene relación con el acceso público."
 ---
 
 ## ¿Por qué importa?

@@ -13,6 +13,40 @@ sources:
   - "https://docs.aws.amazon.com/amplify/latest/userguide/welcome.html"
   - "https://aws.amazon.com/amplify/"
   - "https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-out-of-scope-services.html"
+quiz:
+  - prompt: "Una fintech de São Paulo quiere que su código se compile, se ejecuten las pruebas y se produzcan paquetes listos para desplegar, sin aprovisionar ni administrar servidores de compilación. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS CodePipeline"
+        explanation: "CodePipeline orquesta el flujo completo de entrega; la etapa que compila y prueba dentro de ese flujo es CodeBuild."
+      - label: "AWS CodeBuild"
+        explanation: "CodeBuild es un servicio de compilación totalmente administrado que compila el código fuente, ejecuta pruebas y produce paquetes listos para desplegar."
+        correct: true
+      - label: "AWS X-Ray"
+        explanation: "X-Ray rastrea solicitudes para encontrar cuellos de botella y errores; no compila ni prueba código."
+      - label: "AWS Amplify"
+        explanation: "Amplify sirve para crear y desplegar aplicaciones web y móviles; no es el servicio de compilación y pruebas que pide el escenario."
+  - prompt: "La app de una empresa de Buenos Aires se vuelve lenta en horas pico. El equipo quiere seguir cada solicitud a través de sus microservicios, bases de datos y APIs, y ver un mapa de trazas para encontrar el cuello de botella. ¿Qué servicio debe usar?"
+    options:
+      - label: "Amazon CloudWatch"
+        explanation: "CloudWatch monitorea métricas, logs y alarmas, pero el servicio de rastreo distribuido que sigue cada solicitud y genera el mapa de trazas es X-Ray."
+      - label: "AWS CloudTrail"
+        explanation: "CloudTrail audita quién hizo qué llamada a la API; no mide el rendimiento de las solicitudes de la aplicación."
+      - label: "AWS CodePipeline"
+        explanation: "CodePipeline automatiza la entrega continua del software; no diagnostica la latencia de las solicitudes."
+      - label: "AWS X-Ray"
+        explanation: "X-Ray hace rastreo distribuido y genera un mapa de trazas con el cliente, el servicio frontal y los servicios de backend para encontrar cuellos de botella."
+        correct: true
+  - prompt: "El equipo frontend de una startup de Montevideo quiere publicar su app web en React conectando su repositorio de GitHub, para que cada cambio se despliegue automáticamente en la CDN global de AWS sin administrar infraestructura. ¿Qué servicio debe usar?"
+    options:
+      - label: "AWS Amplify"
+        explanation: "Amplify Hosting ofrece un flujo basado en Git con despliegue continuo: cada cambio del repositorio se publica en la CDN global de AWS."
+        correct: true
+      - label: "Amazon EC2"
+        explanation: "Con EC2 el equipo tendría que administrar servidores; para un frontend con despliegue continuo desde Git la respuesta es Amplify."
+      - label: "AWS CodeBuild"
+        explanation: "CodeBuild compila y prueba código, pero no aloja ni publica la app web en la CDN global."
+      - label: "AWS X-Ray"
+        explanation: "X-Ray diagnostica el rendimiento de las solicitudes; no aloja ni despliega aplicaciones web."
 ---
 
 ## ¿Por qué importa?
