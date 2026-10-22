@@ -1,6 +1,10 @@
-import type { PlayerSession } from '../domain/PlayerSession';
+import type { PlayerAuth } from '../domain/PlayerAuth';
 
-/** Adapter used until authentication exists: nobody is ever signed in. */
-export const guestPlayerSession: PlayerSession = {
+/** Adapter used while accounts are not configured: everyone plays as a guest and sign-in is unavailable. */
+export const guestPlayerSession: PlayerAuth = {
   currentPlayer: async () => null,
+  signUp: async () => ({ ok: false, error: 'unavailable' }),
+  signIn: async () => ({ ok: false, error: 'unavailable' }),
+  signOut: async () => {},
+  onChange: () => () => {},
 };
