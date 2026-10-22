@@ -49,8 +49,10 @@ export async function mountCumuloCity(parent: HTMLElement, options: CumuloCityOp
     scene: [BootScene, SelectScene, CityScene, InteriorScene, HudScene],
   });
 
-  // Exposed in development only, for debugging from the browser console.
-  if (import.meta.env.DEV) (window as unknown as { __game: Phaser.Game }).__game = game;
+  // Exposed in development, and with ?e2e for browser tests, to drive the game from the console.
+  if (import.meta.env.DEV || new URLSearchParams(window.location.search).has('e2e')) {
+    (window as unknown as { __game: Phaser.Game }).__game = game;
+  }
 
   return { destroy: () => game.destroy(true) };
 }

@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
 import { EVENTS, REGISTRY } from '../../config';
 import { missionCard } from '../../missionCard';
 import type { CurrentMission, GameMissions } from '../../missions';
@@ -29,8 +29,14 @@ export class MissionTracker {
     return tracker;
   }
 
+  /** Number of the latest refresh: an older one that finishes later must not overwrite it. */
+  private refreshes = 0;
+
   async refresh() {
-    this.current = await this.missions.current(this.district);
+    const mine = ++this.refreshes;
+    const current = await this.missions.current(this.district);
+    if (mine !== this.refreshes) return;
+    this.current = current;
     this.game.events.emit(EVENTS.missionCard, missionCard(this.current, this.district));
     this.game.events.emit(EVENTS.missionChanged, this.current);
   }

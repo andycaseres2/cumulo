@@ -21,17 +21,30 @@ export function mergeProgress(a: ProgressRecords, b: ProgressRecords): ProgressR
  * and whatever only the device knew is uploaded the next time the account storage answers.
  */
 export function syncedProgressStore(remote: MissionProgressStore, local: MissionProgressStore): MissionProgressStore {
+  // The account is read once per page; afterwards the device copy is current because every save writes both.
+  let synced = false;
+  let syncing: Promise<ProgressRecords> | null = null;
+
+  const sync = async () => {
+    const onDevice = await local.load();
+    try {
+      const merged = mergeProgress(await remote.load(), onDevice);
+      await local.save(merged);
+      await remote.save(merged);
+      synced = true;
+      return merged;
+    } catch {
+      return onDevice;
+    } finally {
+      syncing = null;
+    }
+  };
+
   return {
     async load() {
-      const onDevice = await local.load();
-      try {
-        const merged = mergeProgress(await remote.load(), onDevice);
-        await local.save(merged);
-        await remote.save(merged);
-        return merged;
-      } catch {
-        return onDevice;
-      }
+      if (synced) return local.load();
+      syncing ??= sync();
+      return syncing;
     },
     async save(records) {
       await local.save(records);

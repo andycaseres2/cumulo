@@ -46,6 +46,30 @@ describe('syncedProgressStore', () => {
     expect(await local.load()).toEqual({ bank: { bestScore: 0.6, completed: false, accepted: true } });
   });
 
+  it('syncs with the account once, then reads the device copy that every save keeps up to date', async () => {
+    const remote = inMemoryProgressStore({ bank: { bestScore: 1, completed: true, accepted: true } });
+    const remoteLoad = vi.spyOn(remote, 'load');
+    const local = inMemoryProgressStore();
+    const store = syncedProgressStore(remote, local);
+
+    await store.load();
+    await store.save({ ...(await store.load()), bakery: { bestScore: 1, completed: true, accepted: true } });
+    const later = await store.load();
+
+    expect(remoteLoad).toHaveBeenCalledTimes(1);
+    expect(Object.keys(later).sort()).toEqual(['bakery', 'bank']);
+  });
+
+  it('tries the account again on the next load when it was unavailable', async () => {
+    const remote = inMemoryProgressStore({ bank: { bestScore: 1, completed: true, accepted: true } });
+    const remoteLoad = vi.spyOn(remote, 'load').mockRejectedValueOnce(new Error('offline'));
+    const store = syncedProgressStore(remote, inMemoryProgressStore());
+
+    await expect(store.load()).resolves.toEqual({});
+    await expect(store.load()).resolves.toHaveProperty('bank');
+    expect(remoteLoad).toHaveBeenCalledTimes(2);
+  });
+
   it('saves to the device and the account', async () => {
     const remote = inMemoryProgressStore();
     const local = inMemoryProgressStore();
