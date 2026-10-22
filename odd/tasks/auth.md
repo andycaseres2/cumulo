@@ -16,8 +16,8 @@ Branch: `feat/auth` (from `main`, merged back when done) · Delivery: ask-on-ris
 | ID | Specs | Route | Status | Evidence |
 | --- | --- | --- | --- | --- |
 | T1 | S2, S4, S5 | inline | done | validation + Supabase adapter (7 error codes, player name from metadata/email) RED→GREEN |
-| T2 | S2, S4 | inline | pending | |
-| T3 | S3 | inline | pending | |
+| T2 | S2, S4 | inline | done | auth forms (happy-dom) + safeNextPath (open-redirect cases) RED→GREEN; /ingresar page |
+| T3 | S3 | inline | done | header chip (name + Salir / Ingresar), composition picks Supabase when configured; build with the real .env validates URL and key |
 | T4 | S1–S5 | inline | pending | |
 
 - T1: player module: auth port, sign up / sign in validation use cases, Supabase adapter (error and player mapping), guest adapter; tests first.

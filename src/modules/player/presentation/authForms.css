@@ -1,0 +1,100 @@
+.auth-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-top: 6px solid var(--color-accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.auth-tab {
+  padding: var(--space-3);
+  font: inherit;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.auth-tab[aria-selected='true'] {
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+  border-color: var(--color-shadow);
+}
+
+.auth-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.auth-field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.auth-field label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.auth-field input {
+  padding: var(--space-3);
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.auth-field input:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.auth-submit {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: var(--color-accent-ink);
+  cursor: pointer;
+  background: var(--color-accent);
+  border: var(--border-width) solid var(--color-shadow);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.auth-submit:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.auth-message:empty {
+  display: none;
+}
+
+.auth-message {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+}
+
+.auth-message.is-error {
+  background: rgb(239 71 111 / 15%);
+  border: 2px solid var(--color-domain-security-compliance);
+}
+
+.auth-message.is-success {
+  background: rgb(6 214 160 / 12%);
+  border: 2px solid var(--color-domain-technology-services);
+}

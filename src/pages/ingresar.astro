@@ -1,0 +1,47 @@
+---
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+---
+
+<PageLayout title="Ingresar" description="Ingresa o crea tu cuenta para guardar tu progreso en Nimbus City.">
+  <Container width="reading">
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Tu cuenta"
+        title="Ingresa a Nimbus City"
+        description="Con tu cuenta, tu nombre aparece en el juego. Muy pronto también tu progreso quedará guardado en cualquier dispositivo."
+      />
+      <div data-auth-forms></div>
+      <p class="guest">¿Prefieres probar primero? <a href="/juegos">Juega como invitado</a>.</p>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    max-width: 32rem;
+    padding-top: var(--space-12);
+  }
+
+  .guest {
+    margin-top: var(--space-6);
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { renderAuthForms } from '@/modules/player/presentation/authForms';
+  import { safeNextPath } from '@/modules/player/presentation/safeNextPath';
+
+  const next = safeNextPath(new URLSearchParams(window.location.search).get('next'));
+  const host = document.querySelector<HTMLElement>('[data-auth-forms]');
+
+  if (host) {
+    const player = await currentPlayer();
+    if (!player.isGuest) window.location.replace(next);
+    else renderAuthForms(host, { auth: playerAuth(), onSignedIn: () => window.location.assign(next) });
+  }
+</script>

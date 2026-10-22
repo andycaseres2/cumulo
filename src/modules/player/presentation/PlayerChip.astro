@@ -1,15 +1,26 @@
 ---
-/** Shows who is playing. Renders the guest name, then the client fills in the session's player. */
+/** Shows who is playing, with "Ingresar" for guests and "Salir" for signed-in players. */
 import { GUEST_NAME } from '@/modules/player/domain/Player';
+import { routes } from '@/ui/routes';
 ---
 
-<span class="player-chip" title="Tu jugador">
-  <span class="avatar" aria-hidden="true"></span>
-  <span class="visually-hidden">Jugando como </span>
-  <span data-player-name>{GUEST_NAME}</span>
-</span>
+<div class="player" data-player-chip>
+  <span class="player-chip" title="Tu jugador">
+    <span class="avatar" aria-hidden="true"></span>
+    <span class="visually-hidden">Jugando como </span>
+    <span data-player-name>{GUEST_NAME}</span>
+  </span>
+  <a class="action" href={routes.signIn} data-sign-in>Ingresar</a>
+  <button class="action" type="button" data-sign-out hidden>Salir</button>
+</div>
 
 <style>
+  .player {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
   .player-chip {
     display: inline-flex;
     align-items: center;
@@ -29,11 +40,45 @@ import { GUEST_NAME } from '@/modules/player/domain/Player';
     border: 2px solid var(--color-shadow);
     border-radius: 2px;
   }
+
+  .action {
+    padding: var(--space-1) var(--space-3);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-accent-ink);
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--color-accent);
+    border: 2px solid var(--color-shadow);
+    border-radius: 999px;
+  }
+
+  .action[hidden] {
+    display: none;
+  }
 </style>
 
 <script>
-  import { currentPlayer } from '@/composition/player';
+  import { currentPlayer, playerAuth } from '@/composition/player';
 
-  const player = await currentPlayer();
-  document.querySelectorAll('[data-player-name]').forEach((node) => (node.textContent = player.displayName));
+  async function render() {
+    const player = await currentPlayer();
+    for (const chip of document.querySelectorAll<HTMLElement>('[data-player-chip]')) {
+      chip.querySelector('[data-player-name]')!.textContent = player.displayName;
+      chip.querySelector<HTMLElement>('[data-sign-in]')!.hidden = !player.isGuest;
+      chip.querySelector<HTMLElement>('[data-sign-out]')!.hidden = player.isGuest;
+    }
+  }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-player-chip] [data-sign-out]')) {
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      await playerAuth().signOut();
+      window.location.reload();
+    });
+  }
+
+  playerAuth().onChange(() => void render());
+  await render();
 </script>
