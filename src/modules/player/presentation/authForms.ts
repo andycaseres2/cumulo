@@ -23,19 +23,46 @@ function field(label: string, attrs: Record<string, string>) {
   return el('div', { class: 'auth-field' }, [el('label', { for: id }, [label]), el('input', { id, ...attrs })]);
 }
 
+const EYE_ICON =
+  '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF_ICON =
+  '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.7 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.2M6.6 6.6A17.4 17.4 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>';
+
+/** Password field with an eye button that shows or hides what was typed. */
+function passwordField(label: string, attrs: Record<string, string>) {
+  const wrapper = field(label, { ...attrs, type: 'password' });
+  const input = wrapper.querySelector('input')!;
+  const toggle = el('button', { type: 'button', class: 'auth-eye', 'data-password-toggle': '' });
+  const render = () => {
+    const visible = input.type === 'text';
+    toggle.innerHTML = visible ? EYE_OFF_ICON : EYE_ICON;
+    toggle.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    toggle.setAttribute('aria-pressed', String(visible));
+  };
+  toggle.addEventListener('click', () => {
+    input.type = input.type === 'password' ? 'text' : 'password';
+    render();
+  });
+  render();
+  const box = el('div', { class: 'auth-password' });
+  input.replaceWith(box);
+  box.append(input, toggle);
+  return wrapper;
+}
+
 /** Sign-in and sign-up forms with tabs, validation messages and a busy state. */
 export function renderAuthForms(host: HTMLElement, { auth, onSignedIn }: AuthFormsOptions) {
   const message = el('p', { class: 'auth-message', 'data-auth-message': '', role: 'alert' });
 
   const signInForm = el('form', { class: 'auth-form', novalidate: '' }, [
     field('Email', { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
-    field('Contraseña', { name: 'password', type: 'password', autocomplete: 'current-password', required: '' }),
+    passwordField('Contraseña', { name: 'password', autocomplete: 'current-password', required: '' }),
     el('button', { type: 'submit', class: 'auth-submit' }, ['Ingresar']),
   ]);
   const signUpForm = el('form', { class: 'auth-form', novalidate: '', hidden: '' }, [
     field('Tu nombre', { name: 'name', type: 'text', autocomplete: 'nickname', maxlength: String(NAME_LENGTH.max), required: '' }),
     field('Email', { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
-    field(`Contraseña (mínimo ${MIN_PASSWORD_LENGTH} caracteres)`, {
+    passwordField(`Contraseña (mínimo ${MIN_PASSWORD_LENGTH} caracteres)`, {
       name: 'password',
       type: 'password',
       autocomplete: 'new-password',

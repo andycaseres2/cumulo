@@ -103,3 +103,37 @@
   background: rgb(6 214 160 / 12%);
   border: 2px solid var(--color-domain-technology-services);
 }
+
+/* The eye button sits inside the password input, on its right edge. */
+.auth-password {
+  position: relative;
+  display: grid;
+}
+
+.auth-field .auth-password input {
+  padding-right: calc(var(--space-3) * 2 + 20px);
+}
+
+.auth-eye {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  display: grid;
+  place-items: center;
+  padding: var(--space-1);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius);
+  transform: translateY(-50%);
+}
+
+.auth-eye:hover,
+.auth-eye:focus-visible {
+  color: var(--color-accent);
+}
+
+.auth-eye:focus-visible {
+  outline: 2px solid var(--color-accent);
+}

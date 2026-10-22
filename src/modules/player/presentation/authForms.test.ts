@@ -36,6 +36,24 @@ describe('auth forms', () => {
     expect(field('name')).toBeTruthy();
   });
 
+  it('lets the player show and hide the password in both forms', () => {
+    renderAuthForms(root(), { auth: fakeAuth(), onSignedIn: () => {} });
+    const toggle = () => root().querySelector<HTMLButtonElement>('form:not([hidden]) [data-password-toggle]')!;
+
+    expect(field('password').type).toBe('password');
+    expect(toggle().getAttribute('aria-label')).toBe('Mostrar contraseña');
+    toggle().click();
+    expect(field('password').type).toBe('text');
+    expect(toggle().getAttribute('aria-label')).toBe('Ocultar contraseña');
+    expect(toggle().getAttribute('aria-pressed')).toBe('true');
+    toggle().click();
+    expect(field('password').type).toBe('password');
+
+    [...root().querySelectorAll('button')].find((b) => b.textContent === 'Crear cuenta')!.click();
+    toggle().click();
+    expect(field('password').type).toBe('text');
+  });
+
   it('signs in and hands control back to the page', async () => {
     const auth = fakeAuth();
     const onSignedIn = vi.fn();
