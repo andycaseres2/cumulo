@@ -1,0 +1,70 @@
+---
+import { theory } from '@/composition/theory';
+import { BUILDINGS } from '@/modules/games/nimbus-city/world/cityMap';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+
+// Names known at build time, handed to the client view that renders the player's progress.
+const topicTitles = Object.fromEntries((await theory.catalog()).flatMap((s) => s.topics).map((t) => [t.slug, t.title]));
+const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
+---
+
+<PageLayout title="Mi progreso" description="Tus misiones completadas en Nimbus City y los dominios del examen que ya practicaste.">
+  <Container width="reading">
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Tu cuenta"
+        title="Mi progreso"
+        description="Las misiones que resolviste en Nimbus City, tu mejor puntaje en cada una y los dominios del examen CLF-C02 que ya practicaste."
+      />
+      <div data-progress data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)}>
+        <p class="loading">Cargando tu progreso…</p>
+      </div>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-12);
+  }
+
+  .loading {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  import { campaignOverview } from '@/composition/missions';
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { renderProgress } from '@/modules/missions/presentation/progressView';
+  import { openAuthModal } from '@/modules/player/presentation/authModal';
+  import { routes } from '@/ui/routes';
+
+  const host = document.querySelector<HTMLElement>('[data-progress]');
+  if (host) {
+    const player = await currentPlayer();
+    if (player.isGuest) {
+      host.replaceChildren();
+      openAuthModal({
+        auth: playerAuth(),
+        reason: 'Ingresa para ver tu progreso en las misiones.',
+        onSignedIn: () => window.location.reload(),
+        onDismiss: () => window.location.assign(routes.home),
+      });
+    } else {
+      const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
+      const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
+      renderProgress(host, await campaignOverview(), {
+        gameUrl: routes.game('nimbus-city'),
+        theoryUrl: routes.topic,
+        buildingName: (id) => buildings[id] ?? id,
+        topicTitle: (slug) => topics[slug] ?? slug,
+      });
+    }
+  }
+</script>

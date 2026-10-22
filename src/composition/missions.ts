@@ -5,6 +5,7 @@
  */
 import { supabase } from '@/infrastructure/supabase/client';
 import type { GameMissions } from '@/modules/games/nimbus-city/missions';
+import { getCampaignOverview, type CampaignOverview } from '@/modules/missions/application/campaignOverview';
 import { acceptMission, getCampaign, getMissionStatus } from '@/modules/missions/application/missionProgress';
 import { playMission } from '@/modules/missions/application/playMission';
 import type { MissionProgressStore } from '@/modules/missions/domain/MissionProgress';
@@ -44,6 +45,11 @@ export function progressStore(): Promise<MissionProgressStore> {
 }
 
 /** Missions for a game whose mission panel is shown over `host`. */
+/** The signed-in player's campaign, for the progress page. */
+export async function campaignOverview(): Promise<CampaignOverview> {
+  return getCampaignOverview(await progressStore(), catalog);
+}
+
 export function gameMissions(host: HTMLElement): GameMissions {
   return {
     current: async () => {
