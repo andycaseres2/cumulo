@@ -1,32 +1,33 @@
 ---
 import { theory } from '@/composition/theory';
-import ExamFormatCard from '@/modules/exam/presentation/ExamFormatCard.astro';
-import CoverageSummary from '@/modules/theory/presentation/CoverageSummary.astro';
-import DomainSection from '@/modules/theory/presentation/DomainSection.astro';
+import CourseCard from '@/modules/theory/presentation/CourseCard.astro';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 
-const [catalog, coverage] = await Promise.all([theory.catalog(), theory.coverage()]);
+const catalog = await theory.catalog();
+const topics = catalog.flatMap((section) => section.topics);
+const readingMinutes = topics.reduce((total, topic) => total + topic.readingMinutes, 0);
 ---
 
-<PageLayout
-  title="Teoría"
-  description="Toda la teoría del examen AWS Certified Cloud Practitioner (CLF-C02), organizada por los cuatro dominios oficiales."
->
+<PageLayout title="Teoría" description="Elige un curso para estudiar su teoría, tema por tema, con preguntas al final de cada uno.">
   <Container>
     <div class="page">
       <SectionHeading
         level={1}
         eyebrow="Estudia"
-        title="Teoría del Cloud Practitioner"
-        description="Organizada según los cuatro dominios oficiales del examen CLF-C02. Empieza por el primero si nunca usaste la nube."
+        title="Cursos"
+        description="Elige un curso para ver sus temas. Cada tema termina con preguntas que lo marcan como completado."
       />
-      <div class="overview">
-        <ExamFormatCard />
-        <CoverageSummary coverage={coverage} />
-      </div>
-      {catalog.map((section) => <DomainSection section={section} />)}
+      <ul class="courses">
+        {
+          theory
+            .courses()
+            .map((course) => (
+              <CourseCard course={course} topicCount={topics.length} domainCount={catalog.length} readingMinutes={readingMinutes} />
+            ))
+        }
+      </ul>
     </div>
   </Container>
 </PageLayout>
@@ -36,27 +37,24 @@ const [catalog, coverage] = await Promise.all([theory.catalog(), theory.coverage
     padding-top: var(--space-12);
   }
 
-  .overview {
+  .courses {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
     gap: var(--space-6);
-    margin-bottom: var(--space-12);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 </style>
 
 <script>
   import { theoryProgressStore } from '@/composition/theoryProgress';
 
-  // Marks the topics this visitor completed and counts them per domain.
-  const completed = new Set(await (await theoryProgressStore()).load());
-  for (const item of document.querySelectorAll<HTMLElement>('[data-topic]')) {
-    const badge = item.querySelector<HTMLElement>('[data-done]');
-    if (badge) badge.hidden = !completed.has(item.dataset.topic!);
-  }
-  for (const progress of document.querySelectorAll<HTMLElement>('[data-domain-progress]')) {
-    const section = progress.closest('section')!;
-    const done = [...section.querySelectorAll<HTMLElement>('[data-topic]')].filter((t) => completed.has(t.dataset.topic!)).length;
-    progress.textContent = `${done} de ${progress.dataset.total} temas completados`;
+  // Every topic belongs to the only course for now, so all completed topics count towards it.
+  const completed = (await (await theoryProgressStore()).load()).length;
+  for (const progress of document.querySelectorAll<HTMLElement>('[data-course-progress]')) {
+    if (completed === 0) continue;
+    progress.textContent = `${completed} de ${progress.dataset.total} temas completados`;
     progress.hidden = false;
   }
 </script>

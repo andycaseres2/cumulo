@@ -1,0 +1,74 @@
+---
+import type { Course } from '@/modules/theory/domain/Course';
+import Badge from '@/ui/atoms/Badge.astro';
+import Button from '@/ui/atoms/Button.astro';
+import Card from '@/ui/molecules/Card.astro';
+import { routes } from '@/ui/routes';
+
+export interface Props {
+  course: Course;
+  topicCount: number;
+  domainCount: number;
+  readingMinutes: number;
+}
+
+const { course, topicCount, domainCount, readingMinutes } = Astro.props;
+const hours = Math.round(readingMinutes / 60);
+---
+
+<Card accent="var(--color-domain-cloud-concepts)" as="li">
+  <p class="tags">
+    <Badge variant="solid">{course.examCode}</Badge>
+    <Badge color="var(--color-text-muted)">{course.level}</Badge>
+  </p>
+  <h2 class="title"><a href={routes.course(course.slug)}>{course.title}</a></h2>
+  <p class="summary">{course.summary}</p>
+  <p class="stat">{topicCount} temas · {domainCount} dominios · unas {hours} horas de lectura</p>
+  <p class="progress" data-course-progress data-total={topicCount} hidden></p>
+  <Fragment slot="footer"><Button href={routes.course(course.slug)}>Ver temas</Button></Fragment>
+</Card>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: 1.3;
+  }
+
+  .title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .title a:hover {
+    color: var(--color-accent);
+  }
+
+  .summary,
+  .stat {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .stat {
+    font-size: var(--text-sm);
+  }
+
+  .progress {
+    margin: 0;
+    font-weight: 700;
+    color: var(--color-domain-technology-services);
+  }
+
+  .progress[hidden] {
+    display: none;
+  }
+</style>

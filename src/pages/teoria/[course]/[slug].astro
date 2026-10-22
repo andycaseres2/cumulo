@@ -11,11 +11,16 @@ import Prose from '@/ui/molecules/Prose.astro';
 import { routes } from '@/ui/routes';
 
 export async function getStaticPaths() {
+  // Every topic belongs to the first course until the platform offers more than one.
+  const [course] = theory.courses();
   const catalog = await theory.catalog();
-  return catalog.flatMap((section) => section.topics.map((topic) => ({ params: { slug: topic.slug } })));
+  return catalog.flatMap((section) =>
+    section.topics.map((topic) => ({ params: { course: course.slug, slug: topic.slug }, props: { course } })),
+  );
 }
 
 const { slug } = Astro.params;
+const { course } = Astro.props;
 const navigation = await theory.navigation(slug);
 if (!navigation) throw new Error(`Unknown theory topic: ${slug}`);
 
@@ -29,7 +34,8 @@ const { Content, sources, quiz } = await theory.renderBody(slug);
       <Breadcrumbs
         items={[
           { label: 'Teoría', href: routes.theory },
-          { label: domain.title, href: routes.theoryDomain(domain.id) },
+          { label: course.title, href: routes.course(course.slug) },
+          { label: domain.title, href: routes.theoryDomain(domain.id, course.slug) },
           { label: topic.title },
         ]}
       />

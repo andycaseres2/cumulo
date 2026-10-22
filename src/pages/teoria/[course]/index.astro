@@ -1,0 +1,72 @@
+---
+import { theory } from '@/composition/theory';
+import ExamFormatCard from '@/modules/exam/presentation/ExamFormatCard.astro';
+import CoverageSummary from '@/modules/theory/presentation/CoverageSummary.astro';
+import DomainSection from '@/modules/theory/presentation/DomainSection.astro';
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import Breadcrumbs from '@/ui/molecules/Breadcrumbs.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { routes } from '@/ui/routes';
+
+export function getStaticPaths() {
+  // Every topic belongs to the first course until the platform offers more than one.
+  const [course] = theory.courses();
+  return [{ params: { course: course.slug }, props: { course } }];
+}
+
+const { course } = Astro.props;
+const [catalog, coverage] = await Promise.all([theory.catalog(), theory.coverage()]);
+---
+
+<PageLayout
+  title={`Teoría de ${course.title}`}
+  description={`Toda la teoría del examen ${course.title} (${course.examCode}), organizada por los cuatro dominios oficiales.`}
+>
+  <Container>
+    <div class="page">
+      <Breadcrumbs items={[{ label: 'Teoría', href: routes.theory }, { label: course.title }]} />
+      <SectionHeading
+        level={1}
+        eyebrow={`Teoría · ${course.examCode}`}
+        title={course.title}
+        description={`Organizada según los cuatro dominios oficiales del examen ${course.examCode}. Empieza por el primero si nunca usaste la nube.`}
+      />
+      <div class="overview">
+        <ExamFormatCard />
+        <CoverageSummary coverage={coverage} />
+      </div>
+      {catalog.map((section) => <DomainSection section={section} />)}
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-12);
+  }
+
+  .overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-12);
+  }
+</style>
+
+<script>
+  import { theoryProgressStore } from '@/composition/theoryProgress';
+
+  // Marks the topics this visitor completed and counts them per domain.
+  const completed = new Set(await (await theoryProgressStore()).load());
+  for (const item of document.querySelectorAll<HTMLElement>('[data-topic]')) {
+    const badge = item.querySelector<HTMLElement>('[data-done]');
+    if (badge) badge.hidden = !completed.has(item.dataset.topic!);
+  }
+  for (const progress of document.querySelectorAll<HTMLElement>('[data-domain-progress]')) {
+    const section = progress.closest('section')!;
+    const done = [...section.querySelectorAll<HTMLElement>('[data-topic]')].filter((t) => completed.has(t.dataset.topic!)).length;
+    progress.textContent = `${done} de ${progress.dataset.total} temas completados`;
+    progress.hidden = false;
+  }
+</script>

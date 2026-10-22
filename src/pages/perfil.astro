@@ -77,7 +77,7 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
       renderProfileCard(document.querySelector<HTMLElement>('[data-profile]')!, player);
       const theoryHost = document.querySelector<HTMLElement>('[data-theory-progress]')!;
       const allTopics: Topic[] = JSON.parse(theoryHost.dataset.topics ?? '[]');
-      renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.theory });
+      renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.course('cloud-practitioner') });
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       const districts: Record<string, string> = JSON.parse(host.dataset.districts ?? '{}');
