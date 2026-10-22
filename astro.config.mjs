@@ -8,13 +8,8 @@ export default defineConfig({
     schema: {
       // Optional: without them the site runs in guest mode (progress saved in this browser).
       PUBLIC_SUPABASE_URL: envField.string({ context: 'client', access: 'public', optional: true, url: true }),
-      // Publishable keys are safe in the browser; legacy JWT "anon" keys and secret keys are rejected.
-      PUBLIC_SUPABASE_PUBLISHABLE_KEY: envField.string({
-        context: 'client',
-        access: 'public',
-        optional: true,
-        startsWith: 'sb_publishable_',
-      }),
+      // Publishable key (sb_publishable_...) or legacy anon key. The client refuses secret and service_role keys.
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: envField.string({ context: 'client', access: 'public', optional: true }),
     },
   },
 });
