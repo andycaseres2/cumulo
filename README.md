@@ -63,10 +63,14 @@ Supabase's built-in email service only sends a few emails per hour; configure cu
 | `/juegos/nimbus-city` | The Nimbus City game. Add `?play=man` or `?play=woman` to skip character selection |
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
+| `/ingresar` | Sign in or create an account (also available as a modal from the header and the game) |
+| `/progreso` | My progress: completed missions, best scores and exam domains practiced (requires an account) |
 
 The "Salir" button at the top left leaves the game. Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
 
-Missions are played one after another. Nothing is active at the start: the card under the minimap offers the next mission with an "Aceptar misión" button. Once accepted, the card shows the objective, a "!" appears over the building and an arrow next to the player points to its door; a check marks completed missions. Inside, talk to the client (e.g. Rosa Quispe at the Pastelería Dulce Nube counter), start the case and choose **Aprender** (definitions before choosing, explanation after each answer) or **Práctica** (no hints, review at the end). Answer with clicks or the keys 1–4; Escape or "Salir" leaves without saving. Progress is saved in this browser.
+Missions are played one after another. Nothing is active at the start: the card under the minimap offers the next mission with an "Aceptar misión" button. Once accepted, the card shows the objective, a "!" appears over the building and an arrow next to the player points to its door; a check marks completed missions. Inside, talk to the client (e.g. Rosa Quispe at the Pastelería Dulce Nube counter), start the case and choose **Aprender** (definitions before choosing, explanation after each answer) or **Práctica** (no hints, review at the end). Answer with clicks or the keys 1–4; Escape or "Salir" leaves without saving. Progress is saved in the player's account (with a copy in the browser); see "Mission progress in the account".
+
+The campaign has six missions, in this order: Pastelería Dulce Nube (cloud benefits, elasticity, global infrastructure, cloud economics), Banco Andino (shared responsibility, IAM, root user, encryption, auditing), Startup Hub (cost tools, consolidated billing and tags, EC2 purchase options), StreamLlama (DNS and content delivery, global infrastructure, storage), Municipalidad (S3 storage classes, hybrid storage and backup, compliance reports) and Clínica Vida (managed databases, Well-Architected, monitoring, disaster recovery).
 
 ## Architecture
 
