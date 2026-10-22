@@ -11,9 +11,9 @@ const option = (id: string, correct = false) => ({
 
 export const twoStepMission: Mission = {
   id: 'test-mission',
-  track: 'centro',
+  track: 'downtown',
   buildingId: 'bakery',
-  topicSlug: 'beneficios-de-la-nube',
+  topicSlug: 'cloud-benefits',
   title: 'Test mission',
   client: { name: 'Rosa', role: 'Owner' },
   intro: ['Hello'],
@@ -23,14 +23,14 @@ export const twoStepMission: Mission = {
     {
       id: 'first',
       prompt: 'First question',
-      topicSlug: 'beneficios-de-la-nube',
+      topicSlug: 'cloud-benefits',
       examTasks: ['1.1'],
       options: [option('a', true), option('b'), option('c'), option('d')],
     },
     {
       id: 'second',
       prompt: 'Second question',
-      topicSlug: 'escalado-y-balanceo-de-carga',
+      topicSlug: 'scaling-and-load-balancing',
       examTasks: ['3.3'],
       options: [option('e'), option('f', true), option('g'), option('h')],
     },
@@ -40,7 +40,7 @@ export const twoStepMission: Mission = {
 export const secondMission: Mission = { ...twoStepMission, id: 'second-mission', buildingId: 'bank', title: 'Second mission' };
 
 /** First mission of another track (district). */
-export const otherTrackMission: Mission = { ...twoStepMission, id: 'other-track', track: 'financiero', buildingId: 'vault', title: 'Other track' };
+export const otherTrackMission: Mission = { ...twoStepMission, id: 'other-track', track: 'financial', buildingId: 'vault', title: 'Other track' };
 
 /** Catalog whose order is the campaign order. */
 export function catalogOf(...missions: Mission[]): MissionCatalog {

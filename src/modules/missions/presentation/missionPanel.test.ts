@@ -40,7 +40,7 @@ describe('mission panel', () => {
     expect(feedback).toContain('No es la mejor opción');
     expect(feedback).toContain('Why b does not fit');
     expect(feedback).toContain('Why a fits');
-    expect(panel().querySelector<HTMLAnchorElement>('[data-theory-link]')!.getAttribute('href')).toBe('/teoria/beneficios-de-la-nube');
+    expect(panel().querySelector<HTMLAnchorElement>('[data-theory-link]')!.getAttribute('href')).toBe('/teoria/cloud-benefits');
     expect(options().every((o) => o.disabled)).toBe(true);
 
     button('Siguiente').click();

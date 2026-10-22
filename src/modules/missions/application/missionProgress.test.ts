@@ -69,8 +69,8 @@ describe('mission campaign', () => {
     expect((await getMissionStatus(store, tracks, firstMission.id)).state).toBe('offered');
     expect((await getMissionStatus(store, tracks, secondMission.id)).state).toBe('locked');
     expect((await getMissionStatus(store, tracks, otherTrackMission.id)).state).toBe('offered');
-    expect((await getCampaign(store, tracks, 'financiero')).current).toEqual({ mission: otherTrackMission, state: 'offered' });
-    expect((await getCampaign(store, tracks, 'centro')).current).toEqual({ mission: firstMission, state: 'offered' });
+    expect((await getCampaign(store, tracks, 'financial')).current).toEqual({ mission: otherTrackMission, state: 'offered' });
+    expect((await getCampaign(store, tracks, 'downtown')).current).toEqual({ mission: firstMission, state: 'offered' });
   });
 
   it('allows only one active mission in the whole city, and shows it from every track', async () => {
@@ -79,7 +79,7 @@ describe('mission campaign', () => {
 
     await expect(acceptMission(store, tracks, firstMission.id)).resolves.toBe(true);
     await expect(acceptMission(store, tracks, otherTrackMission.id)).resolves.toBe(false);
-    expect((await getCampaign(store, tracks, 'financiero')).current).toEqual({ mission: firstMission, state: 'active' });
+    expect((await getCampaign(store, tracks, 'financial')).current).toEqual({ mission: firstMission, state: 'active' });
 
     await recordMissionResult(store, firstMission.id, { score: 1, passed: true });
     await expect(acceptMission(store, tracks, otherTrackMission.id)).resolves.toBe(true);

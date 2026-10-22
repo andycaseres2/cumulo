@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const startupCosts: Mission = {
   id: 'startup-costs',
-  track: 'mercado',
-  topicSlug: 'herramientas-de-costos',
+  track: 'market',
+  topicSlug: 'cost-tools',
   buildingId: 'startup',
   title: 'La factura que nadie entiende',
   client: { name: 'Valeria Ríos', role: 'CEO de Startup Hub' },
@@ -33,7 +33,7 @@ export const startupCosts: Mission = {
       id: 'analyze-spend',
       prompt:
         'Lo primero: quiero ver en qué servicios se nos va el dinero y cómo cambió el gasto mes a mes, para entender por qué se triplicó. ¿Qué herramienta uso?',
-      topicSlug: 'herramientas-de-costos',
+      topicSlug: 'cost-tools',
       examTasks: ['4.2'],
       options: [
         {
@@ -76,7 +76,7 @@ export const startupCosts: Mission = {
       id: 'budget-alerts',
       prompt:
         'Ya entiendo qué pasó. Ahora quiero que nunca más me sorprenda la factura: necesito un aviso por correo antes de pasarme del presupuesto mensual. ¿Qué uso?',
-      topicSlug: 'herramientas-de-costos',
+      topicSlug: 'cost-tools',
       examTasks: ['4.2'],
       options: [
         {
@@ -119,7 +119,7 @@ export const startupCosts: Mission = {
       id: 'cost-per-team',
       prompt:
         'En la reunión nadie supo cuánto gasta su equipo. Todos los recursos están en la misma cuenta. ¿Cómo hago para ver en Cost Explorer el gasto de cada equipo?',
-      topicSlug: 'facturacion-consolidada-y-etiquetas',
+      topicSlug: 'consolidated-billing-and-tags',
       examTasks: ['4.2'],
       options: [
         {
@@ -162,7 +162,7 @@ export const startupCosts: Mission = {
       id: 'rightsizing',
       prompt:
         'Ahora veo que muchos servidores grandes pasan el día casi sin uso. Los equipos eligieron el tamaño "por si acaso". ¿Cómo ajustamos eso sin adivinar?',
-      topicSlug: 'economia-de-la-nube',
+      topicSlug: 'cloud-economics',
       examTasks: ['1.4'],
       options: [
         {
@@ -205,7 +205,7 @@ export const startupCosts: Mission = {
       id: 'nightly-batch',
       prompt:
         'Última pregunta. Cada noche corremos procesos que generan reportes; si uno se interrumpe, simplemente lo repetimos. ¿Qué opción de compra de EC2 es la más barata para eso?',
-      topicSlug: 'modelos-de-compra-ec2',
+      topicSlug: 'ec2-purchase-options',
       examTasks: ['4.1'],
       options: [
         {

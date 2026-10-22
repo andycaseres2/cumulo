@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const bankAccess: Mission = {
   id: 'bank-access',
-  track: 'financiero',
-  topicSlug: 'iam-fundamentos',
+  track: 'financial',
+  topicSlug: 'iam-fundamentals',
   buildingId: 'bank',
   title: 'Las llaves del banco',
   client: { name: 'Carlos Mendoza', role: 'Gerente de TI del Banco Andino' },
@@ -33,7 +33,7 @@ export const bankAccess: Mission = {
       id: 'rds-responsibility',
       prompt:
         'Empecemos por lo básico. Nuestra base de datos de clientes va a correr en Amazon RDS. ¿Quién parcha el sistema operativo y el motor de base de datos, y quién se encarga de los datos y de quién puede entrar?',
-      topicSlug: 'responsabilidad-compartida',
+      topicSlug: 'shared-responsibility',
       examTasks: ['2.1'],
       options: [
         {
@@ -78,7 +78,7 @@ export const bankAccess: Mission = {
       id: 'developer-access',
       prompt:
         'Ahora, el problema que más molesta a los auditores: doce desarrolladores entran con el mismo usuario administrador. ¿Cómo les damos acceso a la cuenta de forma correcta?',
-      topicSlug: 'iam-fundamentos',
+      topicSlug: 'iam-fundamentals',
       examTasks: ['2.3'],
       options: [
         {
@@ -123,7 +123,7 @@ export const bankAccess: Mission = {
       id: 'root-user',
       prompt:
         'Me acabo de enterar de que el correo y la contraseña con los que abrimos la cuenta los conocen varios gerentes, y alguien los usa a diario. ¿Qué hacemos con ese usuario raíz?',
-      topicSlug: 'cuenta-raiz-y-credenciales',
+      topicSlug: 'root-user-and-credentials',
       examTasks: ['2.3'],
       options: [
         {
@@ -168,7 +168,7 @@ export const bankAccess: Mission = {
       id: 'encryption-at-rest',
       prompt:
         'Los auditores también exigen que los datos de los clientes estén cifrados mientras están guardados en la base de datos, y preguntan quién controla las claves. ¿Qué servicio usamos?',
-      topicSlug: 'cifrado-y-proteccion-de-datos',
+      topicSlug: 'encryption-and-data-protection',
       examTasks: ['2.2'],
       options: [
         {
@@ -212,7 +212,7 @@ export const bankAccess: Mission = {
       id: 'audit-trail',
       prompt:
         'Última pregunta, la que más me quita el sueño: si un auditor pregunta quién cambió la configuración de la instancia de Amazon RDS de la base de clientes el martes pasado, ¿qué servicio nos permite demostrarlo?',
-      topicSlug: 'cumplimiento-y-auditoria',
+      topicSlug: 'compliance-and-auditing',
       examTasks: ['2.2'],
       options: [
         {

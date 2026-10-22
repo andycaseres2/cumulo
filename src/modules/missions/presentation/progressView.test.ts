@@ -55,11 +55,11 @@ describe('progress view', () => {
   });
 
   it('groups the missions by district, with how many are completed in each', () => {
-    const other = { ...secondMission, id: 'other', track: 'financiero' };
+    const other = { ...secondMission, id: 'other', track: 'financial' };
     renderProgress(host, { ...overview, entries: [...overview.entries, { mission: other, state: 'locked', bestScore: null }] }, options);
     const groups = [...host.querySelectorAll<HTMLElement>('[data-track]')];
-    expect(groups.map((g) => g.dataset.track)).toEqual(['centro', 'financiero']);
-    expect(groups[0].querySelector('summary')?.textContent).toContain('Track centro');
+    expect(groups.map((g) => g.dataset.track)).toEqual(['downtown', 'financial']);
+    expect(groups[0].querySelector('summary')?.textContent).toContain('Track downtown');
     expect(groups[0].querySelector('summary')?.textContent).toContain('1 de 2');
     expect(groups[1].querySelectorAll('[data-mission]')).toHaveLength(1);
   });

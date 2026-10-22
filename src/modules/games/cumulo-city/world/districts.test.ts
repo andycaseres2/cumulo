@@ -20,10 +20,10 @@ describe('districts', () => {
   });
 
   it('keeps the buildings of the first missions where their missions are', () => {
-    expect(districtOf('bakery')?.id).toBe('centro');
-    expect(districtOf('bank')?.id).toBe('financiero');
-    expect(districtOf('startup')?.id).toBe('mercado');
-    for (const id of ['streaming', 'cityhall', 'clinic']) expect(districtOf(id)?.id).toBe('tecnologico');
+    expect(districtOf('bakery')?.id).toBe('downtown');
+    expect(districtOf('bank')?.id).toBe('financial');
+    expect(districtOf('startup')?.id).toBe('market');
+    for (const id of ['streaming', 'cityhall', 'clinic']) expect(districtOf(id)?.id).toBe('tech');
     expect(findBuilding('bank')?.name).toBe('Banco Andino');
     expect(findBuilding('nowhere')).toBeUndefined();
   });

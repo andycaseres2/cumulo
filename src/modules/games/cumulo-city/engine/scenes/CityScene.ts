@@ -23,25 +23,25 @@ const BUS_LINE = 'Con el bus de la esquina llegas a los otros distritos. Cada un
 
 /** What neighbours talk about in each district: hints of the problems its clients have. */
 const NPC_LINES: Record<DistrictId, string[]> = {
-  centro: [
+  downtown: [
     '¿Viste la Pastelería Dulce Nube? Dicen que su web se cae cada Navidad.',
     'Si recién empiezas, pasa por la Cloud Academy. Ahí te explican todo desde cero.',
     'Rapidito recibe miles de pedidos al mediodía y casi ninguno de madrugada.',
     'En Seguros Horizonte se preguntan si la nube les conviene más que su centro de datos.',
   ],
-  financiero: [
+  financial: [
     'En el Banco Andino andan preocupados por la seguridad de los datos de sus clientes.',
     'Aquí todos hablan de auditorías, cifrado y permisos. Es el barrio más cuidadoso de la ciudad.',
     'La Fintech PagoYa mueve pagos de miles de personas. Un acceso indebido sería un desastre.',
     'Dicen que en la Bolsa de Valores Andina reciben ataques para tumbar su sistema.',
   ],
-  tecnologico: [
+  tech: [
     'StreamLlama quiere llegar a toda Latinoamérica, pero sus videos cargan lento fuera de Lima.',
     'La Municipalidad tiene que guardar sus documentos por diez años. ¡Diez!',
     'En la Clínica Vida dicen que sus sistemas no pueden caerse nunca.',
     'En el Startup Lab cada mes nace una startup que quiere crecer sin administrar servidores.',
   ],
-  mercado: [
+  market: [
     'Me contaron que en Startup Hub pagan una fortuna por servidores que nadie usa.',
     'En el Estudio Contable Saldo siempre preguntan por qué la factura de AWS subió.',
     'La Florería Primavera vende diez veces más en San Valentín. El resto del año, casi nada.',
@@ -50,7 +50,7 @@ const NPC_LINES: Record<DistrictId, string[]> = {
 };
 
 /** Each district places its neighbours differently, the same way on every visit. */
-const NPC_SEEDS: Record<DistrictId, number> = { centro: 2024, financiero: 2025, tecnologico: 2026, mercado: 2027 };
+const NPC_SEEDS: Record<DistrictId, number> = { downtown: 2024, financial: 2025, tech: 2026, market: 2027 };
 
 const FADE_MS = 250;
 /** How long a zoom step takes, and how much wheel movement makes one step. */

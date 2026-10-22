@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const clinicResilience: Mission = {
   id: 'clinic-resilience',
-  track: 'tecnologico',
-  topicSlug: 'bases-de-datos-relacionales',
+  track: 'tech',
+  topicSlug: 'relational-databases',
   buildingId: 'clinic',
   title: 'Sistemas que no pueden caerse',
   client: { name: 'Dr. Jorge Salazar', role: 'Director médico de Clínica Vida' },
@@ -33,7 +33,7 @@ export const clinicResilience: Mission = {
       id: 'database-availability',
       prompt:
         'Las historias clínicas viven en una base de datos MySQL que vamos a pasar a Amazon RDS. Si falla la Availability Zone donde está, la base de datos tiene que seguir funcionando. ¿Qué configuramos?',
-      topicSlug: 'bases-de-datos-relacionales',
+      topicSlug: 'relational-databases',
       examTasks: ['3.4'],
       options: [
         {
@@ -123,7 +123,7 @@ export const clinicResilience: Mission = {
       id: 'early-alerts',
       prompt:
         'El corte del año pasado lo descubrimos cuando los médicos ya estaban llamando. Quiero que el equipo de sistemas reciba un aviso apenas la CPU o los errores se disparen. ¿Qué usamos?',
-      topicSlug: 'monitoreo-y-operaciones',
+      topicSlug: 'monitoring-and-operations',
       examTasks: ['2.2', '3.1'],
       options: [
         {
@@ -168,7 +168,7 @@ export const clinicResilience: Mission = {
       id: 'disaster-recovery-service',
       prompt:
         'Ahora pensemos en lo peor: un desastre grande. Mientras terminamos la migración, quiero que los servidores de la clínica estén replicados continuamente y listos para arrancar en AWS en minutos, no en horas. ¿Qué servicio lo hace?',
-      topicSlug: 'almacenamiento-hibrido-y-respaldo',
+      topicSlug: 'hybrid-storage-and-backup',
       examTasks: ['3.6'],
       options: [
         {
@@ -213,7 +213,7 @@ export const clinicResilience: Mission = {
       id: 'second-region',
       prompt:
         'Mi socio insiste en usar una segunda Región de AWS desde el primer día. Yo creía que con varias Availability Zones bastaba. ¿Cuándo tiene sentido una segunda Región?',
-      topicSlug: 'infraestructura-global',
+      topicSlug: 'global-infrastructure',
       examTasks: ['3.2'],
       options: [
         {

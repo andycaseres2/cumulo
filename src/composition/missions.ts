@@ -3,6 +3,7 @@
  * Signed-in players keep progress in their Supabase account (with a copy in the browser);
  * without Supabase, progress stays in the browser.
  */
+import { renameMissionId } from '@/infrastructure/legacyIds';
 import { migrateLegacyStorage, STORAGE_PREFIX } from '@/infrastructure/storage/renameStoragePrefix';
 import { supabase } from '@/infrastructure/supabase/client';
 import type { GameMissions } from '@/modules/games/cumulo-city/missions';
@@ -11,6 +12,7 @@ import { acceptMission, getBuildingMission, getCampaign, getMissionStatus } from
 import { playMission } from '@/modules/missions/application/playMission';
 import type { MissionProgressStore } from '@/modules/missions/domain/MissionProgress';
 import { localProgressStore, takeLegacyProgress } from '@/modules/missions/infrastructure/localStorageProgressStore';
+import { renamedProgressStore } from '@/modules/missions/infrastructure/renamedProgressStore';
 import { staticMissionCatalog as catalog } from '@/modules/missions/infrastructure/staticMissionCatalog';
 import { supabaseProgressStore } from '@/modules/missions/infrastructure/supabaseProgressStore';
 import { mergeProgress, syncedProgressStore } from '@/modules/missions/infrastructure/syncedProgressStore';
@@ -23,19 +25,23 @@ async function createStore(): Promise<MissionProgressStore> {
   migrateLegacyStorage();
   const client = supabase();
   const userId = client ? (await client.auth.getSession()).data.session?.user.id : undefined;
-  if (!client || !userId) return localProgressStore();
+  // Progress saved before the ids moved to English is read under the new ids.
+  if (!client || !userId) return renamedProgressStore(localProgressStore(), renameMissionId);
 
-  const local = localProgressStore(`${STORAGE_PREFIX}mission-progress:${userId}`);
+  const local = renamedProgressStore(localProgressStore(`${STORAGE_PREFIX}mission-progress:${userId}`), renameMissionId);
   // Progress played on this device before accounts existed now belongs to this player.
   const legacy = takeLegacyProgress();
   if (Object.keys(legacy).length > 0) await local.save(mergeProgress(await local.load(), legacy));
 
-  const remote = supabaseProgressStore(
-    {
-      select: async () => await client.from('mission_progress').select('mission_id, best_score, completed, accepted'),
-      upsert: async (rows) => await client.from('mission_progress').upsert(rows, { onConflict: 'user_id,mission_id' }),
-    },
-    userId,
+  const remote = renamedProgressStore(
+    supabaseProgressStore(
+      {
+        select: async () => await client.from('mission_progress').select('mission_id, best_score, completed, accepted'),
+        upsert: async (rows) => await client.from('mission_progress').upsert(rows, { onConflict: 'user_id,mission_id' }),
+      },
+      userId,
+    ),
+    renameMissionId,
   );
   return syncedProgressStore(remote, local);
 }

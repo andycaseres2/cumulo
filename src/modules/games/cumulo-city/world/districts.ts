@@ -1,7 +1,7 @@
 import type { ExamDomainId } from '@/modules/exam/domain/ExamDomain';
 import type { BuildingDef } from './cityMap';
 
-export type DistrictId = 'centro' | 'financiero' | 'tecnologico' | 'mercado';
+export type DistrictId = 'downtown' | 'financial' | 'tech' | 'market';
 
 /** One map of the city; its clients bring problems of one exam domain. */
 export interface District {
@@ -41,75 +41,75 @@ function district(id: DistrictId, name: string, domainId: ExamDomainId, names: [
 }
 
 export const DISTRICTS: District[] = [
-  district('centro', 'Distrito Centro', 'cloud-concepts', [
+  district('downtown', 'Distrito Centro', 'cloud-concepts', [
     ['bakery', 'Pastelería Dulce Nube'],
-    ['agencia-rumbo', 'Agencia de Viajes Rumbo'],
+    ['travel-agency', 'Agencia de Viajes Rumbo'],
     ['cafe', 'Café Byte'],
-    ['seguros-horizonte', 'Seguros Horizonte'],
+    ['insurance-office', 'Seguros Horizonte'],
     ['hotel', 'Hotel Mirador'],
     ['academy', 'Cloud Academy'],
-    ['torre-central', 'Torre Central'],
+    ['central-tower', 'Torre Central'],
     ['store', 'Tienda Andes'],
     ['school', 'Escuela Digital'],
-    ['diario-la-voz', 'Diario La Voz'],
+    ['newspaper', 'Diario La Voz'],
     ['delivery', 'Rapidito'],
-    ['logistica-pacifico', 'Logística Pacífico'],
+    ['logistics', 'Logística Pacífico'],
     ['gym', 'FitCloud Gym'],
   ]),
   district(
-    'financiero',
+    'financial',
     'Distrito Financiero',
     'security-compliance',
     [
-      ['casa-cambio', 'Casa de Cambio Inca'],
+      ['exchange-house', 'Casa de Cambio Inca'],
       ['bank', 'Banco Andino'],
-      ['cafe-bolsa', 'Café de la Bolsa'],
-      ['fintech-pagoya', 'Fintech PagoYa'],
-      ['aseguradora-pacifico', 'Aseguradora Pacífico'],
-      ['bolsa-andina', 'Bolsa de Valores Andina'],
-      ['torre-financiera', 'Torre Financiera'],
-      ['joyeria-oro', 'Joyería Oro Inca'],
-      ['notaria-central', 'Notaría Central'],
-      ['cooperativa-san-martin', 'Cooperativa San Martín'],
-      ['cerrajeria', 'Cerrajería Llave Segura'],
-      ['auditores-asociados', 'Auditores Asociados'],
-      ['imprenta-rapida', 'Imprenta Rápida'],
+      ['stock-cafe', 'Café de la Bolsa'],
+      ['fintech', 'Fintech PagoYa'],
+      ['insurer', 'Aseguradora Pacífico'],
+      ['stock-exchange', 'Bolsa de Valores Andina'],
+      ['financial-tower', 'Torre Financiera'],
+      ['jewelry-store', 'Joyería Oro Inca'],
+      ['notary', 'Notaría Central'],
+      ['credit-union', 'Cooperativa San Martín'],
+      ['locksmith', 'Cerrajería Llave Segura'],
+      ['audit-firm', 'Auditores Asociados'],
+      ['print-shop', 'Imprenta Rápida'],
     ],
     true,
   ),
-  district('tecnologico', 'Distrito Tecnológico', 'technology-services', [
-    ['tienda-pixel', 'Tienda Gamer Pixel'],
+  district('tech', 'Distrito Tecnológico', 'technology-services', [
+    ['gaming-store', 'Tienda Gamer Pixel'],
     ['streaming', 'StreamLlama'],
-    ['cafe-hacker', 'Café Hacker'],
+    ['hacker-cafe', 'Café Hacker'],
     ['clinic', 'Clínica Vida'],
-    ['centro-datos', 'Centro de Datos Andino'],
-    ['universidad', 'Universidad Tecnológica'],
+    ['data-center', 'Centro de Datos Andino'],
+    ['university', 'Universidad Tecnológica'],
     ['startup-lab', 'Startup Lab'],
-    ['electronica-volta', 'Electrónica Volta'],
+    ['electronics-store', 'Electrónica Volta'],
     ['cityhall', 'Municipalidad'],
-    ['estudio-condor', 'Estudio de Juegos Cóndor'],
-    ['taller-maker', 'Taller Maker 3D'],
-    ['telecom-andina', 'Telecom Andina'],
-    ['robotica-kids', 'Robótica Kids'],
+    ['game-studio', 'Estudio de Juegos Cóndor'],
+    ['maker-workshop', 'Taller Maker 3D'],
+    ['telecom', 'Telecom Andina'],
+    ['robotics-school', 'Robótica Kids'],
   ]),
   district(
-    'mercado',
+    'market',
     'Distrito Mercado',
     'billing-pricing-support',
     [
-      ['mercado-central', 'Mercado Central'],
+      ['central-market', 'Mercado Central'],
       ['startup', 'Startup Hub'],
-      ['panaderia-espiga', 'Panadería La Espiga'],
-      ['exportadora-cafe', 'Exportadora Café Andino'],
-      ['estudio-contable', 'Estudio Contable Saldo'],
-      ['consultora-nube', 'Consultora Nube Clara'],
-      ['retail-andes', 'Retail Andes'],
-      ['ferreteria', 'Ferretería El Tornillo'],
-      ['agencia-llama', 'Agencia Creativa Llama'],
-      ['distribuidora-norte', 'Distribuidora Norte'],
-      ['floreria', 'Florería Primavera'],
+      ['neighborhood-bakery', 'Panadería La Espiga'],
+      ['coffee-exporter', 'Exportadora Café Andino'],
+      ['accounting-firm', 'Estudio Contable Saldo'],
+      ['cloud-consultancy', 'Consultora Nube Clara'],
+      ['retail-chain', 'Retail Andes'],
+      ['hardware-store', 'Ferretería El Tornillo'],
+      ['creative-agency', 'Agencia Creativa Llama'],
+      ['distributor', 'Distribuidora Norte'],
+      ['flower-shop', 'Florería Primavera'],
       ['contact-center', 'Contact Center Andino'],
-      ['libreria', 'Librería El Saber'],
+      ['bookstore', 'Librería El Saber'],
     ],
     true,
   ),
@@ -117,7 +117,7 @@ export const DISTRICTS: District[] = [
 
 export const ALL_BUILDINGS: BuildingDef[] = DISTRICTS.flatMap((d) => d.buildings);
 
-export const START_DISTRICT: DistrictId = 'centro';
+export const START_DISTRICT: DistrictId = 'downtown';
 
 /** Same tile in every district: pavement south of the first avenue, next to the western road. */
 export const BUS_STOP = { x: 18, y: 14 };

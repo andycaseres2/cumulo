@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const cityhallArchive: Mission = {
   id: 'cityhall-archive',
-  track: 'tecnologico',
-  topicSlug: 'clases-de-almacenamiento-s3',
+  track: 'tech',
+  topicSlug: 's3-storage-classes',
   buildingId: 'cityhall',
   title: 'Diez años de papeles',
   client: { name: 'Patricia Huamán', role: 'Jefa de Archivo de la Municipalidad' },
@@ -33,7 +33,7 @@ export const cityhallArchive: Mission = {
       id: 'archive-class',
       prompt:
         'Empecemos por los documentos que ya tienen años. Los consultamos menos de una vez al año y, si alguien los pide, puede esperar hasta el día siguiente. ¿En qué clase de Amazon S3 los guardamos para pagar lo menos posible?',
-      topicSlug: 'clases-de-almacenamiento-s3',
+      topicSlug: 's3-storage-classes',
       examTasks: ['3.6'],
       options: [
         {
@@ -78,7 +78,7 @@ export const cityhallArchive: Mission = {
       id: 'lifecycle',
       prompt:
         'Ahora, los documentos nuevos: el primer mes se consultan mucho, después casi nada, y a los diez años se pueden eliminar. No quiero que mi equipo mueva archivos a mano cada mes. ¿Qué usamos?',
-      topicSlug: 'clases-de-almacenamiento-s3',
+      topicSlug: 's3-storage-classes',
       examTasks: ['3.6'],
       options: [
         {
@@ -123,7 +123,7 @@ export const cityhallArchive: Mission = {
       id: 'hybrid-storage',
       prompt:
         'Los empleados están acostumbrados a guardar en las carpetas compartidas del servidor del sótano y no quiero cambiarles la forma de trabajar. ¿Cómo seguimos usándolo, pero con los datos guardados en la nube?',
-      topicSlug: 'almacenamiento-hibrido-y-respaldo',
+      topicSlug: 'hybrid-storage-and-backup',
       examTasks: ['3.6'],
       options: [
         {
@@ -167,7 +167,7 @@ export const cityhallArchive: Mission = {
       id: 'central-backup',
       prompt:
         'Además del archivo, tenemos el sistema de trámites en Amazon RDS y varios discos de Amazon EBS. Quiero una sola política de respaldo para todo, automática y protegida contra borrados. ¿Qué servicio uso?',
-      topicSlug: 'almacenamiento-hibrido-y-respaldo',
+      topicSlug: 'hybrid-storage-and-backup',
       examTasks: ['3.6'],
       options: [
         {
@@ -212,7 +212,7 @@ export const cityhallArchive: Mission = {
       id: 'compliance-reports',
       prompt:
         'Última pregunta, y la más urgente: los auditores van a pedir pruebas de que AWS cumple normas como ISO y SOC. ¿Dónde consigo esos informes?',
-      topicSlug: 'cumplimiento-y-auditoria',
+      topicSlug: 'compliance-and-auditing',
       examTasks: ['2.2'],
       options: [
         {

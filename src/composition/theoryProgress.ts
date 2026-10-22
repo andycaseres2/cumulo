@@ -3,10 +3,12 @@
  * Guests keep completed topics in this browser; signed-in players keep them in their Supabase account
  * (with a copy in the browser), and whatever they completed as guests on this device joins their account.
  */
+import { renameTopicSlug } from '@/infrastructure/legacyIds';
 import { migrateLegacyStorage, STORAGE_PREFIX } from '@/infrastructure/storage/renameStoragePrefix';
 import { supabase } from '@/infrastructure/supabase/client';
 import type { TheoryProgressStore } from '@/modules/theory/domain/TheoryProgress';
 import { localTheoryProgressStore } from '@/modules/theory/infrastructure/localTheoryProgressStore';
+import { renamedTheoryProgressStore } from '@/modules/theory/infrastructure/renamedTheoryProgressStore';
 import { supabaseTheoryProgressStore } from '@/modules/theory/infrastructure/supabaseTheoryProgressStore';
 import { syncedTheoryProgressStore } from '@/modules/theory/infrastructure/syncedTheoryProgressStore';
 
@@ -18,21 +20,25 @@ async function createStore(): Promise<TheoryProgressStore> {
   migrateLegacyStorage();
   const client = supabase();
   const userId = client ? (await client.auth.getSession()).data.session?.user.id : undefined;
-  const guest = localTheoryProgressStore(GUEST_KEY);
+  // Topics completed before the slugs moved to English are read under the new slugs.
+  const guest = renamedTheoryProgressStore(localTheoryProgressStore(GUEST_KEY), renameTopicSlug);
   if (!client || !userId) return guest;
 
-  const local = localTheoryProgressStore(`${GUEST_KEY}:${userId}`);
+  const local = renamedTheoryProgressStore(localTheoryProgressStore(`${GUEST_KEY}:${userId}`), renameTopicSlug);
   const asGuest = await guest.load();
   if (asGuest.length > 0) {
     await local.save([...new Set([...(await local.load()), ...asGuest])]);
     await guest.save([]);
   }
-  const remote = supabaseTheoryProgressStore(
-    {
-      select: async () => await client.from('theory_progress').select('topic_slug'),
-      upsert: async (rows) => await client.from('theory_progress').upsert(rows, { onConflict: 'user_id,topic_slug' }),
-    },
-    userId,
+  const remote = renamedTheoryProgressStore(
+    supabaseTheoryProgressStore(
+      {
+        select: async () => await client.from('theory_progress').select('topic_slug'),
+        upsert: async (rows) => await client.from('theory_progress').upsert(rows, { onConflict: 'user_id,topic_slug' }),
+      },
+      userId,
+    ),
+    renameTopicSlug,
   );
   return syncedTheoryProgressStore(remote, local);
 }

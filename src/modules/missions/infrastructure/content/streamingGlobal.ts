@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const streamingGlobal: Mission = {
   id: 'streaming-global',
-  track: 'tecnologico',
-  topicSlug: 'dns-y-entrega-de-contenido',
+  track: 'tech',
+  topicSlug: 'dns-and-content-delivery',
   buildingId: 'streaming',
   title: 'Videos lentos fuera de Lima',
   client: { name: 'Diego Paredes', role: 'CTO de StreamLlama' },
@@ -33,7 +33,7 @@ export const streamingGlobal: Mission = {
       id: 'content-delivery',
       prompt:
         'Vamos al problema principal. Nuestros espectadores en Ciudad de México y Bogotá están lejos de Lima. ¿Qué servicio guarda copias de los videos cerca de ellos para que empiecen a reproducirse con baja latencia?',
-      topicSlug: 'dns-y-entrega-de-contenido',
+      topicSlug: 'dns-and-content-delivery',
       examTasks: ['3.5', '3.2'],
       options: [
         {
@@ -78,7 +78,7 @@ export const streamingGlobal: Mission = {
       id: 'edge-locations',
       prompt:
         'Me hablaste de edge locations, pero en la reunión de directorio me van a preguntar qué son. ¿Son lo mismo que una Región o una Zona de Disponibilidad?',
-      topicSlug: 'infraestructura-global',
+      topicSlug: 'global-infrastructure',
       examTasks: ['3.2'],
       options: [
         {
@@ -122,7 +122,7 @@ export const streamingGlobal: Mission = {
       id: 'video-storage',
       prompt:
         'CloudFront necesita un origen con la versión definitiva de cada video. Tenemos miles de archivos y cada semana subimos más. ¿Dónde los guardamos en AWS?',
-      topicSlug: 'almacenamiento-s3-ebs-efs',
+      topicSlug: 's3-ebs-efs-storage',
       examTasks: ['3.6'],
       options: [
         {
@@ -167,7 +167,7 @@ export const streamingGlobal: Mission = {
       id: 'old-videos',
       prompt:
         'Los estrenos se ven muchísimo el primer mes; después, cada video se ve más o menos una vez al mes. Pero cuando alguien le da play, tiene que empezar al instante. Es nuestra única copia. ¿Cómo bajamos el costo sin mover archivos a mano?',
-      topicSlug: 'clases-de-almacenamiento-s3',
+      topicSlug: 's3-storage-classes',
       examTasks: ['3.6'],
       options: [
         {
@@ -212,7 +212,7 @@ export const streamingGlobal: Mission = {
       id: 'new-region',
       prompt:
         'Último tema: vamos a lanzar un servicio nuevo pensado sobre todo para el público de México. Nuestra abogada confirmó que ninguna ley nos obliga a guardar los datos en un país específico. ¿Cómo elegimos la Región de AWS?',
-      topicSlug: 'infraestructura-global',
+      topicSlug: 'global-infrastructure',
       examTasks: ['3.2'],
       options: [
         {

@@ -6,8 +6,8 @@ import type { Mission } from '../../domain/Mission';
  */
 export const bakeryElasticity: Mission = {
   id: 'bakery-elasticity',
-  track: 'centro',
-  topicSlug: 'beneficios-de-la-nube',
+  track: 'downtown',
+  topicSlug: 'cloud-benefits',
   buildingId: 'bakery',
   title: 'La Navidad que tumbó la web',
   client: { name: 'Rosa Quispe', role: 'Dueña de la Pastelería Dulce Nube' },
@@ -33,7 +33,7 @@ export const bakeryElasticity: Mission = {
       id: 'concept',
       prompt:
         'Primero quiero entender qué necesitamos. Algo que agregue capacidad cuando llegan muchos clientes y que la quite cuando se van, sin que yo tenga que hacer nada. ¿Cómo se llama eso en la nube?',
-      topicSlug: 'beneficios-de-la-nube',
+      topicSlug: 'cloud-benefits',
       examTasks: ['1.1'],
       options: [
         {
@@ -74,7 +74,7 @@ export const bakeryElasticity: Mission = {
       id: 'scaling-service',
       prompt:
         'Perfecto: elasticidad. Nuestra página corre en servidores virtuales de Amazon EC2. ¿Qué servicio agrega servidores automáticamente cuando suben las visitas y los quita cuando bajan?',
-      topicSlug: 'escalado-y-balanceo-de-carga',
+      topicSlug: 'scaling-and-load-balancing',
       examTasks: ['3.3'],
       options: [
         {
@@ -116,7 +116,7 @@ export const bakeryElasticity: Mission = {
       id: 'load-balancing',
       prompt:
         'Ahora vamos a tener varios servidores a la vez. ¿Cómo repartimos a los clientes entre ellos, sin mandar a nadie a un servidor que se colgó?',
-      topicSlug: 'escalado-y-balanceo-de-carga',
+      topicSlug: 'scaling-and-load-balancing',
       examTasks: ['3.3'],
       options: [
         {
@@ -156,7 +156,7 @@ export const bakeryElasticity: Mission = {
       id: 'availability-zones',
       prompt:
         'Me da miedo que se caiga todo el centro de datos justo en Nochebuena. ¿Dónde conviene poner los servidores para que la tienda siga funcionando?',
-      topicSlug: 'infraestructura-global',
+      topicSlug: 'global-infrastructure',
       examTasks: ['3.2'],
       options: [
         {
@@ -198,7 +198,7 @@ export const bakeryElasticity: Mission = {
       id: 'variable-expense',
       prompt:
         'Última duda, y es la que más le preocupa a mi contador: ¿vamos a pagar todo el año los servidores que necesitamos en diciembre?',
-      topicSlug: 'economia-de-la-nube',
+      topicSlug: 'cloud-economics',
       examTasks: ['1.4'],
       options: [
         {

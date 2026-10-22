@@ -55,7 +55,7 @@ describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission
 
 describe('mission catalog', () => {
   it('starts the Centro campaign with the bakery and finds missions by building', async () => {
-    expect(missions.find((m) => m.track === 'centro')?.id).toBe('bakery-elasticity');
+    expect(missions.find((m) => m.track === 'downtown')?.id).toBe('bakery-elasticity');
     expect((await staticMissionCatalog.inBuilding('bank')).map((m) => m.id)).toContain('bank-access');
     await expect(staticMissionCatalog.inBuilding('nowhere')).resolves.toEqual([]);
   });

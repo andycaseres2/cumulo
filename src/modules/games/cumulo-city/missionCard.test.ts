@@ -13,7 +13,7 @@ const brief: MissionBrief = {
 
 describe('missionCard', () => {
   it('offers a new mission with who asks for help, where, and an accept action', () => {
-    expect(missionCard({ brief, state: 'offered' }, 'centro')).toEqual({
+    expect(missionCard({ brief, state: 'offered' }, 'downtown')).toEqual({
       kind: 'offer',
       heading: 'Nueva misión',
       title: 'La Navidad que tumbó la web',
@@ -23,7 +23,7 @@ describe('missionCard', () => {
   });
 
   it('shows the objective of the active mission and no action', () => {
-    expect(missionCard({ brief, state: 'active' }, 'centro')).toEqual({
+    expect(missionCard({ brief, state: 'active' }, 'downtown')).toEqual({
       kind: 'active',
       heading: 'Misión activa',
       title: 'La Navidad que tumbó la web',
@@ -33,13 +33,13 @@ describe('missionCard', () => {
   });
 
   it('sends the player to the bus when the active mission is in another district', () => {
-    expect(missionCard({ brief, state: 'active' }, 'mercado').detail).toBe(
+    expect(missionCard({ brief, state: 'active' }, 'market').detail).toBe(
       'Objetivo: toma el bus al Distrito Centro, entra a Pastelería Dulce Nube y habla con Rosa Quispe. Sigue la flecha.',
     );
   });
 
   it('says when the district has no clients left and points to the other districts', () => {
-    expect(missionCard(null, 'financiero')).toEqual({
+    expect(missionCard(null, 'financial')).toEqual({
       kind: 'done',
       heading: 'Misiones al día',
       title: '¡Ayudaste a todos los clientes del Distrito Financiero!',
