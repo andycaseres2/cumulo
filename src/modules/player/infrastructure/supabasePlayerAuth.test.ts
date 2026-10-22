@@ -18,7 +18,7 @@ function api(overrides: Partial<AuthApi> = {}): AuthApi {
 describe('supabasePlayerAuth', () => {
   it('signs up with the name as metadata and the confirmation link back to the site', async () => {
     const fake = api();
-    const auth = supabasePlayerAuth(fake, 'http://localhost:4321/ingresar');
+    const auth = supabasePlayerAuth(fake, 'http://localhost:4321/sign-in');
 
     await expect(auth.signUp({ name: 'Andy', email: 'andy@example.com', password: 'secreto123' })).resolves.toEqual({
       ok: true,
@@ -27,7 +27,7 @@ describe('supabasePlayerAuth', () => {
     expect(fake.signUp).toHaveBeenCalledWith({
       email: 'andy@example.com',
       password: 'secreto123',
-      options: { data: { display_name: 'Andy' }, emailRedirectTo: 'http://localhost:4321/ingresar' },
+      options: { data: { display_name: 'Andy' }, emailRedirectTo: 'http://localhost:4321/sign-in' },
     });
   });
 

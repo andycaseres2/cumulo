@@ -1,11 +1,12 @@
 ---
 import GameLayout from '@/ui/layouts/GameLayout.astro';
+import { routes } from '@/ui/routes';
 ---
 
 <GameLayout
   title="Cúmulo City"
   description="Recorre Cúmulo City como consultor cloud y ayuda a sus negocios con problemas reales de AWS."
-  exitHref="/juegos"
+  exitHref={routes.games}
 >
   <div class="game-root" data-cumulo-city></div>
 </GameLayout>

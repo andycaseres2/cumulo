@@ -4,15 +4,15 @@ const DEFAULT_COURSE = 'cloud-practitioner';
 /** Every internal URL of the site, so pages and components never hardcode paths. */
 export const routes = {
   home: '/',
-  signIn: '/ingresar',
-  games: '/juegos',
-  game: (slug: string) => `/juegos/${slug}`,
+  signIn: '/sign-in',
+  games: '/games',
+  game: (slug: string) => `/games/${slug}`,
   /** Catalog of courses; each course lists its own topics. */
-  theory: '/teoria',
-  course: (courseSlug: string) => `/teoria/${courseSlug}`,
-  theoryDomain: (domainId: string, courseSlug = DEFAULT_COURSE) => `/teoria/${courseSlug}#${domainId}`,
-  topic: (slug: string, courseSlug = DEFAULT_COURSE) => `/teoria/${courseSlug}/${slug}`,
-  profile: '/perfil',
-  practiceExam: '/simulacro',
-  practiceExamBank: '/simulacro/banco.json',
+  theory: '/theory',
+  course: (courseSlug: string) => `/theory/${courseSlug}`,
+  theoryDomain: (domainId: string, courseSlug = DEFAULT_COURSE) => `/theory/${courseSlug}#${domainId}`,
+  topic: (slug: string, courseSlug = DEFAULT_COURSE) => `/theory/${courseSlug}/${slug}`,
+  profile: '/profile',
+  practiceExam: '/practice-exam',
+  practiceExamBank: '/practice-exam/bank.json',
 };

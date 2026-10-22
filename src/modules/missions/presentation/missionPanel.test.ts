@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { twoStepMission as mission } from '../testing/fixtures';
 import { openMissionPanel } from './missionPanel';
 
-const theoryUrl = (slug: string) => `/teoria/${slug}`;
+const theoryUrl = (slug: string) => `/theory/cloud-practitioner/${slug}`;
 
 function host(): HTMLElement {
   document.body.innerHTML = '<div id="host"></div>';
@@ -40,7 +40,7 @@ describe('mission panel', () => {
     expect(feedback).toContain('No es la mejor opción');
     expect(feedback).toContain('Why b does not fit');
     expect(feedback).toContain('Why a fits');
-    expect(panel().querySelector<HTMLAnchorElement>('[data-theory-link]')!.getAttribute('href')).toBe('/teoria/cloud-benefits');
+    expect(panel().querySelector<HTMLAnchorElement>('[data-theory-link]')!.getAttribute('href')).toBe('/theory/cloud-practitioner/cloud-benefits');
     expect(options().every((o) => o.disabled)).toBe(true);
 
     button('Siguiente').click();

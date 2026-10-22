@@ -5,8 +5,8 @@ import { secondMission, twoStepMission as firstMission } from '../testing/fixtur
 import { renderProgress } from './progressView';
 
 const options = {
-  gameUrl: '/juegos/cumulo-city',
-  theoryUrl: (slug: string) => `/teoria/${slug}`,
+  gameUrl: '/games/cumulo-city',
+  theoryUrl: (slug: string) => `/theory/cloud-practitioner/${slug}`,
   buildingName: (id: string) => `Building ${id}`,
   topicTitle: (slug: string) => `Topic ${slug}`,
   trackName: (track: string) => `Track ${track}`,
@@ -51,7 +51,7 @@ describe('progress view', () => {
     const domains = [...host.querySelectorAll<HTMLElement>('[data-domain]')];
     expect(domains.filter((d) => d.dataset.practiced === 'true').map((d) => d.dataset.domain)).toEqual(['cloud-concepts']);
     const topic = firstMission.decisions[0].topicSlug;
-    expect(card(firstMission.id).querySelector(`a[href="/teoria/${topic}"]`)).not.toBeNull();
+    expect(card(firstMission.id).querySelector(`a[href="/theory/cloud-practitioner/${topic}"]`)).not.toBeNull();
   });
 
   it('groups the missions by district, with how many are completed in each', () => {
@@ -66,6 +66,6 @@ describe('progress view', () => {
 
   it('invites the player to keep playing', () => {
     renderProgress(host, overview, options);
-    expect(host.querySelector('a[href="/juegos/cumulo-city"]')?.textContent).toContain('Seguir jugando');
+    expect(host.querySelector('a[href="/games/cumulo-city"]')?.textContent).toContain('Seguir jugando');
   });
 });

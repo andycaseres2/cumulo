@@ -24,7 +24,7 @@ const text = () => host.textContent ?? '';
 
 function start(overrides = {}) {
   const onFinished = vi.fn();
-  renderExamSimulator(host, { createExam: () => exam, questionCount: 3, theoryUrl: (s) => `/teoria/${s}`, durationMinutes: 90, onFinished, ...overrides });
+  renderExamSimulator(host, { createExam: () => exam, questionCount: 3, theoryUrl: (s) => `/theory/cloud-practitioner/${s}`, durationMinutes: 90, onFinished, ...overrides });
   button('Empezar simulacro').click();
   return onFinished;
 }
@@ -85,7 +85,7 @@ describe('exam simulator', () => {
     const second = host.querySelectorAll<HTMLElement>('[data-exam-review]')[1];
     expect(second.textContent).toContain('Sin responder');
     expect(second.textContent).toContain('Why Q2 option 1');
-    expect(second.querySelector('a[href="/teoria/topic-b"]')).not.toBeNull();
+    expect(second.querySelector('a[href="/theory/cloud-practitioner/topic-b"]')).not.toBeNull();
   });
 
   it('submits on its own when the time runs out', () => {

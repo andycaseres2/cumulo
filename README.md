@@ -41,10 +41,10 @@ PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 
 ### Accounts (Supabase Auth)
 
-Players sign up at `/ingresar` with their name, email and password, and confirm their email before signing in. Playing requires an account: signed-out visitors who open a game get a sign-in modal, and the game loads right after signing in (theory stays public). Behind the modal they see the plain selection background until a character was picked on that device, and the city afterwards. The character is picked once and saved in the account (Supabase `user_metadata.character`, a preference, never a permission), so the game skips the selection screen next time. "Ingresar" in the header opens the same modal on any page; `/ingresar` is the full-page fallback and where the confirmation email lands. The player's name shows in the header and above their character. In the Supabase dashboard:
+Players sign up at `/sign-in` with their name, email and password, and confirm their email before signing in. Playing requires an account: signed-out visitors who open a game get a sign-in modal, and the game loads right after signing in (theory stays public). Behind the modal they see the plain selection background until a character was picked on that device, and the city afterwards. The character is picked once and saved in the account (Supabase `user_metadata.character`, a preference, never a permission), so the game skips the selection screen next time. "Ingresar" in the header opens the same modal on any page; `/sign-in` is the full-page fallback and where the confirmation email lands. The player's name shows in the header and above their character. In the Supabase dashboard:
 
 1. **Authentication → Sign In / Providers → Email**: enabled (default), with "Confirm email" on.
-2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/ingresar` (and later the production URL + `/ingresar`) to **Redirect URLs**. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
+2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/sign-in` (and later the production URL + `/sign-in`) to **Redirect URLs**. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
 
 ### Mission progress in the account
 
@@ -61,13 +61,14 @@ Supabase's built-in email service only sends a few emails per hour; configure cu
 | Route | Page |
 | --- | --- |
 | `/` | Home: games and theory sections, featured game, exam domains |
-| `/juegos` | Game catalog |
-| `/juegos/cumulo-city` | The Cúmulo City game. Add `?play=man` or `?play=woman` to skip character selection |
-| `/teoria` | Theory grouped by exam domain |
-| `/teoria/[slug]` | One theory topic |
-| `/ingresar` | Sign in or create an account (also available as a modal from the header and the game) |
-| `/simulacro` | Practice exam: 65 questions drawn from the bank (topic quizzes plus `practice` questions, served at `/simulacro/banco.json`), 90 minutes, estimated score and review |
-| `/perfil` | Profile (requires an account): name, email, character, completed missions, best scores and exam domains practiced. Also reached from the avatar menu. `/progreso` redirects here |
+| `/games` | Game catalog |
+| `/games/cumulo-city` | The Cúmulo City game. Add `?play=man` or `?play=woman` to skip character selection |
+| `/theory` | Course catalog |
+| `/theory/[course]` | A course: its theory grouped by exam domain (`/theory/cloud-practitioner`) |
+| `/theory/[course]/[slug]` | One theory topic |
+| `/sign-in` | Sign in or create an account (also available as a modal from the header and the game) |
+| `/practice-exam` | Practice exam: 65 questions drawn from the bank (topic quizzes plus `practice` questions, served at `/practice-exam/bank.json`), 90 minutes, estimated score and review |
+| `/profile` | Profile (requires an account): name, email, character, completed missions, best scores and exam domains practiced. Also reached from the avatar menu. `/progreso` and `/perfil` redirect here |
 
 The "Salir" button at the top left leaves the game. Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Mouse wheel, +/− or the buttons at the bottom right zoom the city; drag with the mouse or a finger to look around (walking brings the camera back). M or the "Mapa" button shows the whole district, and M, Esc or "Volver" returns to the player. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
 
@@ -145,3 +146,7 @@ Start the body at `##`; the page renders the title. Every factual claim should b
 Game art: [RPG Urban Pack](https://kenney.nl/assets/rpg-urban-pack) by Kenney, CC0 1.0 (public domain). The sheet and its license live in `public/games/cumulo-city/kenney-rpg-urban/`. Character shirt variants are recolored at runtime. Office furniture (desks, chairs, meeting table, counter, shelves, printer, cooler, sofa) is drawn in code with colors from the Kenney palette, because no free 16x16 office set matches the pack.
 
 Not affiliated with or endorsed by Amazon Web Services.
+
+## English identifiers
+
+Routes, topic slugs, mission ids, district and building ids are English; the copy players read stays in Spanish until the site gets translations. The old Spanish URLs redirect to the new ones (`astro.config.mjs`). Progress saved under the old topic slugs and mission ids is read under the new ones (`src/infrastructure/legacyIds.ts`), and `supabase/migrations/20261022120000_english_ids.sql` renames the stored rows; it can run more than once.

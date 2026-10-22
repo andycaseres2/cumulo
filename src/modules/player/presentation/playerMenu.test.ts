@@ -8,7 +8,7 @@ const trigger = () => host.querySelector<HTMLButtonElement>('[data-menu-trigger]
 const menu = () => host.querySelector<HTMLElement>('[data-menu]')!;
 
 function render(onSignOut = vi.fn(async () => {})) {
-  renderPlayerMenu(host, { player, profileUrl: '/perfil', onSignOut });
+  renderPlayerMenu(host, { player, profileUrl: '/profile', onSignOut });
   return onSignOut;
 }
 
@@ -33,7 +33,7 @@ describe('player menu', () => {
     expect(menu().hidden).toBe(false);
     expect(menu().textContent).toContain('Andy Caseres');
     expect(menu().textContent).toContain('andy@example.com');
-    expect(menu().querySelector('a[href="/perfil"]')?.textContent).toContain('Mi perfil');
+    expect(menu().querySelector('a[href="/profile"]')?.textContent).toContain('Mi perfil');
   });
 
   it('closes with Escape, an outside click or a second click on the avatar', () => {

@@ -22,7 +22,7 @@ describe('theory progress view', () => {
   });
 
   it('summarizes completed topics overall and per exam domain', () => {
-    renderTheoryProgress(host, overview, { theoryUrl: '/teoria' });
+    renderTheoryProgress(host, overview, { theoryUrl: '/theory' });
     expect(host.textContent).toContain('3 de 42 temas completados');
     expect(host.querySelector('progress')?.getAttribute('value')).toBe('3');
     const rows = [...host.querySelectorAll<HTMLElement>('[data-domain]')];
@@ -32,7 +32,7 @@ describe('theory progress view', () => {
   });
 
   it('links to the theory to keep studying', () => {
-    renderTheoryProgress(host, overview, { theoryUrl: '/teoria' });
-    expect(host.querySelector('a[href="/teoria"]')?.textContent).toContain('Seguir estudiando');
+    renderTheoryProgress(host, overview, { theoryUrl: '/theory' });
+    expect(host.querySelector('a[href="/theory"]')?.textContent).toContain('Seguir estudiando');
   });
 });
