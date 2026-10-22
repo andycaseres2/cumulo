@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
 import { frameName, npcLookKey } from '../art/characters';
-import { placeMarker } from '../art/markers';
+import { MARKERS, placeMarker } from '../art/markers';
 import { EVENTS, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
 import { NameTag } from '../entities/NameTag';
 import { Npc } from '../entities/Npc';
@@ -9,7 +9,9 @@ import { Walker } from '../entities/Walker';
 import { renderBuildings, renderGround, renderProps, renderRoadMarkings, type Door } from '../render/cityRenderer';
 import { Interactions } from '../systems/Interactions';
 import { PlayerControls } from '../systems/PlayerControls';
-import type { GameMissions } from '../../missions';
+import type { CurrentMission } from '../../missions';
+import { guideArrow } from '../../world/guide';
+import { MissionTracker } from '../systems/MissionTracker';
 import { openAccess, type AccessPolicy } from '../../world/access';
 import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
 import { G } from '../../world/tileTypes';
@@ -42,6 +44,9 @@ export class CityScene extends Phaser.Scene {
   private readonly access: AccessPolicy = openAccess;
   private transitioning = false;
   private markers: Phaser.GameObjects.Image[] = [];
+  private tracker!: MissionTracker;
+  private guide!: Phaser.GameObjects.Image;
+  private guideTarget: { x: number; y: number } | null = null;
 
   constructor() {
     super('city');
@@ -74,8 +79,18 @@ export class CityScene extends Phaser.Scene {
     }
     this.physics.add.collider(this.player, npcGroup);
 
+    // Above the name tag (depth 9000) so it is never hidden; grows and shrinks to catch the eye, always opaque.
+    this.guide = this.add.image(0, 0, MARKERS.guide).setDepth(9_100).setVisible(false);
+    this.tweens.add({ targets: this.guide, scale: { from: 1.2, to: 1.5 }, duration: 450, yoyo: true, repeat: -1 });
     this.setupCameras();
-    void this.refreshMarkers();
+    this.minimap.ignore(this.guide);
+
+    this.tracker = MissionTracker.of(this);
+    const onMissionChanged = (current: CurrentMission | null) => void this.applyMission(current);
+    this.game.events.on(EVENTS.missionChanged, onMissionChanged);
+    this.events.once('shutdown', () => this.game.events.off(EVENTS.missionChanged, onMissionChanged));
+    void this.tracker.refresh();
+
     this.scene.launch('hud');
     this.events.on('wake', (_: unknown, data: CityWakeData) => this.returnFromBuilding(data));
   }
@@ -83,6 +98,7 @@ export class CityScene extends Phaser.Scene {
   update() {
     this.marker.setPosition(this.player.x, this.player.y - 8);
     this.nameTag.follow(this.player);
+    this.updateGuide();
     if (this.transitioning) return;
 
     const interact = this.controls.consumeInteract();
@@ -126,20 +142,32 @@ export class CityScene extends Phaser.Scene {
     }
     this.controls.reset();
     this.transitioning = false;
-    void this.refreshMarkers();
-    this.game.events.emit(EVENTS.location, { title: 'Nimbus City', subtitle: 'Objetivo: explora la ciudad', minimap: true });
+    void this.tracker.refresh();
+    this.game.events.emit(EVENTS.location, { title: 'Nimbus City', subtitle: 'Distrito Centro', minimap: true });
     this.cameras.main.fadeIn(FADE_MS, 0, 0, 0);
   }
 
-  /** "!" above buildings with an open job, a check once it is completed. */
+  /** Updates markers and the guide target after the current mission changes. */
+  private async applyMission(current: CurrentMission | null) {
+    const active = current?.state === 'active' ? BUILDINGS.find((b) => b.id === current.brief.buildingId) : undefined;
+    if (active) {
+      const door = doorTile(active);
+      this.guideTarget = { x: (door.x + 0.5) * TILE, y: door.y * TILE + 8 };
+    } else {
+      this.guideTarget = null;
+    }
+    await this.refreshMarkers();
+  }
+
+  /** "!" above the building of the active mission, a check above completed ones; nothing for offered or locked. */
   private async refreshMarkers() {
-    const missions = this.registry.get(REGISTRY.missions) as GameMissions;
+    const missions = this.tracker.missions;
     const placed = await Promise.all(
       BUILDINGS.map(async (building) => {
         const brief = await missions.forBuilding(building.id);
         if (!brief) return null;
-        const completed = (await missions.status(brief.id)) === 'completed';
-        return { building, completed };
+        const state = await missions.status(brief.id);
+        return state === 'active' || state === 'completed' ? { building, completed: state === 'completed' } : null;
       }),
     );
     for (const marker of this.markers) marker.destroy();
@@ -148,6 +176,20 @@ export class CityScene extends Phaser.Scene {
       .map(({ building, completed }) =>
         placeMarker(this, (building.x + building.w / 2) * TILE, buildingTop(building) * TILE - 2, completed),
       );
+  }
+
+  /** Arrow orbiting the player toward the active mission's door, hidden once close. */
+  private updateGuide() {
+    if (!this.guideTarget || this.transitioning) {
+      this.guide.setVisible(false);
+      return;
+    }
+    const from = { x: this.player.x, y: this.player.y - 4 };
+    const { visible, angle } = guideArrow(from, this.guideTarget, 3 * TILE);
+    this.guide
+      .setVisible(visible)
+      .setRotation(angle)
+      .setPosition(from.x + Math.cos(angle) * 30, from.y + Math.sin(angle) * 30);
   }
 
   /** Citizens start on free pavement: not under a building and not on a prop. */

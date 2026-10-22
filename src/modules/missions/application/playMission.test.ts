@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { MissionResult } from '../domain/MissionRun';
 import { inMemoryProgressStore } from '../infrastructure/inMemoryProgressStore';
-import { twoStepMission as mission } from '../testing/fixtures';
+import { catalogOf, twoStepMission as mission } from '../testing/fixtures';
 import { getMissionStatus } from './missionProgress';
 import { playMission } from './playMission';
 
@@ -13,12 +13,12 @@ describe('playMission', () => {
     const outcome = await playMission(store, mission, async () => finished(true));
 
     expect(outcome).toEqual({ passed: true, score: 1 });
-    expect((await getMissionStatus(store, mission.id)).state).toBe('completed');
+    expect((await getMissionStatus(store, catalogOf(mission), mission.id)).state).toBe('completed');
   });
 
   it('saves nothing when the player leaves before finishing', async () => {
     const store = inMemoryProgressStore();
     await expect(playMission(store, mission, async () => null)).resolves.toBeNull();
-    expect(await getMissionStatus(store, mission.id)).toEqual({ state: 'available', bestScore: null });
+    expect(await getMissionStatus(store, catalogOf(mission), mission.id)).toEqual({ state: 'offered', bestScore: null });
   });
 });

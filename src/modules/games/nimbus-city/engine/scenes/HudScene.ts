@@ -1,11 +1,16 @@
 import Phaser from 'phaser';
 import { EVENTS, FONT, minimapRect } from '../../config';
+import type { MissionCardContent } from '../../missionCard';
+import { MissionTracker } from '../systems/MissionTracker';
 import { Button } from '../ui/Button';
 import type { DialogChoice, DialogContent, LocationInfo } from '../ui/dialog';
 import { revealedText } from '../ui/typewriter';
 
 const PANEL = 0x1b1b2a;
 const DIALOG_HEIGHT = 140;
+const CARD_WIDTH = 260;
+/** Leaves room for the page's "Salir" button in the top-left corner. */
+const HEADER_TOP = 58;
 const PORTRAIT_SIZE = 72;
 const CHARS_PER_SECOND = 45;
 
@@ -29,6 +34,12 @@ export class HudScene extends Phaser.Scene {
   private typing = false;
   private choices: DialogChoice[] = [];
   private choiceButtons: Button[] = [];
+  private card!: Phaser.GameObjects.Container;
+  private cardBg!: Phaser.GameObjects.Rectangle;
+  private cardHeading!: Phaser.GameObjects.Text;
+  private cardTitle!: Phaser.GameObjects.Text;
+  private cardDetail!: Phaser.GameObjects.Text;
+  private cardAction!: Button;
 
   constructor() {
     super('hud');
@@ -38,7 +49,7 @@ export class HudScene extends Phaser.Scene {
     const headerBg = this.add.rectangle(0, 0, 330, 54, PANEL, 0.85).setOrigin(0).setStrokeStyle(2, 0xffd166);
     this.locationTitle = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
     this.locationSubtitle = this.add.text(12, 34, '', { fontFamily: FONT, fontSize: '8px', color: '#ffffff' });
-    this.header = this.add.container(12, 12, [headerBg, this.locationTitle, this.locationSubtitle]);
+    this.header = this.add.container(12, HEADER_TOP, [headerBg, this.locationTitle, this.locationSubtitle]);
 
     this.controls = this.add
       .text(0, 0, 'WASD/Flechas: caminar   Shift: correr   E o clic: interactuar', {
@@ -51,8 +62,18 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0, 1);
 
     this.minimapFrame = this.add.rectangle(0, 0, 10, 10).setOrigin(0).setStrokeStyle(3, 0xffd166);
-    this.showLocation({ title: 'Nimbus City', subtitle: 'Objetivo: explora la ciudad', minimap: true });
+    this.showLocation({ title: 'Nimbus City', subtitle: 'Distrito Centro', minimap: true });
     this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact)).setVisible(false);
+
+    this.cardBg = this.add.rectangle(0, 0, CARD_WIDTH, 10, PANEL, 0.92).setOrigin(0).setStrokeStyle(2, 0xffd166);
+    const wrap = { width: CARD_WIDTH - 24 };
+    this.cardHeading = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '8px', color: '#ffd166' });
+    this.cardTitle = this.add.text(12, 26, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff', wordWrap: wrap, lineSpacing: 4 });
+    this.cardDetail = this.add.text(12, 0, '', { fontFamily: FONT, fontSize: '8px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 5 });
+    this.cardAction = new Button(this, 0, 0, 'Aceptar misión', () => this.game.events.emit(EVENTS.missionAccept), 10);
+    this.card = this.add
+      .container(0, 0, [this.cardBg, this.cardHeading, this.cardTitle, this.cardDetail, this.cardAction])
+      .setVisible(false);
 
     this.dialogBox = this.add.rectangle(0, 0, 10, DIALOG_HEIGHT, PANEL, 0.95).setOrigin(0).setStrokeStyle(3, 0xffd166);
     this.portraitFrame = this.add
@@ -80,8 +101,11 @@ export class HudScene extends Phaser.Scene {
       [EVENTS.dialog, this.showDialog],
       [EVENTS.dialogAdvance, this.advanceDialog],
       [EVENTS.location, this.showLocation],
+      [EVENTS.missionCard, this.showMissionCard],
     ];
     for (const [event, handler] of handlers) this.game.events.on(event, handler, this);
+    // The HUD starts a frame after the city: ask for the current mission instead of waiting for the next change.
+    void MissionTracker.of(this).refresh();
     this.events.once('shutdown', () => {
       this.scale.off('resize', this.layout, this);
       for (const [event, handler] of handlers) this.game.events.off(event, handler, this);
@@ -136,6 +160,23 @@ export class HudScene extends Phaser.Scene {
     );
     this.layoutDialogText();
     this.header.setVisible(width > 560);
+    this.card.setPosition(width - CARD_WIDTH - 12, map.y + map.height + 12);
+  }
+
+  /** The current mission, under the minimap: offer with an accept button, objective, or all done. */
+  private showMissionCard(content: MissionCardContent) {
+    this.cardHeading.setText(content.heading.toUpperCase());
+    this.cardTitle.setText(content.title);
+    this.cardDetail.setText(content.detail).setY(this.cardTitle.y + this.cardTitle.height + 8);
+    let bottom = this.cardDetail.y + this.cardDetail.height;
+    this.cardAction.setVisible(content.action !== null);
+    if (content.action) {
+      this.cardAction.setText(content.action);
+      this.cardAction.setPosition(12 + this.cardAction.buttonWidth / 2, bottom + 10 + this.cardAction.buttonHeight / 2);
+      bottom += 10 + this.cardAction.buttonHeight;
+    }
+    this.cardBg.setSize(CARD_WIDTH, bottom + 12);
+    this.card.setVisible(true);
   }
 
   private layoutDialogText() {

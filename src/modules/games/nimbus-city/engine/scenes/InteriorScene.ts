@@ -8,8 +8,9 @@ import { Worker } from '../entities/Worker';
 import { renderOffice } from '../render/officeRenderer';
 import { placeMarker } from '../art/markers';
 import { Interactions, type Interactable } from '../systems/Interactions';
+import { MissionTracker } from '../systems/MissionTracker';
 import { PlayerControls } from '../systems/PlayerControls';
-import { ACCEPT, clientOffer, clientOutro } from '../../missionTalk';
+import { clientOffer, clientOutro, START } from '../../missionTalk';
 import type { GameMissions, MissionBrief } from '../../missions';
 import { BUILDINGS, type BuildingDef } from '../../world/cityMap';
 import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
@@ -147,13 +148,17 @@ export class InteriorScene extends Phaser.Scene {
 
   /** When the building has a job, its first worker becomes the client who offers it. */
   private async setupClient(worker: Worker, talk: Interactable) {
-    const missions = this.registry.get(REGISTRY.missions) as GameMissions;
+    const tracker = MissionTracker.of(this);
+    const missions = tracker.missions;
     const brief = await missions.forBuilding(this.building.id);
-    if (!brief || !this.sys.isActive()) return;
+    if (!brief) return;
+    const initial = await missions.status(brief.id);
+    // Until the player accepts the mission, the client is just another worker.
+    if ((initial !== 'active' && initial !== 'completed') || !this.sys.isActive()) return;
 
+    let state: 'active' | 'completed' = initial;
     worker.stayAtDesk();
     const portrait = { key: worker.look, frame: frameName('down', 0) };
-    let state = await missions.status(brief.id);
     let marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
 
     talk.prompt = `[E] Hablar con ${brief.client.name}`;
@@ -163,7 +168,7 @@ export class InteriorScene extends Phaser.Scene {
       return {
         pages: clientOffer(brief, state, portrait),
         onChoice: (choice) => {
-          if (choice === ACCEPT) void play();
+          if (choice === START) void play();
         },
       };
     };
@@ -171,11 +176,12 @@ export class InteriorScene extends Phaser.Scene {
     const play = async () => {
       const outcome = await this.runMission(missions, brief);
       if (!outcome || !this.sys.isActive()) return;
-      state = await missions.status(brief.id);
+      state = (await missions.status(brief.id)) === 'completed' ? 'completed' : 'active';
       marker.destroy();
       marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
       worker.face(this.player.x, this.player.y);
       this.interactions.start({ pages: clientOutro(brief, outcome.passed, portrait) });
+      void tracker.refresh();
     };
   }
 

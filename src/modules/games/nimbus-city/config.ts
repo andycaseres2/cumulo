@@ -17,6 +17,7 @@ export const REGISTRY = {
   playerKey: 'playerKey',
   playerName: 'playerName',
   missions: 'missions',
+  missionTracker: 'missionTracker',
 } as const;
 
 export const EVENTS = {
@@ -29,6 +30,12 @@ export const EVENTS = {
   dialogChoice: 'hud:dialog-choice',
   interact: 'hud:interact',
   location: 'hud:location',
+  /** HUD mission card content (MissionCardContent). */
+  missionCard: 'hud:mission-card',
+  /** Player pressed "Aceptar misión" on the HUD card. */
+  missionAccept: 'hud:mission-accept',
+  /** The current mission changed (CurrentMission | null); scenes refresh markers and guides. */
+  missionChanged: 'game:mission-changed',
 } as const;
 
 export function pickZoom(width: number, height: number): number {

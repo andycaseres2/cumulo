@@ -1,4 +1,5 @@
 import type { Mission } from '../domain/Mission';
+import type { MissionCatalog } from '../domain/MissionCatalog';
 
 const option = (id: string, correct = false) => ({
   id,
@@ -33,3 +34,13 @@ export const twoStepMission: Mission = {
     },
   ],
 };
+
+export const secondMission: Mission = { ...twoStepMission, id: 'second-mission', buildingId: 'bank', title: 'Second mission' };
+
+/** Catalog whose order is the campaign order. */
+export function catalogOf(...missions: Mission[]): MissionCatalog {
+  return {
+    all: async () => [...missions],
+    findByBuilding: async (buildingId) => missions.find((m) => m.buildingId === buildingId) ?? null,
+  };
+}

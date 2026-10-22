@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { createCanvas } from './canvas';
 
-export const MARKERS = { job: 'marker-job', done: 'marker-done' } as const;
+export const MARKERS = { job: 'marker-job', done: 'marker-done', guide: 'marker-guide' } as const;
 
 const OUTLINE = '#3a3a40';
 
@@ -43,6 +43,20 @@ export function createMarkers(scene: Phaser.Scene) {
     d.fillRect(x, y, 1, 1);
   }
   scene.textures.addCanvas(MARKERS.done, done);
+
+  // Guide arrow pointing right (16x15): shaft plus head, dark outline and solid fill; the scene rotates it.
+  const guide = createCanvas(16, 15);
+  const g = guide.getContext('2d')!;
+  const arrow = (color: string, inset: number) => {
+    g.fillStyle = color;
+    g.fillRect(inset, 5 + inset, 8, 5 - 2 * inset);
+    for (let i = 0; i <= 7 - inset; i++) g.fillRect(8 + i, i + inset, 1, 15 - 2 * (i + inset));
+  };
+  arrow(OUTLINE, 0);
+  arrow('#f5aa57', 1);
+  g.fillStyle = '#ffc999';
+  g.fillRect(2, 6, 6, 1);
+  scene.textures.addCanvas(MARKERS.guide, guide);
 }
 
 /** Places a marker above a point and makes an open job bounce gently. */

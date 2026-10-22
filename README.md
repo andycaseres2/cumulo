@@ -33,9 +33,9 @@ Restart the dev server after changing `src/content.config.ts`.
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
 
-Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
+The "Salir" button at the top left leaves the game. Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
 
-Missions: a "!" marks a building with a job and a check marks it once completed. Inside, talk to the client (e.g. Rosa Quispe at the Pastelería Dulce Nube counter), accept the job and choose **Aprender** (definitions before choosing, explanation after each answer) or **Práctica** (no hints, review at the end). Answer with clicks or the keys 1–4; Escape or "Salir" leaves without saving. Progress is saved in this browser.
+Missions are played one after another. Nothing is active at the start: the card under the minimap offers the next mission with an "Aceptar misión" button. Once accepted, the card shows the objective, a "!" appears over the building and an arrow next to the player points to its door; a check marks completed missions. Inside, talk to the client (e.g. Rosa Quispe at the Pastelería Dulce Nube counter), start the case and choose **Aprender** (definitions before choosing, explanation after each answer) or **Práctica** (no hints, review at the end). Answer with clicks or the keys 1–4; Escape or "Salir" leaves without saving. Progress is saved in this browser.
 
 ## Architecture
 
@@ -48,7 +48,7 @@ src/
 │   ├── theory/          domain (Topic, TopicRepository port) → application (use cases) → infrastructure (content collection adapter) → presentation
 │   ├── games/           domain (Game, GameCatalog port) → application → infrastructure (static catalog) → presentation
 │   │   └── nimbus-city/ The Phaser game: world (pure city map, autotile, prop spots, access rule, office layouts and pathfinding, office talk), engine (Kenney tile indices, office furniture drawn in the Kenney palette, renderers, entities, shared systems for input and interactions, scenes, HUD), mount.ts (public entry point)
-│   ├── missions/        domain (Mission, run rules, progress port) → application (play and record) → infrastructure (mission content, static catalog, localStorage progress) → presentation (mission panel)
+│   ├── missions/        domain (Mission, run rules, campaign states, progress port) → application (play and record) → infrastructure (mission content, static catalog, localStorage progress) → presentation (mission panel)
 │   └── player/          domain (Player, PlayerSession port) → application → infrastructure (guest session) → presentation
 ├── composition/         Composition root: wires adapters into use cases. Pages only import from here.
 ├── content/theory/      Theory topics in Markdown, validated by src/content.config.ts

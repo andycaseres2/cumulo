@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { clientOffer, clientOutro, ACCEPT, LATER } from './missionTalk';
+import { clientOffer, clientOutro, LATER, START } from './missionTalk';
 import type { MissionBrief } from './missions';
 
 const brief: MissionBrief = {
   id: 'bakery-elasticity',
+  buildingId: 'bakery',
   title: 'La Navidad que tumbó la web',
   client: { name: 'Rosa Quispe', role: 'Dueña' },
   intro: ['Uno', 'Dos', 'Tres'],
@@ -12,13 +13,13 @@ const brief: MissionBrief = {
 const portrait = { key: 'npc-0', frame: '1' };
 
 describe('mission talk', () => {
-  it('tells the whole story and then offers the job with accept / not now', () => {
-    const pages = clientOffer(brief, 'available', portrait);
+  it('for an active mission, tells the whole story and then asks to start the case or wait', () => {
+    const pages = clientOffer(brief, 'active', portrait);
 
     expect(pages.map((p) => p.text).slice(0, 3)).toEqual(['Uno', 'Dos', 'Tres']);
     expect(pages.every((p) => p.title === 'Rosa Quispe' && p.portrait === portrait)).toBe(true);
-    expect(pages.at(-1)?.choices?.map((c) => c.id)).toEqual([ACCEPT, LATER]);
-    expect(pages.at(-1)?.choices?.[0].label).toBe('Acepto el trabajo');
+    expect(pages.at(-1)?.choices?.map((c) => c.id)).toEqual([START, LATER]);
+    expect(pages.at(-1)?.choices?.map((c) => c.label)).toEqual(['Empecemos', 'Ahora no']);
   });
 
   it('after completing the job, greets the player again and offers to replay', () => {
