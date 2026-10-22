@@ -62,6 +62,15 @@ import { routes } from '@/ui/routes';
 
 <script>
   import { currentPlayer, playerAuth } from '@/composition/player';
+  import { openAuthModal } from '@/modules/player/presentation/authModal';
+
+  // "Ingresar" opens the sign-in modal; the link to /ingresar stays as a fallback without JavaScript.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-player-chip] [data-sign-in]')) {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      openAuthModal({ auth: playerAuth(), onSignedIn: () => window.location.reload() });
+    });
+  }
 
   async function render() {
     const player = await currentPlayer();
