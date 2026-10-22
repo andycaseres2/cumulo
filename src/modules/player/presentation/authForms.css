@@ -37,6 +37,11 @@
   gap: var(--space-4);
 }
 
+/* `display: grid` above would otherwise override the browser's [hidden] rule and show both forms. */
+.auth-form[hidden] {
+  display: none;
+}
+
 .auth-field {
   display: grid;
   gap: var(--space-1);

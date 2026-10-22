@@ -39,6 +39,15 @@ PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 - The shared client lives in `src/infrastructure/supabase/client.ts`; it returns `null` while the variables are missing.
 - Restart `pnpm dev` after editing `.env`.
 
+### Accounts (Supabase Auth)
+
+Players sign up at `/ingresar` with their name, email and password, and confirm their email before signing in. Their name replaces "Invitado" in the header and above their character. In the Supabase dashboard:
+
+1. **Authentication → Sign In / Providers → Email**: enabled (default), with "Confirm email" on.
+2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/ingresar` (and later the production URL + `/ingresar`) to **Redirect URLs**. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
+
+Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
+
 ## Routes
 
 | Route | Page |
