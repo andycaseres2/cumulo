@@ -165,7 +165,7 @@ export const clinicResilience: Mission = {
     {
       id: 'disaster-recovery-service',
       prompt:
-        'Ahora pensemos en lo peor: un desastre grande. Quiero tener nuestros servidores completos replicados y listos para arrancarlos en AWS en minutos, no en horas. ¿Qué servicio lo hace?',
+        'Ahora pensemos en lo peor: un desastre grande. Mientras terminamos la migración, quiero que los servidores de la clínica estén replicados continuamente y listos para arrancar en AWS en minutos, no en horas. ¿Qué servicio lo hace?',
       topicSlug: 'almacenamiento-hibrido-y-respaldo',
       examTasks: ['3.6'],
       options: [

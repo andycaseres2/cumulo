@@ -126,7 +126,7 @@ export const bankAccess: Mission = {
       options: [
         {
           id: 'protect-root',
-          label: 'Activar MFA, no crearle access keys y usarlo solo para las tareas que lo exigen',
+          label: 'Cambiar la contraseña, activar MFA, no crearle access keys y usarlo solo para las tareas que lo exigen',
           definition:
             'Buenas prácticas para el usuario raíz: contraseña fuerte y única, autenticación multifactor, sin access keys y sin compartir sus credenciales.',
           explanation:
@@ -209,7 +209,7 @@ export const bankAccess: Mission = {
     {
       id: 'audit-trail',
       prompt:
-        'Última pregunta, la que más me quita el sueño: si un auditor pregunta quién modificó la base de datos de clientes el martes pasado, ¿qué servicio nos permite demostrarlo?',
+        'Última pregunta, la que más me quita el sueño: si un auditor pregunta quién cambió la configuración de la instancia de Amazon RDS de la base de clientes el martes pasado, ¿qué servicio nos permite demostrarlo?',
       topicSlug: 'cumplimiento-y-auditoria',
       examTasks: ['2.2'],
       options: [
@@ -237,7 +237,7 @@ export const bankAccess: Mission = {
           definition:
             'Servicio que mantiene un inventario de los recursos, su historial de configuración y reglas para evaluar si cumplen lo que defines.',
           explanation:
-            'Config dice cómo quedó configurado un recurso y si cumple las reglas, pero no quién hizo el cambio. Esa pregunta la responde CloudTrail.',
+            'Config dice cómo quedó configurado un recurso y si cumple las reglas. Para responder quién hizo la llamada a la API, la fuente es CloudTrail.',
           correct: false,
         },
         {

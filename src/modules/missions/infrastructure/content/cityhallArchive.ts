@@ -17,7 +17,7 @@ export const cityhallArchive: Mission = {
   ],
   outro: {
     passed: [
-      '¡Qué tranquilidad! Los documentos viejos descansan en la clase más barata, se mueven solos con el ciclo de vida y el servidor del sótano ahora tiene respaldo en la nube.',
+      '¡Qué tranquilidad! Los documentos viejos descansan en la clase más barata, se mueven solos con el ciclo de vida y las carpetas del sótano ahora guardan sus datos en la nube.',
       'Y cuando lleguen los auditores, ya sé dónde descargar los informes de AWS. Muchas gracias, consultor. Aquí en la Municipalidad siempre tendrás las puertas abiertas.',
     ],
     failed: [
@@ -139,7 +139,7 @@ export const cityhallArchive: Mission = {
           definition:
             'Sistema de archivos compartido totalmente administrado, construido sobre Windows Server, con protocolo SMB e integración con Active Directory.',
           explanation:
-            'FSx es una gran opción para llevar las carpetas compartidas por completo a AWS, pero Patricia quiere seguir usando su servidor local con los datos respaldados en la nube.',
+            'FSx es una gran opción para llevar las carpetas compartidas por completo a AWS, pero Patricia quiere conservar el acceso local de siempre, con caché en el sótano y los datos guardados en la nube.',
           correct: false,
         },
         {
@@ -209,7 +209,7 @@ export const cityhallArchive: Mission = {
     {
       id: 'compliance-reports',
       prompt:
-        'Última pregunta, la que más me quita el sueño: los auditores van a pedir pruebas de que AWS cumple normas como ISO y SOC. ¿Dónde consigo esos informes?',
+        'Última pregunta, y la más urgente: los auditores van a pedir pruebas de que AWS cumple normas como ISO y SOC. ¿Dónde consigo esos informes?',
       topicSlug: 'cumplimiento-y-auditoria',
       examTasks: ['2.2'],
       options: [

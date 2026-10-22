@@ -83,7 +83,7 @@ export const startupCosts: Mission = {
           definition:
             'Herramienta para ver y analizar costos y uso, con hasta 13 meses de historial, pronósticos y filtros por servicio, cuenta o etiqueta.',
           explanation:
-            'Cost Explorer muestra pronósticos, pero no envía alertas cuando te acercas a un umbral. Confundir pronóstico con alerta es una trampa típica del examen.',
+            'Cost Explorer sirve para analizar el gasto y ver pronósticos, pero las alertas por umbral de presupuesto se configuran en AWS Budgets. Confundir pronóstico con alerta es una trampa típica del examen.',
           correct: false,
         },
         {
