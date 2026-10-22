@@ -1,10 +1,10 @@
 /** Contract over the real mission content: every decision is fair, explained and linked to theory. */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { findExamTask } from '@/modules/exam/domain/ExamTask';
 import { districtOf } from '@/modules/games/cumulo-city/world/districts';
-import { staticMissionCatalog } from './staticMissionCatalog';
+import { staticMissionCatalog, UNPLANNED_MISSIONS } from './staticMissionCatalog';
 
 const missions = await staticMissionCatalog.all();
 const theoryFile = (slug: string) => join(process.cwd(), 'src/content/theory', `${slug}.md`);
@@ -60,8 +60,19 @@ describe('mission catalog', () => {
     await expect(staticMissionCatalog.inBuilding('nowhere')).resolves.toEqual([]);
   });
 
-  it('uses unique mission ids', () => {
+  it('uses unique mission ids, and every mission file is in the campaign order', () => {
     expect(new Set(missions.map((m) => m.id)).size).toBe(missions.length);
+    expect(UNPLANNED_MISSIONS).toEqual([]);
+  });
+
+  it('gives every theory topic two missions, each with its own client and case', () => {
+    const topics = readdirSync(join(process.cwd(), 'src/content/theory')).map((f) => f.replace(/\.md$/, ''));
+    for (const topic of topics) {
+      const about = missions.filter((m) => m.topicSlug === topic);
+      expect(about.length, topic).toBe(2);
+      expect(new Set(about.map((m) => m.client.name)).size, topic).toBe(2);
+      expect(new Set(about.map((m) => m.title)).size, topic).toBe(2);
+    }
   });
 
   it('practices all four exam domains across the campaign', () => {
