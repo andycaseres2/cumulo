@@ -53,10 +53,10 @@ describe('supabasePlayerAuth', () => {
   });
 
   it('turns the session user into a player named after the sign-up name, or the email when there is none', async () => {
-    await expect(supabasePlayerAuth(api(), '/').currentPlayer()).resolves.toEqual({ displayName: 'Andy', isGuest: false, character: null });
+    await expect(supabasePlayerAuth(api(), '/').currentPlayer()).resolves.toEqual({ displayName: 'Andy', email: 'andy@example.com', isGuest: false, character: null });
 
     const noName = api({ getSession: vi.fn(async () => ({ data: { session: { user: { email: 'maria@example.com', user_metadata: {} } } }, error: null })) });
-    await expect(supabasePlayerAuth(noName, '/').currentPlayer()).resolves.toEqual({ displayName: 'maria', isGuest: false, character: null });
+    await expect(supabasePlayerAuth(noName, '/').currentPlayer()).resolves.toEqual({ displayName: 'maria', email: 'maria@example.com', isGuest: false, character: null });
 
     const signedOut = api({ getSession: vi.fn(async () => ({ data: { session: null }, error: null })) });
     await expect(supabasePlayerAuth(signedOut, '/').currentPlayer()).resolves.toBeNull();

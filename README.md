@@ -64,7 +64,7 @@ Supabase's built-in email service only sends a few emails per hour; configure cu
 | `/teoria` | Theory grouped by exam domain |
 | `/teoria/[slug]` | One theory topic |
 | `/ingresar` | Sign in or create an account (also available as a modal from the header and the game) |
-| `/progreso` | My progress: completed missions, best scores and exam domains practiced (requires an account) |
+| `/perfil` | Profile (requires an account): name, email, character, completed missions, best scores and exam domains practiced. Also reached from the avatar menu. `/progreso` redirects here |
 
 The "Salir" button at the top left leaves the game. Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3.
 

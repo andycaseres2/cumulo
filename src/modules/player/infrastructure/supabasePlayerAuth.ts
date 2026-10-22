@@ -47,7 +47,7 @@ function toPlayer(user: UserLike): Player {
   const displayName = typeof name === 'string' && name.trim() ? name.trim() : (user.email?.split('@')[0] ?? 'Jugador');
   // user_metadata is editable by the user, so it only holds preferences like this one, never permissions.
   const character = user.user_metadata?.character;
-  return { displayName, isGuest: false, character: isCharacter(character) ? character : null };
+  return { displayName, email: user.email, isGuest: false, character: isCharacter(character) ? character : null };
 }
 
 /** Adapter: player accounts with Supabase Auth (email and password). */

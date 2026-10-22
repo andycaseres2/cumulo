@@ -1,16 +1,11 @@
 ---
-/** Signed-in players see their name and "Salir"; everyone else only sees "Ingresar". */
+/** Signed-in players see a round avatar with their initials that opens their menu; everyone else sees "Ingresar". */
 import { routes } from '@/ui/routes';
 ---
 
-<div class="player" data-player-chip>
-  <span class="player-chip" title="Tu jugador" data-player hidden>
-    <span class="avatar" aria-hidden="true"></span>
-    <span class="visually-hidden">Jugando como </span>
-    <span data-player-name></span>
-  </span>
+<div class="player" data-player-chip data-profile-url={routes.profile}>
+  <div data-player-menu hidden></div>
   <a class="action" href={routes.signIn} data-sign-in>Ingresar</a>
-  <button class="action" type="button" data-sign-out hidden>Salir</button>
 </div>
 
 <style>
@@ -18,26 +13,6 @@ import { routes } from '@/ui/routes';
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-  }
-
-  .player-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-1) var(--space-3);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    background: var(--color-surface-raised);
-    border: 2px solid var(--color-border);
-    border-radius: 999px;
-  }
-
-  .avatar {
-    width: 0.75rem;
-    height: 0.75rem;
-    background: var(--color-accent);
-    border: 2px solid var(--color-shadow);
-    border-radius: 2px;
   }
 
   .action {
@@ -53,8 +28,7 @@ import { routes } from '@/ui/routes';
     border-radius: 999px;
   }
 
-  /* The display rules above would otherwise override the browser's [hidden] rule. */
-  .player-chip[hidden],
+  /* The display rule above would otherwise override the browser's [hidden] rule. */
   .action[hidden] {
     display: none;
   }
@@ -63,6 +37,8 @@ import { routes } from '@/ui/routes';
 <script>
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
+  import { renderPlayerMenu } from '@/modules/player/presentation/playerMenu';
+  import { routes } from '@/ui/routes';
 
   // "Ingresar" opens the sign-in modal; the link to /ingresar stays as a fallback without JavaScript.
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-player-chip] [data-sign-in]')) {
@@ -72,22 +48,22 @@ import { routes } from '@/ui/routes';
     });
   }
 
+  async function signOut() {
+    await playerAuth().signOut();
+    // The profile only makes sense signed in.
+    if (window.location.pathname.startsWith(routes.profile)) window.location.assign(routes.home);
+    else window.location.reload();
+  }
+
   async function render() {
     const player = await currentPlayer();
     for (const chip of document.querySelectorAll<HTMLElement>('[data-player-chip]')) {
-      chip.querySelector<HTMLElement>('[data-player]')!.hidden = player.isGuest;
-      chip.querySelector('[data-player-name]')!.textContent = player.isGuest ? '' : player.displayName;
+      const menuHost = chip.querySelector<HTMLElement>('[data-player-menu]')!;
       chip.querySelector<HTMLElement>('[data-sign-in]')!.hidden = !player.isGuest;
-      chip.querySelector<HTMLElement>('[data-sign-out]')!.hidden = player.isGuest;
+      menuHost.hidden = player.isGuest;
+      if (player.isGuest) menuHost.replaceChildren();
+      else renderPlayerMenu(menuHost, { player, profileUrl: chip.dataset.profileUrl!, onSignOut: signOut });
     }
-  }
-
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-player-chip] [data-sign-out]')) {
-    button.addEventListener('click', async () => {
-      button.disabled = true;
-      await playerAuth().signOut();
-      window.location.reload();
-    });
   }
 
   playerAuth().onChange(() => void render());

@@ -10,15 +10,16 @@ const topicTitles = Object.fromEntries((await theory.catalog()).flatMap((s) => s
 const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
 ---
 
-<PageLayout title="Mi progreso" description="Tus misiones completadas en Nimbus City y los dominios del examen que ya practicaste.">
+<PageLayout title="Mi perfil" description="Tu cuenta, tus misiones completadas en Nimbus City y los dominios del examen que ya practicaste.">
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
         eyebrow="Tu cuenta"
-        title="Mi progreso"
-        description="Las misiones que resolviste en Nimbus City, tu mejor puntaje en cada una y los dominios del examen CLF-C02 que ya practicaste."
+        title="Mi perfil"
+        description="Tu cuenta y tu avance: las misiones que resolviste en Nimbus City, tu mejor puntaje en cada una y los dominios del examen CLF-C02 que ya practicaste."
       />
+      <div data-profile></div>
       <div data-progress data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)}>
         <p class="loading">Cargando tu progreso…</p>
       </div>
@@ -43,6 +44,7 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { renderProgress } from '@/modules/missions/presentation/progressView';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
+  import { renderProfileCard } from '@/modules/player/presentation/profileCard';
   import { routes } from '@/ui/routes';
 
   const host = document.querySelector<HTMLElement>('[data-progress]');
@@ -52,11 +54,12 @@ const buildingNames = Object.fromEntries(BUILDINGS.map((b) => [b.id, b.name]));
       host.replaceChildren();
       openAuthModal({
         auth: playerAuth(),
-        reason: 'Ingresa para ver tu progreso en las misiones.',
+        reason: 'Ingresa para ver tu perfil y tu progreso en las misiones.',
         onSignedIn: () => window.location.reload(),
         onDismiss: () => window.location.assign(routes.home),
       });
     } else {
+      renderProfileCard(document.querySelector<HTMLElement>('[data-profile]')!, player);
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       renderProgress(host, await campaignOverview(), {
