@@ -6,13 +6,14 @@ import { NameTag } from '../entities/NameTag';
 import { Walker } from '../entities/Walker';
 import { Worker } from '../entities/Worker';
 import { renderOffice } from '../render/officeRenderer';
-import { placeMarker } from '../art/markers';
+import { MARKERS, placeMarker } from '../art/markers';
 import { Interactions, type Interactable } from '../systems/Interactions';
 import { MissionTracker } from '../systems/MissionTracker';
 import { PlayerControls } from '../systems/PlayerControls';
 import { clientOffer, clientOutro, START } from '../../missionTalk';
 import type { GameMissions, MissionBrief } from '../../missions';
 import { BUILDINGS, type BuildingDef } from '../../world/cityMap';
+import { guideArrow } from '../../world/guide';
 import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
 import { workerLine, workerName } from '../../world/officeTalk';
 import type { CityWakeData } from './CityScene';
@@ -26,6 +27,9 @@ const FADE_MS = 250;
 /** Inside a building: an office with workers; walking back over the doormat returns to the street. */
 export class InteriorScene extends Phaser.Scene {
   private building!: BuildingDef;
+  private guide!: Phaser.GameObjects.Image;
+  /** The client of the active mission, until the player reaches them. */
+  private guideTarget: Worker | null = null;
   private layout!: OfficeLayout;
   private player!: Walker;
   private nameTag!: NameTag;
@@ -59,6 +63,10 @@ export class InteriorScene extends Phaser.Scene {
     this.controls = new PlayerControls(this);
     this.interactions = new Interactions(this, this.player);
 
+    this.guideTarget = null;
+    this.guide = this.add.image(0, 0, MARKERS.guide).setDepth(9_100).setVisible(false);
+    this.tweens.add({ targets: this.guide, scale: { from: 1.2, to: 1.5 }, duration: 450, yoyo: true, repeat: -1 });
+
     const workers = this.spawnWorkers();
     this.physics.add.collider(this.player, solids);
     this.physics.add.collider(this.player, this.add.group(workers, { runChildUpdate: true }));
@@ -86,9 +94,24 @@ export class InteriorScene extends Phaser.Scene {
     if (this.interactions.busy) this.player.move(0, 0);
     else this.controls.drive(this.player);
     this.interactions.update(interact);
+    this.updateGuide();
 
     const doorX = (this.layout.door.x + 0.5) * TILE;
     if (this.player.y >= this.layout.door.y * TILE + 8 && Math.abs(this.player.x - doorX) < TILE) this.leave();
+  }
+
+  /** Arrow orbiting the player toward the client of the active mission, hidden once next to them. */
+  private updateGuide() {
+    if (!this.guideTarget || this.interactions.busy) {
+      this.guide.setVisible(false);
+      return;
+    }
+    const from = { x: this.player.x, y: this.player.y - 4 };
+    const { visible, angle } = guideArrow(from, { x: this.guideTarget.x, y: this.guideTarget.y }, 2 * TILE);
+    this.guide
+      .setVisible(visible)
+      .setRotation(angle)
+      .setPosition(from.x + Math.cos(angle) * 30, from.y + Math.sin(angle) * 30);
   }
 
   /** Shows the whole room centered when it fits the screen; otherwise follows the player. */
@@ -160,6 +183,7 @@ export class InteriorScene extends Phaser.Scene {
     worker.stayAtDesk();
     const portrait = { key: worker.look, frame: frameName('down', 0) };
     let marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
+    if (state === 'active') this.guideTarget = worker;
 
     talk.prompt = `[E] Hablar con ${brief.client.name}`;
     talk.open = () => {
@@ -179,6 +203,7 @@ export class InteriorScene extends Phaser.Scene {
       state = (await missions.status(brief.id)) === 'completed' ? 'completed' : 'active';
       marker.destroy();
       marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
+      if (state === 'completed') this.guideTarget = null;
       worker.face(this.player.x, this.player.y);
       this.interactions.start({ pages: clientOutro(brief, outcome.passed, portrait) });
       void tracker.refresh();

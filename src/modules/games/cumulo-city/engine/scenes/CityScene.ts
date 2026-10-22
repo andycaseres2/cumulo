@@ -12,7 +12,7 @@ import { PlayerControls } from '../systems/PlayerControls';
 import type { CurrentMission } from '../../missions';
 import { guideArrow } from '../../world/guide';
 import { MissionTracker } from '../systems/MissionTracker';
-import { openAccess, type AccessPolicy } from '../../world/access';
+import { missionAccess, type AccessPolicy } from '../../world/access';
 import { BUILDINGS, buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
 import { G } from '../../world/tileTypes';
 
@@ -41,7 +41,8 @@ export class CityScene extends Phaser.Scene {
   private interactions!: Interactions;
   private minimap!: Phaser.Cameras.Scene2D.Camera;
   private marker!: Phaser.GameObjects.Arc;
-  private readonly access: AccessPolicy = openAccess;
+  /** Doors open only for the active mission; updated whenever the mission changes. */
+  private access: AccessPolicy = missionAccess(null);
   private transitioning = false;
   private markers: Phaser.GameObjects.Image[] = [];
   private tracker!: MissionTracker;
@@ -149,6 +150,7 @@ export class CityScene extends Phaser.Scene {
 
   /** Updates markers and the guide target after the current mission changes. */
   private async applyMission(current: CurrentMission | null) {
+    this.access = missionAccess(current);
     const active = current?.state === 'active' ? BUILDINGS.find((b) => b.id === current.brief.buildingId) : undefined;
     if (active) {
       const door = doorTile(active);
