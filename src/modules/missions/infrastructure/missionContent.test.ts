@@ -47,8 +47,19 @@ describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission
 });
 
 describe('mission catalog', () => {
-  it('has the bakery mission and finds it by building', async () => {
-    expect((await staticMissionCatalog.findByBuilding('bakery'))?.id).toBe('bakery-elasticity');
+  it('starts the campaign with the bakery and finds missions by building', async () => {
+    expect(missions[0].id).toBe('bakery-elasticity');
+    expect((await staticMissionCatalog.findByBuilding('bank'))?.id).toBe('bank-access');
     expect(await staticMissionCatalog.findByBuilding('gym')).toBeNull();
+  });
+
+  it('uses unique mission ids and one mission per building', () => {
+    expect(new Set(missions.map((m) => m.id)).size).toBe(missions.length);
+    expect(new Set(missions.map((m) => m.buildingId)).size).toBe(missions.length);
+  });
+
+  it('practices all four exam domains across the campaign', () => {
+    const domains = new Set(missions.flatMap((m) => m.decisions.flatMap((d) => d.examTasks.map((t) => t[0]))));
+    expect([...domains].sort()).toEqual(['1', '2', '3', '4']);
   });
 });
