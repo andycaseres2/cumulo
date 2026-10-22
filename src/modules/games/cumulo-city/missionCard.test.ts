@@ -14,6 +14,7 @@ const brief: MissionBrief = {
 describe('missionCard', () => {
   it('offers a new mission with who asks for help, where, and an accept action', () => {
     expect(missionCard({ brief, state: 'offered' }, 'centro')).toEqual({
+      kind: 'offer',
       heading: 'Nueva misión',
       title: 'La Navidad que tumbó la web',
       detail: 'Rosa Quispe te espera en Pastelería Dulce Nube.',
@@ -23,6 +24,7 @@ describe('missionCard', () => {
 
   it('shows the objective of the active mission and no action', () => {
     expect(missionCard({ brief, state: 'active' }, 'centro')).toEqual({
+      kind: 'active',
       heading: 'Misión activa',
       title: 'La Navidad que tumbó la web',
       detail: 'Objetivo: entra a Pastelería Dulce Nube y habla con Rosa Quispe. Sigue la flecha.',
@@ -38,6 +40,7 @@ describe('missionCard', () => {
 
   it('says when the district has no clients left and points to the other districts', () => {
     expect(missionCard(null, 'financiero')).toEqual({
+      kind: 'done',
       heading: 'Misiones al día',
       title: '¡Ayudaste a todos los clientes del Distrito Financiero!',
       detail: 'Toma el bus en la parada para buscar clientes en otros distritos.',

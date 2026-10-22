@@ -217,10 +217,12 @@ export class InteriorScene extends Phaser.Scene {
     this.interactions.clearPrompt();
     const keyboard = this.input.keyboard!;
     keyboard.disableGlobalCapture();
+    this.game.events.emit(EVENTS.missionPlaying, true);
     try {
       return await missions.play(brief.id);
     } finally {
       keyboard.enableGlobalCapture();
+      this.game.events.emit(EVENTS.missionPlaying, false);
       this.controls.reset();
       this.inMission = false;
     }

@@ -3,6 +3,8 @@ import { districtOf, findBuilding, findDistrict, type DistrictId } from './world
 
 /** What the HUD mission card shows. */
 export interface MissionCardContent {
+  /** Offer to accept, mission in progress, or nothing left in the district. */
+  kind: 'offer' | 'active' | 'done';
   heading: string;
   title: string;
   detail: string;
@@ -14,6 +16,7 @@ export interface MissionCardContent {
 export function missionCard(current: CurrentMission | null, here: DistrictId): MissionCardContent {
   if (!current) {
     return {
+      kind: 'done',
       heading: 'Misiones al día',
       title: `¡Ayudaste a todos los clientes del ${findDistrict(here).name}!`,
       detail: 'Toma el bus en la parada para buscar clientes en otros distritos.',
@@ -24,6 +27,7 @@ export function missionCard(current: CurrentMission | null, here: DistrictId): M
   const place = findBuilding(brief.buildingId)?.name ?? brief.buildingId;
   if (state === 'offered') {
     return {
+      kind: 'offer',
       heading: 'Nueva misión',
       title: brief.title,
       detail: `${brief.client.name} te espera en ${place}.`,
@@ -33,6 +37,7 @@ export function missionCard(current: CurrentMission | null, here: DistrictId): M
   const district = districtOf(brief.buildingId);
   const bus = district && district.id !== here ? `toma el bus al ${district.name}, entra` : 'entra';
   return {
+    kind: 'active',
     heading: 'Misión activa',
     title: brief.title,
     detail: `Objetivo: ${bus} a ${place} y habla con ${brief.client.name}. Sigue la flecha.`,

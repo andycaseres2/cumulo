@@ -46,6 +46,8 @@ export const EVENTS = {
   toggleMap: 'hud:toggle-map',
   /** The city entered (true) or left (false) the full-map view. */
   mapMode: 'game:map-mode',
+  /** A mission panel opened (true) or closed (false) over the game; the HUD holds its reminders meanwhile. */
+  missionPlaying: 'game:mission-playing',
 } as const;
 
 export function pickZoom(width: number, height: number): number {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { EVENTS, FONT, minimapRect } from '../../config';
+import { cardKey, isIdle, nudgeDue } from '../../attention';
 import type { MissionCardContent } from '../../missionCard';
 import { MissionTracker } from '../systems/MissionTracker';
 import { Button } from '../ui/Button';
@@ -46,6 +47,19 @@ export class HudScene extends Phaser.Scene {
   private cardTitle!: Phaser.GameObjects.Text;
   private cardDetail!: Phaser.GameObjects.Text;
   private cardAction!: Button;
+  /** Where the card rests; entrance and shake tweens move it around this point. */
+  private cardHome = { x: 0, y: 0 };
+  private cardShown = '';
+  private cardTween?: Phaser.Tweens.Tween;
+  private badge!: Phaser.GameObjects.Container;
+  private badgePulse?: Phaser.Tweens.Tween;
+  private activeSince: number | null = null;
+  private lastNudgeAt: number | null = null;
+  private missionPlaying = false;
+  private lastInputAt = 0;
+  private idleModal!: Phaser.GameObjects.Container;
+  private idleShade!: Phaser.GameObjects.Rectangle;
+  private idlePanel!: Phaser.GameObjects.Container;
 
   constructor() {
     super('hud');
@@ -96,6 +110,8 @@ export class HudScene extends Phaser.Scene {
     this.card = this.add
       .container(0, 0, [this.cardBg, this.cardHeading, this.cardTitle, this.cardDetail, this.cardAction])
       .setVisible(false);
+    this.badge = this.createBadge('¡Tienes una misión activa!');
+    this.card.add(this.badge);
 
     this.dialogBox = this.add.rectangle(0, 0, 10, DIALOG_HEIGHT, PANEL, 0.95).setOrigin(0).setStrokeStyle(3, 0xffd166);
     this.portraitFrame = this.add
@@ -116,6 +132,9 @@ export class HudScene extends Phaser.Scene {
       }),
     );
 
+    this.createIdleModal();
+    this.watchInput();
+
     this.layout();
     this.scale.on('resize', this.layout, this);
     const handlers: [string, (...args: never[]) => void][] = [
@@ -125,6 +144,7 @@ export class HudScene extends Phaser.Scene {
       [EVENTS.location, this.showLocation],
       [EVENTS.missionCard, this.showMissionCard],
       [EVENTS.mapMode, this.showMapMode],
+      [EVENTS.missionPlaying, this.setMissionPlaying],
     ];
     for (const [event, handler] of handlers) this.game.events.on(event, handler, this);
     // The HUD starts a frame after the city: ask for the current mission instead of waiting for the next change.
@@ -136,6 +156,7 @@ export class HudScene extends Phaser.Scene {
   }
 
   update(time: number) {
+    this.checkAttention(time);
     if (!this.typing) return;
     const shown = revealedText(this.fullText, time - this.typingStartedAt, CHARS_PER_SECOND);
     this.dialogText.setText(shown);
@@ -213,7 +234,10 @@ export class HudScene extends Phaser.Scene {
 
     this.layoutDialogBox();
     this.header.setVisible(width > 560);
-    this.card.setPosition(width - CARD_WIDTH - 12, map.y + map.height + 12);
+    this.cardHome = { x: width - CARD_WIDTH - 12, y: map.y + map.height + 12 };
+    if (!this.cardTween?.isPlaying()) this.card.setPosition(this.cardHome.x, this.cardHome.y);
+    this.idleShade.setSize(width, height);
+    this.idlePanel.setPosition(width / 2, height / 2);
 
     const gap = 8;
     const bottom = height - 12;
@@ -250,6 +274,147 @@ export class HudScene extends Phaser.Scene {
     }
     this.cardBg.setSize(CARD_WIDTH, bottom + 12);
     this.card.setVisible(true);
+
+    const key = cardKey(content);
+    if (key === this.cardShown) return;
+    this.cardShown = key;
+    this.activeSince = content.kind === 'active' ? this.time.now : null;
+    this.lastNudgeAt = null;
+    this.hideBadge();
+    this.playCardEntrance(content.kind === 'offer');
+  }
+
+  /** The card slides in from the right edge; a new offer also blinks its heading to catch the eye. */
+  private playCardEntrance(announce: boolean) {
+    this.cardTween?.stop();
+    this.card.setPosition(this.scale.width + 12, this.cardHome.y).setAlpha(0);
+    this.cardTween = this.tweens.add({
+      targets: this.card,
+      x: this.cardHome.x,
+      alpha: 1,
+      duration: 420,
+      ease: 'Back.easeOut',
+      onComplete: () => {
+        if (!announce) return;
+        this.tweens.add({ targets: this.cardHeading, alpha: 0.2, duration: 220, yoyo: true, repeat: 2 });
+      },
+    });
+  }
+
+  /** Reminder for an accepted mission nobody started: the card shakes and the badge pops up and keeps pulsing. */
+  private nudgeMission() {
+    if (this.cardTween?.isPlaying()) return;
+    this.card.setPosition(this.cardHome.x, this.cardHome.y);
+    this.cardTween = this.tweens.add({
+      targets: this.card,
+      x: this.cardHome.x - 6,
+      duration: 55,
+      yoyo: true,
+      repeat: 3,
+      ease: 'Sine.easeInOut',
+      onComplete: () => this.card.setX(this.cardHome.x),
+    });
+    if (this.badge.visible) return;
+    this.badge.setVisible(true).setScale(0);
+    this.tweens.add({
+      targets: this.badge,
+      scale: 1,
+      duration: 260,
+      ease: 'Back.easeOut',
+      onComplete: () => {
+        this.badgePulse = this.tweens.add({ targets: this.badge, scale: 1.08, duration: 520, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      },
+    });
+  }
+
+  private hideBadge() {
+    this.badgePulse?.stop();
+    this.badgePulse = undefined;
+    this.tweens.killTweensOf(this.badge);
+    this.badge.setVisible(false).setScale(1);
+  }
+
+  private createBadge(text: string): Phaser.GameObjects.Container {
+    const label = this.add.text(0, 0, text, { fontFamily: FONT, fontSize: '8px', color: '#1b1b2a' }).setOrigin(0.5);
+    const width = Math.ceil(label.width) + 16;
+    const bg = this.add.rectangle(0, 0, width, Math.ceil(label.height) + 10, 0xff6b6b).setStrokeStyle(2, 0x1b1b2a);
+    // Hangs from the top-right corner of the card, like a tag.
+    return this.add.container(CARD_WIDTH - width / 2 - 8, -2, [bg, label]).setVisible(false);
+  }
+
+  /** Full-screen shade with a centered panel; any key or click closes it. */
+  private createIdleModal() {
+    this.idleShade = this.add.rectangle(0, 0, 10, 10, 0x000000, 0.55).setOrigin(0).setInteractive();
+    const panelWidth = 360;
+    const title = this.add.text(0, -44, '¿Sigues ahí?', { fontFamily: FONT, fontSize: '14px', color: '#ffd166' }).setOrigin(0.5);
+    const text = this.add
+      .text(0, -6, 'Notamos que llevas un rato sin moverte. Tu avance está guardado.', {
+        fontFamily: FONT,
+        fontSize: '8px',
+        color: '#ffffff',
+        align: 'center',
+        lineSpacing: 6,
+        wordWrap: { width: panelWidth - 40 },
+      })
+      .setOrigin(0.5);
+    const back = new Button(this, 0, 42, 'Sigo aquí', () => this.closeIdleModal(), 10);
+    const bg = this.add.rectangle(0, 0, panelWidth, 150, PANEL, 0.97).setStrokeStyle(3, 0xffd166);
+    this.idlePanel = this.add.container(0, 0, [bg, title, text, back]);
+    this.idleModal = this.add.container(0, 0, [this.idleShade, this.idlePanel]).setDepth(10).setVisible(false);
+  }
+
+  private openIdleModal() {
+    this.idleModal.setVisible(true).setAlpha(0);
+    this.idlePanel.setScale(0.85);
+    this.tweens.add({ targets: this.idleModal, alpha: 1, duration: 200 });
+    this.tweens.add({ targets: this.idlePanel, scale: 1, duration: 320, ease: 'Back.easeOut' });
+  }
+
+  private closeIdleModal() {
+    if (!this.idleModal.visible) return;
+    this.tweens.add({
+      targets: this.idleModal,
+      alpha: 0,
+      duration: 160,
+      onComplete: () => this.idleModal.setVisible(false),
+    });
+  }
+
+  /** Keys, clicks and the wheel anywhere on the page count as activity, and close the idle question. */
+  private watchInput() {
+    this.lastInputAt = this.time.now;
+    const onInput = () => {
+      this.lastInputAt = this.time.now;
+      this.closeIdleModal();
+    };
+    const events = ['keydown', 'pointerdown', 'wheel'] as const;
+    for (const event of events) window.addEventListener(event, onInput, { passive: true });
+    this.events.once('shutdown', () => {
+      for (const event of events) window.removeEventListener(event, onInput);
+    });
+  }
+
+  private setMissionPlaying(playing: boolean) {
+    this.missionPlaying = playing;
+    this.lastInputAt = this.time.now;
+    // Restart the reminder clock after a try: failing a mission is not ignoring it.
+    if (this.activeSince !== null) this.activeSince = this.time.now;
+    this.lastNudgeAt = null;
+    this.hideBadge();
+  }
+
+  /** Reminders wait while a mission panel or a dialog is open: the player is busy, not away. */
+  private checkAttention(now: number) {
+    if (this.missionPlaying || this.dialog.visible) {
+      this.lastInputAt = Math.max(this.lastInputAt, now - 1);
+      return;
+    }
+    if (!this.idleModal.visible && isIdle(this.lastInputAt, now)) this.openIdleModal();
+    if (this.idleModal.visible) return;
+    if (nudgeDue(this.activeSince, this.lastNudgeAt, now)) {
+      this.lastNudgeAt = now;
+      this.nudgeMission();
+    }
   }
 
   private layoutDialogText() {
