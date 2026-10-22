@@ -27,8 +27,8 @@ quiz:
         explanation: "Amplify sirve para crear y desplegar aplicaciones web y móviles; no es el servicio de compilación y pruebas que pide el escenario."
   - prompt: "La app de una empresa de Buenos Aires se vuelve lenta en horas pico. El equipo quiere seguir cada solicitud a través de sus microservicios, bases de datos y APIs, y ver un mapa de trazas para encontrar el cuello de botella. ¿Qué servicio debe usar?"
     options:
-      - label: "Amazon CloudWatch"
-        explanation: "CloudWatch monitorea métricas, logs y alarmas, pero el servicio de rastreo distribuido que sigue cada solicitud y genera el mapa de trazas es X-Ray."
+      - label: "Una alarma de Amazon CloudWatch sobre la latencia"
+        explanation: "Una alarma avisa cuando la aplicación está lenta, pero no sigue cada solicitud entre los servicios ni genera el mapa de trazas; eso lo hace X-Ray."
       - label: "AWS CloudTrail"
         explanation: "CloudTrail audita quién hizo qué llamada a la API; no mide el rendimiento de las solicitudes de la aplicación."
       - label: "AWS CodePipeline"
@@ -145,7 +145,7 @@ Relación clave: **CodePipeline orquesta** todo el flujo; **CodeBuild** es la et
 
 Esto se llama **rastreo distribuido** (*distributed tracing*). Con los datos de las trazas, X-Ray genera un **mapa de trazas** (*trace map*) que muestra el cliente, el servicio frontal y los servicios de backend. Sirve para encontrar **cuellos de botella**, picos de latencia y errores, tanto en desarrollo como en producción.
 
-**X-Ray vs. CloudWatch vs. CloudTrail:** X-Ray sigue el recorrido de una solicitud a través de los servicios; CloudWatch monitorea métricas, logs y alarmas; CloudTrail audita quién hizo qué llamada a la API.
+**X-Ray vs. CloudWatch vs. CloudTrail:** X-Ray sigue el recorrido de una solicitud a través de los servicios; CloudWatch monitorea métricas, logs y alarmas (su consola también puede mostrar las trazas que recoge X-Ray); CloudTrail audita quién hizo qué llamada a la API.
 
 ## AWS CLI y SDKs: acceso programático
 

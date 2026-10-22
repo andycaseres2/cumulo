@@ -20,7 +20,7 @@ export const startupCosts: Mission = {
   outro: {
     passed: [
       '¡Increíble! Ahora sé en qué se va el dinero, recibo alertas antes de pasarme y cada equipo ve su propio gasto gracias a las etiquetas.',
-      'Con servidores del tamaño correcto y Spot para los procesos nocturnos, la próxima reunión con los inversionistas va a ser muy distinta. ¡Gracias, consultor!',
+      'Con servidores del tamaño correcto y Spot para los procesos nocturnos, la próxima reunión con los inversionistas va a ser muy distinta. ¡Gracias!',
     ],
     failed: [
       'Mmm... todavía no tengo claro cómo vamos a controlar la factura. Algunas de estas decisiones no me convencen.',

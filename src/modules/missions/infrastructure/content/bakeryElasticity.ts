@@ -20,7 +20,7 @@ export const bakeryElasticity: Mission = {
   outro: {
     passed: [
       '¡Lo logramos! Con Auto Scaling, el balanceador de carga y varias Zonas de Disponibilidad, la página va a aguantar toda la Navidad.',
-      'Y en enero la factura bajará sola. Muchas gracias, consultor. ¡Pasa cuando quieras, siempre habrá un panetón para ti!',
+      'Y en enero la factura bajará sola. Muchas gracias. ¡Pasa cuando quieras, siempre habrá un panetón para ti!',
     ],
     failed: [
       'Mmm... no estoy segura de que esto aguante diciembre. Algunas decisiones no me convencen.',

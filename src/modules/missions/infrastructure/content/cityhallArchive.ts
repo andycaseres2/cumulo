@@ -12,7 +12,7 @@ export const cityhallArchive: Mission = {
   title: 'Diez años de papeles',
   client: { name: 'Patricia Huamán', role: 'Jefa de Archivo de la Municipalidad' },
   intro: [
-    'Bienvenido a la Municipalidad. Soy Patricia Huamán, jefa del archivo. Aquí guardamos licencias, partidas, planos y resoluciones de toda la ciudad.',
+    'Te damos la bienvenida a la Municipalidad. Soy Patricia Huamán, jefa del archivo. Aquí guardamos licencias, partidas, planos y resoluciones de toda la ciudad.',
     'Ya escaneamos casi todo, pero la ley nos obliga a conservar cada documento durante diez años. Después del primer mes, casi nadie vuelve a pedirlos.',
     'Hoy todo vive en un servidor de archivos en el sótano. Se está quedando sin espacio, y si un día se inunda el sótano, perdemos una década de historia de la ciudad.',
     'Y para colmo, cada año vienen los auditores a revisar que todo esté protegido y en regla. Quiero llevar el archivo a la nube sin gastar de más. ¿Me ayudas?',
@@ -20,7 +20,7 @@ export const cityhallArchive: Mission = {
   outro: {
     passed: [
       '¡Qué tranquilidad! Los documentos viejos descansan en la clase más barata, se mueven solos con el ciclo de vida y las carpetas del sótano ahora guardan sus datos en la nube.',
-      'Y cuando lleguen los auditores, ya sé dónde descargar los informes de AWS. Muchas gracias, consultor. Aquí en la Municipalidad siempre tendrás las puertas abiertas.',
+      'Y cuando lleguen los auditores, ya sé dónde descargar los informes de AWS. Muchas gracias. Aquí en la Municipalidad siempre tendrás las puertas abiertas.',
     ],
     failed: [
       'Mmm... con este plan no sé si pasaríamos la auditoría, ni si la factura sería razonable. Algunas decisiones no me cierran.',

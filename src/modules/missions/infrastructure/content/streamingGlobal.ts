@@ -12,7 +12,7 @@ export const streamingGlobal: Mission = {
   title: 'Videos lentos fuera de Lima',
   client: { name: 'Diego Paredes', role: 'CTO de StreamLlama' },
   intro: [
-    '¡Hola, bienvenido! Soy Diego Paredes, CTO de StreamLlama. Somos una startup peruana de streaming: series cortas, documentales y conciertos de artistas latinoamericanos.',
+    '¡Hola, qué bueno verte! Soy Diego Paredes, CTO de StreamLlama. Somos una startup peruana de streaming: series cortas, documentales y conciertos de artistas latinoamericanos.',
     'Todos nuestros servidores y todos nuestros videos están en un solo lugar, aquí en Lima. Mientras casi todo el público era peruano, funcionaba bastante bien.',
     'Pero ahora tenemos cada vez más usuarios en Ciudad de México y en Bogotá, y se quejan de que los videos tardan muchísimo en empezar. Algunos cierran la app antes de ver el primer minuto.',
     'Queremos crecer en toda Latinoamérica, y nuestra biblioteca de videos crece cada semana. Necesito que el video llegue rápido a todos lados y que guardarlo no nos cueste una fortuna. ¿Me ayudas?',
@@ -20,7 +20,7 @@ export const streamingGlobal: Mission = {
   outro: {
     passed: [
       '¡Excelente trabajo! Con CloudFront en las ubicaciones de borde, los videos en S3 y una política de ciclo de vida, por fin tenemos un plan para toda Latinoamérica.',
-      'Nuestros usuarios en México y Bogotá van a notar la diferencia desde el primer clic. Muchas gracias, consultor. ¡Te debo una suscripción de por vida!',
+      'Nuestros usuarios en México y Bogotá van a notar la diferencia desde el primer clic. Muchas gracias. ¡Te debo una suscripción de por vida!',
     ],
     failed: [
       'Mmm... no estoy seguro de que con este plan los videos lleguen rápido a México y Bogotá. Hay decisiones que todavía no me cierran.',

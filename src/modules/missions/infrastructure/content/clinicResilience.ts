@@ -12,7 +12,7 @@ export const clinicResilience: Mission = {
   title: 'Sistemas que no pueden caerse',
   client: { name: 'Dr. Jorge Salazar', role: 'Director médico de Clínica Vida' },
   intro: [
-    'Bienvenido, gracias por venir. Soy el doctor Jorge Salazar, director médico de Clínica Vida. Atendemos a cientos de pacientes cada día aquí en Quito.',
+    'Gracias por venir. Soy el doctor Jorge Salazar, director médico de Clínica Vida. Atendemos a cientos de pacientes cada día aquí en Quito.',
     'Todo pasa por nuestro sistema: las citas, las historias clínicas, los resultados de laboratorio. Si el sistema se detiene, los médicos trabajan a ciegas.',
     'El año pasado un corte de energía apagó nuestros servidores durante horas. No podíamos ver las alergias de un paciente ni confirmar una cita. Fueron horas muy angustiantes.',
     'Estamos llevando el sistema a AWS y quiero hacerlo bien: que no se caiga, que nos avise antes de que algo falle y que podamos recuperarnos de un desastre. ¿Me ayuda a diseñarlo?',
@@ -20,7 +20,7 @@ export const clinicResilience: Mission = {
   outro: {
     passed: [
       'Excelente. Con la base de datos en varias zonas, alarmas que nos avisan a tiempo y un plan de recuperación probado, por fin puedo dormir tranquilo.',
-      'Mis pacientes nunca sabrán todo lo que hicimos hoy, y eso es justamente lo mejor. Muchas gracias, consultor. Aquí siempre tendrá las puertas abiertas.',
+      'Mis pacientes nunca sabrán todo lo que hicimos hoy, y eso es justamente lo mejor. Muchas gracias. Aquí siempre tendrá las puertas abiertas.',
     ],
     failed: [
       'Le agradezco el esfuerzo, pero todavía no me siento seguro. Con la salud de las personas no podemos dejar nada al azar.',

@@ -20,7 +20,7 @@ export const bankAccess: Mission = {
   outro: {
     passed: [
       'Excelente. Ahora sé qué parcha AWS y qué nos toca a nosotros, cada desarrollador tiene su propia identidad con los permisos justos y la cuenta raíz está bajo llave.',
-      'Con los datos cifrados con AWS KMS y CloudTrail registrando cada acción, por fin puedo mirar a los auditores a los ojos. Gracias, consultor: en este banco siempre tendrás las puertas abiertas.',
+      'Con los datos cifrados con AWS KMS y CloudTrail registrando cada acción, por fin puedo mirar a los auditores a los ojos. Gracias: en este banco siempre tendrás las puertas abiertas.',
     ],
     failed: [
       'Mmm... con estas respuestas no creo que pasemos la auditoría. Hay decisiones que todavía me preocupan.',

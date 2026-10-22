@@ -65,6 +65,11 @@ describe('mission catalog', () => {
     expect(UNPLANNED_MISSIONS).toEqual([]);
   });
 
+  it('gives every client a name of their own in the whole city', () => {
+    const names = missions.map((m) => m.client.name);
+    expect(names.filter((name, i) => names.indexOf(name) !== i)).toEqual([]);
+  });
+
   it('gives every theory topic two missions, each with its own client and case', () => {
     const topics = readdirSync(join(process.cwd(), 'src/content/theory')).map((f) => f.replace(/\.md$/, ''));
     for (const topic of topics) {

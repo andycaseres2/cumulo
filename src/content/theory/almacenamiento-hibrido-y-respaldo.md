@@ -159,7 +159,7 @@ Un entorno **híbrido** combina tu centro de datos (*on-premises*) con la nube. 
 Conceptos clave:
 
 - **Backup plans** (planes de respaldo): políticas que dicen cuándo respaldar, cuánto tiempo retener y a dónde copiar. Se pueden asignar a recursos mediante **etiquetas** (*tags*).
-- **Backup vaults** (bóvedas): contenedores cifrados donde se guardan los respaldos, separados de los recursos de origen. **AWS Backup Vault Lock** impide que alguien, incluido tú, borre respaldos o cambie su retención (modelo *write-once-read-many*).
+- **Backup vaults** (bóvedas): contenedores cifrados donde se guardan los respaldos, separados de los recursos de origen. **AWS Backup Vault Lock** protege los respaldos con un modelo *write-once-read-many*: en modo compliance, nadie (ni siquiera el usuario raíz) puede borrarlos ni acortar su retención; en modo governance, solo quien tenga permisos de IAM especiales puede hacerlo.
 - **Copias entre Regiones y entre cuentas** de AWS Organizations, útiles para continuidad del negocio y cumplimiento.
 - **Lifecycle** de respaldos hacia almacenamiento frío más barato y **AWS Backup Audit Manager** para demostrar cumplimiento.
 
