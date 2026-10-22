@@ -2,15 +2,16 @@
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { SITE_NAME } from '@/ui/site';
 ---
 
-<PageLayout title="Ingresar" description="Ingresa o crea tu cuenta para guardar tu progreso en Nimbus.">
+<PageLayout title="Ingresar" description={`Ingresa o crea tu cuenta para guardar tu progreso en ${SITE_NAME}.`}>
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
         eyebrow="Tu cuenta"
-        title="Ingresa a Nimbus"
+        title={`Ingresa a ${SITE_NAME}`}
         description="Necesitas una cuenta para jugar. Con ella, tu nombre aparece en el juego y tu avance en las misiones queda guardado en tu cuenta. La teoría es libre para todos."
       />
       <div data-auth-forms></div>

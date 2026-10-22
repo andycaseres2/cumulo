@@ -1,4 +1,4 @@
-# Nimbus
+# Cúmulo
 
 A platform to prepare for the AWS Certified Cloud Practitioner exam (CLF-C02): practice games where you solve realistic cloud problems, and theory organized by the four official exam domains. Its first game is **Nimbus City**. The platform name lives in `src/ui/site.ts`.
 
