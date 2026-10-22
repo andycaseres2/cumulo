@@ -11,6 +11,7 @@ import Card from '@/ui/molecules/Card.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 import Hero from '@/ui/organisms/Hero.astro';
 import { routes } from '@/ui/routes';
+import { SITE_NAME } from '@/ui/site';
 
 const allGames = await games.list();
 const featured = allGames.find(isPlayable);
@@ -20,7 +21,7 @@ const topicCount = catalog.reduce((sum, section) => sum + section.topics.length,
 ---
 
 <PageLayout
-  title="Nimbus City"
+  title={SITE_NAME}
   description="Prepárate para AWS Certified Cloud Practitioner con juegos de práctica y teoría clara, de cero a examen."
 >
   <Hero

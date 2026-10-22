@@ -1,4 +1,5 @@
 ---
+import { SITE_NAME } from '@/ui/site';
 import '@/ui/styles/global.css';
 
 export interface Props {
@@ -7,7 +8,7 @@ export interface Props {
 }
 
 const { title, description } = Astro.props;
-const fullTitle = title === 'Nimbus City' ? title : `${title} · Nimbus City`;
+const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 ---
 
 <!doctype html>

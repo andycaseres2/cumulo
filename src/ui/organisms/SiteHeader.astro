@@ -2,6 +2,7 @@
 import PlayerChip from '@/modules/player/presentation/PlayerChip.astro';
 import Container from '@/ui/atoms/Container.astro';
 import { routes } from '@/ui/routes';
+import { SITE_NAME } from '@/ui/site';
 
 const NAV = [
   { label: 'Inicio', href: routes.home },
@@ -18,7 +19,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     <div class="bar">
       <a class="brand" href={routes.home}>
         <span class="logo" aria-hidden="true"></span>
-        Nimbus City
+        {SITE_NAME}
       </a>
       <nav aria-label="Principal">
         <ul class="nav">

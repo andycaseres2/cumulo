@@ -25,7 +25,7 @@ describe('auth modal', () => {
     openAuthModal({ auth: fakeAuth(), onSignedIn: () => {} });
 
     expect(dialog()).not.toBeNull();
-    expect(dialog()!.textContent).toContain('Ingresa a Nimbus City');
+    expect(dialog()!.querySelector('#auth-modal-title')?.textContent).toBe('Ingresa a Nimbus');
     expect(dialog()!.querySelector('input[name="email"]')).not.toBeNull();
   });
 

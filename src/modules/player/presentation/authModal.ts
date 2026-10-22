@@ -1,5 +1,6 @@
 import type { PlayerAuth } from '../domain/PlayerAuth';
 import { renderAuthForms } from './authForms';
+import { SITE_NAME } from '@/ui/site';
 import './authModal.css';
 
 export interface AuthModalOptions {
@@ -24,7 +25,7 @@ export function openAuthModal({ auth, onSignedIn, onDismiss, reason }: AuthModal
   const title = document.createElement('h2');
   title.id = 'auth-modal-title';
   title.className = 'auth-modal-title';
-  title.textContent = 'Ingresa a Nimbus City';
+  title.textContent = `Ingresa a ${SITE_NAME}`;
 
   const close = document.createElement('button');
   close.type = 'button';
