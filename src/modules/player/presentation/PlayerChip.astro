@@ -1,6 +1,10 @@
 ---
 /** Signed-in players see a round avatar with their initials that opens their menu; everyone else sees "Ingresar". */
-import { routes } from '@/ui/routes';
+import { localeOf } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
+
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
 ---
 
 <div class="player" data-player-chip data-profile-url={routes.profile}>
@@ -38,7 +42,10 @@ import { routes } from '@/ui/routes';
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { renderPlayerMenu } from '@/modules/player/presentation/playerMenu';
-  import { routes } from '@/ui/routes';
+  import { currentLocale } from '@/i18n/client';
+  import { routesFor } from '@/ui/routes';
+
+  const routes = routesFor(currentLocale());
 
   // "Ingresar" opens the sign-in modal; the link to /ingresar stays as a fallback without JavaScript.
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-player-chip] [data-sign-in]')) {

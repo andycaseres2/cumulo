@@ -4,6 +4,11 @@ import GameGrid from '@/modules/games/presentation/GameGrid.astro';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { localePaths } from '@/i18n/page';
+
+export function getStaticPaths() {
+  return localePaths();
+}
 
 const allGames = await games.list();
 ---

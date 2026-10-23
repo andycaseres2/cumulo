@@ -4,9 +4,16 @@ import { ALL_BUILDINGS, DISTRICTS } from '@/modules/games/cumulo-city/world/dist
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { localeOf, localePaths } from '@/i18n/page';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const locale = localeOf(Astro);
 
 // Names known at build time, handed to the client view that renders the player's progress.
-const topics = (await theory.catalog()).flatMap((s) => s.topics);
+const topics = (await theory.catalog(locale)).flatMap((s) => s.topics);
 const topicTitles = Object.fromEntries(topics.map((t) => [t.slug, t.title]));
 const buildingNames = Object.fromEntries(ALL_BUILDINGS.map((b) => [b.id, b.name]));
 const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
@@ -66,7 +73,10 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
   import { RIVALS } from '@/modules/duel/infrastructure/rivals';
   import { renderDuelProgress } from '@/modules/duel/presentation/duelProgressView';
   import { renderTheoryProgress } from '@/modules/theory/presentation/theoryProgressView';
-  import { routes } from '@/ui/routes';
+  import { currentLocale } from '@/i18n/client';
+  import { routesFor } from '@/ui/routes';
+
+  const routes = routesFor(currentLocale());
 
   const host = document.querySelector<HTMLElement>('[data-progress]');
   if (host) {

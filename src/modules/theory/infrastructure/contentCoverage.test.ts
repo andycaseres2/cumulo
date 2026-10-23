@@ -9,7 +9,7 @@ import { EXAM_DOMAIN_IDS } from '@/modules/exam/domain/ExamDomain';
 import { EXAM_TASKS, findExamTask } from '@/modules/exam/domain/ExamTask';
 import { allInScopeServices } from '@/modules/exam/domain/inScopeServices';
 
-const CONTENT_DIR = join(process.cwd(), 'src/content/theory');
+const CONTENT_DIR = join(process.cwd(), 'src/content/theory/es');
 
 interface Frontmatter {
   file: string;

@@ -2,6 +2,11 @@
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { localePaths } from '@/i18n/page';
+
+export function getStaticPaths() {
+  return localePaths();
+}
 ---
 
 <PageLayout
@@ -36,11 +41,14 @@ import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 <script>
   import { duelProgressStore } from '@/composition/duel';
   import { currentPlayer, playerAuth } from '@/composition/player';
-  import { SERVICE_FAMILIES } from '@/modules/duel/infrastructure/serviceFamilies';
+  import { familiesFor } from '@/modules/duel/infrastructure/serviceFamilies';
   import { RIVALS } from '@/modules/duel/infrastructure/rivals';
   import { renderDuelGame } from '@/modules/duel/presentation/duelGame';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
-  import { routes } from '@/ui/routes';
+  import { currentLocale } from '@/i18n/client';
+  import { routesFor } from '@/ui/routes';
+
+  const routes = routesFor(currentLocale());
 
   const host = document.querySelector<HTMLElement>('[data-service-duel]');
   if (host) {
@@ -57,7 +65,7 @@ import SectionHeading from '@/ui/molecules/SectionHeading.astro';
     } else {
       const store = await duelProgressStore();
       renderDuelGame(host, {
-        families: SERVICE_FAMILIES,
+        families: familiesFor(currentLocale()),
         rivals: RIVALS,
         progress: await store.load(),
         playerName: player.displayName,

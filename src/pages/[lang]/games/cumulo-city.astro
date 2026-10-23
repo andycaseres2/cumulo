@@ -1,6 +1,14 @@
 ---
 import GameLayout from '@/ui/layouts/GameLayout.astro';
-import { routes } from '@/ui/routes';
+import { localeOf, localePaths } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
 ---
 
 <GameLayout
@@ -38,7 +46,10 @@ import { routes } from '@/ui/routes';
   import { chooseCharacter, currentPlayer, deviceHasCharacter, playerAuth, rememberCharacterOnDevice } from '@/composition/player';
   import { mountCumuloCity } from '@/modules/games/cumulo-city/mount';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
-  import { routes } from '@/ui/routes';
+  import { currentLocale } from '@/i18n/client';
+  import { routesFor } from '@/ui/routes';
+
+  const routes = routesFor(currentLocale());
 
   const root = document.querySelector<HTMLElement>('[data-cumulo-city]');
   if (root) {

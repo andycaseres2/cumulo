@@ -6,8 +6,9 @@ import { findExamTask } from '@/modules/exam/domain/ExamTask';
 import { districtOf } from '@/modules/games/cumulo-city/world/districts';
 import { staticMissionCatalog, UNPLANNED_MISSIONS } from './staticMissionCatalog';
 
-const missions = await staticMissionCatalog.all();
-const theoryFile = (slug: string) => join(process.cwd(), 'src/content/theory', `${slug}.md`);
+const spanish = staticMissionCatalog('es');
+const missions = await spanish.all();
+const theoryFile = (slug: string) => join(process.cwd(), 'src/content/theory/es', `${slug}.md`);
 const topicDomain = (slug: string) => readFileSync(theoryFile(slug), 'utf8').match(/^domain:\s*"?([\w-]+)"?/m)?.[1];
 
 describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission) => {
@@ -56,8 +57,8 @@ describe.each(missions.map((m) => [m.id, m] as const))('mission %s', (_, mission
 describe('mission catalog', () => {
   it('starts the Centro campaign with the bakery and finds missions by building', async () => {
     expect(missions.find((m) => m.track === 'downtown')?.id).toBe('bakery-elasticity');
-    expect((await staticMissionCatalog.inBuilding('bank')).map((m) => m.id)).toContain('bank-access');
-    await expect(staticMissionCatalog.inBuilding('nowhere')).resolves.toEqual([]);
+    expect((await spanish.inBuilding('bank')).map((m) => m.id)).toContain('bank-access');
+    await expect(spanish.inBuilding('nowhere')).resolves.toEqual([]);
   });
 
   it('uses unique mission ids, and every mission file is in the campaign order', () => {
@@ -71,7 +72,7 @@ describe('mission catalog', () => {
   });
 
   it('gives every theory topic two missions, each with its own client and case', () => {
-    const topics = readdirSync(join(process.cwd(), 'src/content/theory')).map((f) => f.replace(/\.md$/, ''));
+    const topics = readdirSync(join(process.cwd(), 'src/content/theory/es')).map((f) => f.replace(/\.md$/, ''));
     for (const topic of topics) {
       const about = missions.filter((m) => m.topicSlug === topic);
       expect(about.length, topic).toBe(2);

@@ -1,5 +1,7 @@
-/** Pages search engines should not list: they are personal or only a sign-in form. */
-const PRIVATE_PATHS = ['/profile', '/sign-in'];
+import { LOCALES } from '@/i18n/locales';
+
+/** Pages search engines should not list, in every language: they are personal or only a sign-in form. */
+const PRIVATE_PATHS = LOCALES.flatMap((locale) => [`/${locale}/profile`, `/${locale}/sign-in`]);
 
 const escapeXml = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

@@ -13,11 +13,15 @@ import { playMission } from '@/modules/missions/application/playMission';
 import type { MissionProgressStore } from '@/modules/missions/domain/MissionProgress';
 import { localProgressStore, takeLegacyProgress } from '@/modules/missions/infrastructure/localStorageProgressStore';
 import { renamedProgressStore } from '@/modules/missions/infrastructure/renamedProgressStore';
-import { staticMissionCatalog as catalog } from '@/modules/missions/infrastructure/staticMissionCatalog';
+import { staticMissionCatalog } from '@/modules/missions/infrastructure/staticMissionCatalog';
 import { supabaseProgressStore } from '@/modules/missions/infrastructure/supabaseProgressStore';
 import { mergeProgress, syncedProgressStore } from '@/modules/missions/infrastructure/syncedProgressStore';
 import { openMissionPanel } from '@/modules/missions/presentation/missionPanel';
-import { routes } from '@/ui/routes';
+import { currentLocale } from '@/i18n/client';
+import { routesFor } from '@/ui/routes';
+
+/** Missions in the language of the page. */
+const catalog = staticMissionCatalog(currentLocale());
 
 let store: Promise<MissionProgressStore> | undefined;
 
@@ -73,7 +77,7 @@ export function gameMissions(host: HTMLElement): GameMissions {
     play: async (missionId) => {
       const mission = (await catalog.all()).find((m) => m.id === missionId);
       if (!mission) return null;
-      return playMission(await progressStore(), mission, (m) => openMissionPanel({ mission: m, host, theoryUrl: routes.topic }));
+      return playMission(await progressStore(), mission, (m) => openMissionPanel({ mission: m, host, theoryUrl: routesFor(currentLocale()).topic }));
     },
   };
 }

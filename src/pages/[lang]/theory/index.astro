@@ -4,8 +4,15 @@ import CourseCard from '@/modules/theory/presentation/CourseCard.astro';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { localeOf, localePaths } from '@/i18n/page';
 
-const catalog = await theory.catalog();
+export function getStaticPaths() {
+  return localePaths();
+}
+
+const locale = localeOf(Astro);
+
+const catalog = await theory.catalog(locale);
 const topics = catalog.flatMap((section) => section.topics);
 const readingMinutes = topics.reduce((total, topic) => total + topic.readingMinutes, 0);
 ---

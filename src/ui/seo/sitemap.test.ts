@@ -17,8 +17,8 @@ describe('robotsTxt', () => {
   it('allows crawling, keeps private pages out and points to the sitemap', () => {
     const txt = robotsTxt(site);
     expect(txt).toContain('User-agent: *');
-    expect(txt).toContain('Disallow: /profile');
-    expect(txt).toContain('Disallow: /sign-in');
+    expect(txt).toContain('Disallow: /es/profile');
+    expect(txt).toContain('Disallow: /en/sign-in');
     expect(txt).toContain('Sitemap: https://cumulo.example/sitemap.xml');
   });
 

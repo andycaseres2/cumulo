@@ -6,7 +6,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const CONTENT_DIR = join(process.cwd(), 'src/content/theory');
+const CONTENT_DIR = join(process.cwd(), 'src/content/theory/es');
 
 /** The indented YAML block under a top-level frontmatter key, up to the next top-level key. */
 function block(frontmatter: string, key: string): string {

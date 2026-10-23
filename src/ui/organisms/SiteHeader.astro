@@ -1,18 +1,28 @@
 ---
 import PlayerChip from '@/modules/player/presentation/PlayerChip.astro';
 import Container from '@/ui/atoms/Container.astro';
-import { routes } from '@/ui/routes';
+import { LOCALES, swapLocale } from '@/i18n/locales';
+import { siteMessages } from '@/i18n/messages/site';
+import { localeOf } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
 import { SITE_NAME } from '@/ui/site';
 
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
+const t = siteMessages[locale];
+
 const NAV = [
-  { label: 'Inicio', href: routes.home },
-  { label: 'Juegos', href: routes.games },
-  { label: 'Teoría', href: routes.theory },
-  { label: 'Simulacro', href: routes.practiceExam },
+  { label: t.nav.home, href: routes.home },
+  { label: t.nav.games, href: routes.games },
+  { label: t.nav.theory, href: routes.theory },
+  { label: t.nav.practiceExam, href: routes.practiceExam },
 ];
 
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(`${href}/`));
+const trim = (href: string) => href.replace(/\/$/, '');
+const path = trim(Astro.url.pathname);
+const isCurrent = (href: string) => (href === routes.home ? path === trim(href) : path === href || path.startsWith(`${href}/`));
+/** The same page in each language, for the switch. */
+const languages = LOCALES.map((code) => ({ code, label: t.language[code], href: swapLocale(Astro.url.pathname + Astro.url.search, code) }));
 ---
 
 <header class="site-header">
@@ -22,7 +32,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
         <span class="logo" aria-hidden="true"></span>
         {SITE_NAME}
       </a>
-      <nav aria-label="Principal">
+      <nav aria-label={t.nav.label}>
         <ul class="nav">
           {
             NAV.map((item) => (
@@ -35,6 +45,22 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
           }
         </ul>
       </nav>
+      <div class="lang-switch" role="group" aria-label={t.language.label}>
+        {
+          languages.map((language) => (
+            <a
+              href={language.href}
+              hreflang={language.code}
+              lang={language.code}
+              title={language.label}
+              data-locale={language.code}
+              aria-current={language.code === locale ? 'true' : undefined}
+            >
+              {language.code.toUpperCase()}
+            </a>
+          ))
+        }
+      </div>
       <PlayerChip />
     </div>
   </Container>
@@ -110,6 +136,30 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     background: var(--color-accent);
   }
 
+  .lang-switch {
+    display: inline-flex;
+    overflow: hidden;
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .lang-switch a {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .lang-switch a:hover {
+    color: var(--color-text);
+  }
+
+  .lang-switch a[aria-current='true'] {
+    color: var(--color-accent-ink);
+    background: var(--color-accent);
+  }
+
   @media (max-width: 560px) {
     nav {
       order: 3;
@@ -117,3 +167,18 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path === href
     }
   }
 </style>
+
+<script>
+  import { LOCALE_STORAGE_KEY } from '@/i18n/locales';
+
+  // A language picked by hand wins over the browser language on the next visits.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('.lang-switch a[data-locale]')) {
+    link.addEventListener('click', () => {
+      try {
+        window.localStorage.setItem(LOCALE_STORAGE_KEY, link.dataset.locale!);
+      } catch {
+        // Without storage the choice only lasts while the visitor follows the links.
+      }
+    });
+  }
+</script>

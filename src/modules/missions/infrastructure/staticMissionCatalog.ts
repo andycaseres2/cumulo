@@ -1,3 +1,4 @@
+import type { Locale } from '@/i18n/locales';
 import type { Mission } from '../domain/Mission';
 import type { MissionCatalog } from '../domain/MissionCatalog';
 
@@ -112,8 +113,23 @@ const MISSIONS: Mission[] = Object.values(CAMPAIGN_ORDER)
 /** Mission files whose id is not in the campaign order (should be none). */
 export const UNPLANNED_MISSIONS = [...byId.keys()].filter((id) => !Object.values(CAMPAIGN_ORDER).flat().includes(id));
 
-/** Adapter: missions written as typed data in the repository. */
-export const staticMissionCatalog: MissionCatalog = {
-  all: async () => [...MISSIONS],
-  inBuilding: async (buildingId) => MISSIONS.filter((m) => m.buildingId === buildingId),
-};
+/**
+ * Translations live in translations/<locale>/ with the same ids, structure and right answers as the Spanish
+ * originals; a mission without a translation yet is shown in Spanish.
+ */
+const translationModules = import.meta.glob<Record<string, Mission>>('./translations/*/**/*.ts', { eager: true });
+const TRANSLATIONS: Record<string, Map<string, Mission>> = {};
+for (const [path, exports] of Object.entries(translationModules)) {
+  const locale = path.split('/')[2];
+  TRANSLATIONS[locale] ??= new Map();
+  for (const mission of Object.values(exports)) TRANSLATIONS[locale].set(mission.id, mission);
+}
+
+/** Adapter: missions written as typed data in the repository, in one language. */
+export function staticMissionCatalog(locale: Locale): MissionCatalog {
+  const missions = MISSIONS.map((mission) => TRANSLATIONS[locale]?.get(mission.id) ?? mission);
+  return {
+    all: async () => [...missions],
+    inBuilding: async (buildingId) => missions.filter((m) => m.buildingId === buildingId),
+  };
+}

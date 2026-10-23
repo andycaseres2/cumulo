@@ -1,153 +1,36 @@
 ---
-import { games } from '@/composition/games';
-import { theory } from '@/composition/theory';
-import GameCard from '@/modules/games/presentation/GameCard.astro';
-import { isPlayable } from '@/modules/games/domain/Game';
-import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
-import DomainOverview from '@/modules/theory/presentation/DomainOverview.astro';
-import Button from '@/ui/atoms/Button.astro';
-import Container from '@/ui/atoms/Container.astro';
-import PageLayout from '@/ui/layouts/PageLayout.astro';
-import Card from '@/ui/molecules/Card.astro';
-import SectionHeading from '@/ui/molecules/SectionHeading.astro';
-import Hero from '@/ui/organisms/Hero.astro';
-import { routes } from '@/ui/routes';
+import { LOCALES } from '@/i18n/locales';
 import { SITE_NAME } from '@/ui/site';
-
-const allGames = await games.list();
-const featured = allGames.find(isPlayable);
-const playableCount = allGames.filter(isPlayable).length;
-const catalog = await theory.catalog();
-const topicCount = catalog.reduce((sum, section) => sum + section.topics.length, 0);
 ---
 
-<PageLayout
-  title={SITE_NAME}
-  description="Prepárate para AWS Certified Cloud Practitioner con juegos de práctica y teoría clara, de cero a examen."
->
-  <Hero
-    eyebrow="AWS Certified Cloud Practitioner"
-    title="Aprende AWS resolviendo problemas reales"
-    lead="Juega como consultor cloud, ayuda a negocios con sus problemas y estudia cada tema del examen CLF-C02 con explicaciones claras desde cero."
-  >
-    <Fragment slot="actions">
-      {featured && <Button href={routes.game(featured.slug)} size="lg">Jugar {featured.title}</Button>}
-      <Button href={routes.theory} variant="secondary" size="lg">Estudiar teoría</Button>
-    </Fragment>
-    <Fragment slot="art">
-      <img
-        class="hero-art"
-        src="/images/games/cumulo-city.png"
-        alt="La ciudad de Cúmulo City con calles, un parque y la Cloud Academy"
-        width="1280"
-        height="713"
-      />
-    </Fragment>
-  </Hero>
-
-  <Container>
-    <section class="section" aria-labelledby="como-prepararte">
-      <SectionHeading
-        id="como-prepararte"
-        eyebrow="Tres caminos, un objetivo"
-        title="Elige cómo prepararte"
-        description="Practica con juegos cuando quieras aplicar lo aprendido, vuelve a la teoría cuando necesites entender un concepto a fondo y mide tu preparación con un simulacro."
-      />
-      <ul class="paths">
-        <li>
-          <Card>
-            <h3>Juegos de práctica</h3>
-            <p>
-              Escenarios realistas donde eliges servicios, ves las consecuencias y recibes la explicación de cada decisión.
-            </p>
-            <p class="stat">{playableCount} disponible · {allGames.length - playableCount} en camino</p>
-            <Fragment slot="footer"><Button href={routes.games}>Ver juegos</Button></Fragment>
-          </Card>
-        </li>
-        <li>
-          <Card accent="var(--color-domain-cloud-concepts)">
-            <h3>Teoría</h3>
-            <p>Los cuatro dominios del examen explicados con casos de negocios, tablas comparativas y trampas típicas.</p>
-            <p class="stat">{topicCount} temas · 4 dominios</p>
-            <Fragment slot="footer"><Button href={routes.theory} variant="secondary">Ir a la teoría</Button></Fragment>
-          </Card>
-        </li>
-        <li>
-          <Card accent="var(--color-domain-security-compliance)">
-            <h3>Simulacro del examen</h3>
-            <p>Un examen como el real: preguntas de los cuatro dominios con tiempo, puntaje estimado y repaso de cada respuesta.</p>
-            <p class="stat">{EXAM_FORMAT.questions} preguntas · {EXAM_FORMAT.durationMinutes} minutos</p>
-            <Fragment slot="footer"><Button href={routes.practiceExam} variant="secondary">Hacer un simulacro</Button></Fragment>
-          </Card>
-        </li>
-      </ul>
-    </section>
-
-    {
-      featured && (
-        <section class="section" aria-labelledby="juego-destacado">
-          <SectionHeading id="juego-destacado" eyebrow="Juego destacado" title={featured.title} />
-          <div class="featured">
-            <GameCard game={featured} />
-          </div>
-        </section>
-      )
-    }
-
-    <section class="section" aria-labelledby="dominios">
-      <SectionHeading
-        id="dominios"
-        eyebrow="Examen CLF-C02"
-        title="El examen en cuatro dominios"
-        description="Cada dominio pesa distinto en tu nota. Úsalo para decidir dónde poner más horas de estudio."
-      />
-      <DomainOverview sections={catalog} />
-    </section>
-  </Container>
-</PageLayout>
-
-<style>
-  .hero-art {
-    display: block;
-    width: 100%;
-    height: auto;
-    image-rendering: pixelated;
-    border: var(--border-width) solid var(--color-shadow);
-    border-radius: var(--radius);
-    box-shadow: 8px 8px 0 var(--color-shadow);
-  }
-
-  .section {
-    padding-top: var(--space-16);
-  }
-
-  .paths {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
-    gap: var(--space-8);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .paths h3 {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .paths p {
-    margin: 0;
-    color: var(--color-text-muted);
-  }
-
-  .paths .stat {
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  .featured {
-    max-width: 32rem;
-  }
-</style>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>{SITE_NAME}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {LOCALES.map((code) => <link rel="alternate" hreflang={code} href={`/${code}/`} />)}
+    <script is:inline>
+      // The saved choice, else the first browser language the site speaks, else Spanish (same rule as pickLocale).
+      (function () {
+        var locales = ['es', 'en'];
+        var saved = null;
+        try {
+          saved = window.localStorage.getItem('cumulo:locale');
+        } catch (e) {}
+        var pick = locales.indexOf(saved) >= 0 ? saved : null;
+        var languages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+        for (var i = 0; !pick && i < languages.length; i++) {
+          var base = String(languages[i]).toLowerCase().split('-')[0];
+          if (locales.indexOf(base) >= 0) pick = base;
+        }
+        window.location.replace('/' + (pick || 'es') + '/' + window.location.search + window.location.hash);
+      })();
+    </script>
+  </head>
+  <body style="background: #0f1730; color: #fff; font-family: sans-serif">
+    <p><a href="/es/" style="color: #ffd166">Español</a> · <a href="/en/" style="color: #ffd166">English</a></p>
+  </body>
+</html>

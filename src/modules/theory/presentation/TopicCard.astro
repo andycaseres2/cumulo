@@ -2,7 +2,11 @@
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import type { Topic } from '@/modules/theory/domain/Topic';
 import Card from '@/ui/molecules/Card.astro';
-import { routes } from '@/ui/routes';
+import { localeOf } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
+
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
 
 export interface Props {
   topic: Topic;

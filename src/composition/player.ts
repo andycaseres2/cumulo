@@ -9,14 +9,15 @@ import type { Character } from '@/modules/player/domain/Player';
 import type { PlayerAuth } from '@/modules/player/domain/PlayerAuth';
 import { guestPlayerSession } from '@/modules/player/infrastructure/guestPlayerSession';
 import { supabasePlayerAuth } from '@/modules/player/infrastructure/supabasePlayerAuth';
-import { routes } from '@/ui/routes';
+import { currentLocale } from '@/i18n/client';
+import { routesFor } from '@/ui/routes';
 
 let auth: PlayerAuth | undefined;
 
 export function playerAuth(): PlayerAuth {
   if (!auth) {
     const client = supabase();
-    auth = client ? supabasePlayerAuth(client.auth, `${window.location.origin}${routes.signIn}`) : guestPlayerSession;
+    auth = client ? supabasePlayerAuth(client.auth, `${window.location.origin}${routesFor(currentLocale()).signIn}`) : guestPlayerSession;
   }
   return auth;
 }

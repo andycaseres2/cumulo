@@ -3,7 +3,11 @@ import type { Course } from '@/modules/theory/domain/Course';
 import Badge from '@/ui/atoms/Badge.astro';
 import Button from '@/ui/atoms/Button.astro';
 import Card from '@/ui/molecules/Card.astro';
-import { routes } from '@/ui/routes';
+import { localeOf } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
+
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
 
 export interface Props {
   course: Course;

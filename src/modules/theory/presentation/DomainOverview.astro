@@ -2,7 +2,11 @@
 import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import WeightStat from '@/ui/molecules/WeightStat.astro';
-import { routes } from '@/ui/routes';
+import { localeOf } from '@/i18n/page';
+import { routesFor } from '@/ui/routes';
+
+const locale = localeOf(Astro);
+const routes = routesFor(locale);
 
 export interface Props {
   sections: DomainSection[];

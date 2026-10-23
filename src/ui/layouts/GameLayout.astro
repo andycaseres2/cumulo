@@ -1,4 +1,6 @@
 ---
+import { siteMessages } from '@/i18n/messages/site';
+import { localeOf } from '@/i18n/page';
 import BaseLayout from './BaseLayout.astro';
 
 export interface Props {
@@ -8,12 +10,13 @@ export interface Props {
 }
 
 const { title, description, exitHref } = Astro.props;
+const exitLabel = siteMessages[localeOf(Astro)].exit;
 ---
 
 <BaseLayout title={title} description={description}>
   <main class="stage">
     <slot />
-    <a class="exit" href={exitHref}>← Salir</a>
+    <a class="exit" href={exitHref}>{exitLabel}</a>
   </main>
 </BaseLayout>
 

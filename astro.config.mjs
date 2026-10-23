@@ -1,12 +1,30 @@
 // @ts-check
+import { readdirSync } from 'node:fs';
 import { defineConfig, envField } from 'astro/config';
 import legacy from './src/infrastructure/legacyTopicSlugs.json' with { type: 'json' };
+
+// Topic slugs, read from the Spanish content (the original language).
+const topicSlugs = readdirSync(new URL('./src/content/theory/es/', import.meta.url)).map((file) => file.replace(/\.md$/, ''));
+
+// Pages from before the language prefix (and before English routes) open in Spanish, the only language back then.
+const unprefixedPages = Object.fromEntries(
+  [
+    'games',
+    'games/cumulo-city',
+    'games/service-duel',
+    'theory',
+    'theory/cloud-practitioner',
+    'profile',
+    'practice-exam',
+    ...topicSlugs.map((slug) => `theory/cloud-practitioner/${slug}`),
+  ].map((path) => [`/${path}`, `/es/${path}`]),
+);
 
 // Old theory topic URLs, from before the courses page and the English slugs.
 const oldTopicPages = Object.fromEntries(
   Object.entries(legacy.topics).flatMap(([oldSlug, slug]) => [
-    [`/teoria/${oldSlug}`, `/theory/cloud-practitioner/${slug}`],
-    [`/teoria/cloud-practitioner/${oldSlug}`, `/theory/cloud-practitioner/${slug}`],
+    [`/teoria/${oldSlug}`, `/es/theory/cloud-practitioner/${slug}`],
+    [`/teoria/cloud-practitioner/${oldSlug}`, `/es/theory/cloud-practitioner/${slug}`],
   ]),
 );
 
@@ -16,17 +34,18 @@ export default defineConfig({
   site: process.env.SITE_URL || undefined,
   // The dev toolbar overlaps the full-screen game canvas.
   devToolbar: { enabled: false },
-  // Routes were Spanish, the progress page became part of the profile and the game was renamed from Nimbus City.
+  // `/` and `/sign-in` are pages of their own (language detection, and keeping the query of confirmation emails).
   redirects: {
+    ...unprefixedPages,
     '/ingresar': '/sign-in',
-    '/perfil': '/profile',
-    '/progreso': '/profile',
-    '/juegos': '/games',
-    '/juegos/cumulo-city': '/games/cumulo-city',
-    '/juegos/nimbus-city': '/games/cumulo-city',
-    '/simulacro': '/practice-exam',
-    '/teoria': '/theory',
-    '/teoria/cloud-practitioner': '/theory/cloud-practitioner',
+    '/perfil': '/es/profile',
+    '/progreso': '/es/profile',
+    '/juegos': '/es/games',
+    '/juegos/cumulo-city': '/es/games/cumulo-city',
+    '/juegos/nimbus-city': '/es/games/cumulo-city',
+    '/simulacro': '/es/practice-exam',
+    '/teoria': '/es/theory',
+    '/teoria/cloud-practitioner': '/es/theory/cloud-practitioner',
     ...oldTopicPages,
   },
   env: {

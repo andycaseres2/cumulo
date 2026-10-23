@@ -1,4 +1,7 @@
 ---
+import { LOCALES, swapLocale } from '@/i18n/locales';
+import { siteMessages } from '@/i18n/messages/site';
+import { localeOf } from '@/i18n/page';
 import { SITE_NAME } from '@/ui/site';
 import '@/ui/styles/global.css';
 
@@ -15,10 +18,15 @@ const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 // Absolute URLs need the site address (SITE_URL); without it the canonical link and preview image are left out.
 const canonical = Astro.site ? new URL(Astro.url.pathname.replace(/(.)\/$/, '$1'), Astro.site).href : undefined;
 const previewImage = Astro.site ? new URL(SOCIAL_IMAGE, Astro.site).href : undefined;
+const locale = localeOf(Astro);
+/** The same page in every language, for search engines (absolute URLs, so only with SITE_URL). */
+const alternates = Astro.site
+  ? LOCALES.map((code) => ({ code, href: new URL(swapLocale(Astro.url.pathname, code).replace(/(.)\/$/, '$1'), Astro.site).href }))
+  : [];
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +35,8 @@ const previewImage = Astro.site ? new URL(SOCIAL_IMAGE, Astro.site).href : undef
     {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale" content={siteMessages[locale].ogLocale} />
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.code} href={alternate.href} />)}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}

@@ -1,0 +1,47 @@
+---
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { SITE_NAME } from '@/ui/site';
+import { localePaths } from '@/i18n/page';
+
+export function getStaticPaths() {
+  return localePaths();
+}
+---
+
+<PageLayout title="Ingresar" description={`Ingresa o crea tu cuenta para guardar tu progreso en ${SITE_NAME}.`}>
+  <Container width="reading">
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Tu cuenta"
+        title={`Ingresa a ${SITE_NAME}`}
+        description="Necesitas una cuenta para jugar. Con ella, tu nombre aparece en el juego y tu avance en las misiones queda guardado en tu cuenta. La teoría es libre para todos."
+      />
+      <div data-auth-forms></div>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    max-width: 32rem;
+    padding-top: var(--space-12);
+  }
+</style>
+
+<script>
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { renderAuthForms } from '@/modules/player/presentation/authForms';
+  import { safeNextPath } from '@/modules/player/presentation/safeNextPath';
+
+  const next = safeNextPath(new URLSearchParams(window.location.search).get('next'));
+  const host = document.querySelector<HTMLElement>('[data-auth-forms]');
+
+  if (host) {
+    const player = await currentPlayer();
+    if (!player.isGuest) window.location.replace(next);
+    else renderAuthForms(host, { auth: playerAuth(), onSignedIn: () => window.location.assign(next) });
+  }
+</script>

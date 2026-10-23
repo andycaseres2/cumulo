@@ -58,7 +58,7 @@ describe('duel content', () => {
     const ids = cards.map(({ card }) => card.id);
     expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
     for (const { card } of cards) {
-      expect(existsSync(join(process.cwd(), 'src/content/theory', `${card.topicSlug}.md`)), `${card.id}: ${card.topicSlug}`).toBe(true);
+      expect(existsSync(join(process.cwd(), 'src/content/theory/es', `${card.topicSlug}.md`)), `${card.id}: ${card.topicSlug}`).toBe(true);
     }
   });
 

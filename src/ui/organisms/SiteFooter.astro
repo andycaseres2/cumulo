@@ -1,17 +1,18 @@
 ---
 import Container from '@/ui/atoms/Container.astro';
+import { siteMessages } from '@/i18n/messages/site';
+import { localeOf } from '@/i18n/page';
 import { SITE_NAME } from '@/ui/site';
+
+const t = siteMessages[localeOf(Astro)].footer;
 ---
 
 <footer class="site-footer">
   <Container>
+    <p>{t.disclaimer(SITE_NAME)}</p>
     <p>
-      {SITE_NAME} es un proyecto independiente para preparar el examen AWS Certified Cloud Practitioner (CLF-C02). No está
-      afiliado ni respaldado por Amazon Web Services.
-    </p>
-    <p>
-      Arte del juego Cúmulo City: <a href="https://kenney.nl/assets/rpg-urban-pack" rel="noopener noreferrer" target="_blank"
-        >RPG Urban Pack de Kenney</a
+      {t.artBy} <a href="https://kenney.nl/assets/rpg-urban-pack" rel="noopener noreferrer" target="_blank"
+        >{t.artPack}</a
       > (CC0).
     </p>
   </Container>
