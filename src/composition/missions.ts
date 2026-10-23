@@ -77,7 +77,7 @@ export function gameMissions(host: HTMLElement): GameMissions {
     play: async (missionId) => {
       const mission = (await catalog.all()).find((m) => m.id === missionId);
       if (!mission) return null;
-      return playMission(await progressStore(), mission, (m) => openMissionPanel({ mission: m, host, theoryUrl: routesFor(currentLocale()).topic }));
+      return playMission(await progressStore(), mission, (m) => openMissionPanel({ mission: m, host, theoryUrl: routesFor(currentLocale()).topic, locale: currentLocale() }));
     },
   };
 }

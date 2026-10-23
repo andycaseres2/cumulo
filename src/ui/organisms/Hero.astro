@@ -69,4 +69,16 @@ const { eyebrow, title, lead } = Astro.props;
     flex-wrap: wrap;
     gap: var(--space-4);
   }
+
+  /* On phones the calls to action are full-width, easy to hit with a thumb. */
+  @media (max-width: 560px) {
+    .actions {
+      flex-direction: column;
+    }
+
+    .actions > :global(*) {
+      width: 100%;
+      text-align: center;
+    }
+  }
 </style>

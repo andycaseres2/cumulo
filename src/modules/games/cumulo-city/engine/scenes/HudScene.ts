@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { EVENTS, FONT, minimapRect } from '../../config';
+import { EVENTS, FONT, minimapRect, REGISTRY } from '../../config';
+import { stickVector } from '../../touchStick';
 import { cardKey, isIdle, nudgeDue } from '../../attention';
 import type { MissionCardContent } from '../../missionCard';
 import { MissionTracker } from '../systems/MissionTracker';
@@ -12,8 +13,13 @@ import { districtName } from '../../world/placeNames';
 import { gameLocale, gameText } from '../locale';
 
 const PANEL = 0x1b1b2a;
-const DIALOG_HEIGHT = 140;
-const CARD_WIDTH = 260;
+const DIALOG_HEIGHT = 150;
+const CARD_WIDTH = 280;
+/** Radius of the on-screen stick shown on touch screens. */
+const STICK_RADIUS = 54;
+/** Narrower dialogs leave the text all the width instead of showing the client's portrait. */
+const PORTRAIT_MIN_BOX = 480;
+const IDLE_PANEL_WIDTH = 420;
 /** Leaves room for the page's "Salir" button in the top-left corner. */
 const HEADER_TOP = 58;
 const PORTRAIT_SIZE = 72;
@@ -40,6 +46,9 @@ export class HudScene extends Phaser.Scene {
   private dialogText!: Phaser.GameObjects.Text;
   private dialogAccept!: Button;
   private fullText = '';
+  /** The dialog has a portrait to show (hidden anyway on narrow screens). */
+  private portraitWanted = false;
+  private idleFit = 1;
   private typingStartedAt = 0;
   private typing = false;
   private choices: DialogChoice[] = [];
@@ -63,6 +72,12 @@ export class HudScene extends Phaser.Scene {
   private idleModal!: Phaser.GameObjects.Container;
   private idleShade!: Phaser.GameObjects.Rectangle;
   private idlePanel!: Phaser.GameObjects.Container;
+  /** Touch screens get an on-screen stick instead of the keyboard hint. */
+  private touch = false;
+  private stick?: { base: Phaser.GameObjects.Arc; knob: Phaser.GameObjects.Arc; pointerId: number | null };
+  private mapMode = false;
+  /** Left edge of the zoom buttons, the right limit of the bottom row. */
+  private zoomLeft = 0;
 
   constructor() {
     super('hud');
@@ -70,6 +85,7 @@ export class HudScene extends Phaser.Scene {
 
   create() {
     const text = gameText(this).hud;
+    this.touch = this.sys.game.device.input.touch;
     const headerBg = this.add.rectangle(0, 0, 330, 54, PANEL, 0.85).setOrigin(0).setStrokeStyle(2, 0xffd166);
     this.locationTitle = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
     this.locationSubtitle = this.add.text(12, 34, '', { fontFamily: FONT, fontSize: '8px', color: '#ffffff' });
@@ -83,7 +99,8 @@ export class HudScene extends Phaser.Scene {
         backgroundColor: '#1b1b2acc',
         padding: { x: 8, y: 6 },
       })
-      .setOrigin(0, 1);
+      .setOrigin(0, 1)
+      .setVisible(!this.touch);
 
     this.minimapFrame = this.add.rectangle(0, 0, 10, 10).setOrigin(0).setStrokeStyle(3, 0xffd166);
 
@@ -107,11 +124,11 @@ export class HudScene extends Phaser.Scene {
 
     this.cardBg = this.add.rectangle(0, 0, CARD_WIDTH, 10, PANEL, 0.92).setOrigin(0).setStrokeStyle(2, 0xffd166);
     const wrap = { width: CARD_WIDTH - 24 };
-    this.cardHeading = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '8px', color: '#ffd166' });
-    this.cardTitle = this.add.text(12, 26, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff', wordWrap: wrap, lineSpacing: 4 });
-    this.cardDetail = this.add.text(12, 0, '', { fontFamily: FONT, fontSize: '8px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 5 });
+    this.cardHeading = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '9px', color: '#ffd166' });
+    this.cardTitle = this.add.text(12, 28, '', { fontFamily: FONT, fontSize: '11px', color: '#ffffff', wordWrap: wrap, lineSpacing: 5 });
+    this.cardDetail = this.add.text(12, 0, '', { fontFamily: FONT, fontSize: '9px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 6 });
     const acceptMission = gameText(this).missionCard.acceptMission;
-    this.cardAction = new Button(this, 0, 0, acceptMission, () => this.game.events.emit(EVENTS.missionAccept), 10);
+    this.cardAction = new Button(this, 0, 0, acceptMission, () => this.game.events.emit(EVENTS.missionAccept), 11);
     this.card = this.add
       .container(0, 0, [this.cardBg, this.cardHeading, this.cardTitle, this.cardDetail, this.cardAction])
       .setVisible(false);
@@ -119,14 +136,16 @@ export class HudScene extends Phaser.Scene {
     this.card.add(this.badge);
 
     this.dialogBox = this.add.rectangle(0, 0, 10, DIALOG_HEIGHT, PANEL, 0.95).setOrigin(0).setStrokeStyle(3, 0xffd166);
+    // A tap on the box works like E: it finishes the text, or turns the page when there is nothing to choose.
+    this.dialogBox.setInteractive().on('pointerup', () => this.game.events.emit(EVENTS.dialogAdvance));
     this.portraitFrame = this.add
       .rectangle(16, 16, PORTRAIT_SIZE, PORTRAIT_SIZE, 0x2d3b6b)
       .setOrigin(0)
       .setStrokeStyle(2, 0xffd166);
     this.portrait = this.add.image(16 + PORTRAIT_SIZE / 2, 16 + PORTRAIT_SIZE / 2, '__DEFAULT').setScale(4);
-    this.dialogTitle = this.add.text(18, 14, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
-    this.dialogText = this.add.text(18, 40, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff', lineSpacing: 8 });
-    this.dialogAccept = new Button(this, 0, 0, text.accept, () => this.game.events.emit(EVENTS.dialogAdvance), 10);
+    this.dialogTitle = this.add.text(18, 16, '', { fontFamily: FONT, fontSize: '15px', color: '#ffd166' });
+    this.dialogText = this.add.text(18, 46, '', { fontFamily: FONT, fontSize: '13px', color: '#ffffff', lineSpacing: 10 });
+    this.dialogAccept = new Button(this, 0, 0, text.accept, () => this.game.events.emit(EVENTS.dialogAdvance), 12);
     this.dialog = this.add
       .container(0, 0, [this.dialogBox, this.portraitFrame, this.portrait, this.dialogTitle, this.dialogText, this.dialogAccept])
       .setVisible(false);
@@ -138,6 +157,7 @@ export class HudScene extends Phaser.Scene {
     );
 
     this.createIdleModal();
+    this.createStick();
     this.watchInput();
 
     this.layout();
@@ -162,6 +182,7 @@ export class HudScene extends Phaser.Scene {
 
   update(time: number) {
     this.checkAttention(time);
+    this.updateStickVisibility();
     if (!this.typing) return;
     const shown = revealedText(this.fullText, time - this.typingStartedAt, CHARS_PER_SECOND);
     this.dialogText.setText(shown);
@@ -184,7 +205,7 @@ export class HudScene extends Phaser.Scene {
   private buildChoices() {
     for (const button of this.choiceButtons) button.destroy();
     this.choiceButtons = this.choices.map((choice, i) => {
-      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 10).setVisible(false);
+      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 12).setVisible(false);
       this.dialog.add(button);
       return button;
     });
@@ -196,8 +217,9 @@ export class HudScene extends Phaser.Scene {
    */
   private layoutDialogBox() {
     const { width, height } = this.scale;
-    const boxWidth = Math.min(760, width - 24);
+    const boxWidth = Math.min(820, width - 24);
     this.dialogBox.setSize(boxWidth, this.dialogBox.height);
+    this.setPortraitShown(this.portraitWanted && boxWidth >= PORTRAIT_MIN_BOX);
     this.layoutDialogText();
 
     // Measure the full text, not the part already typed.
@@ -213,6 +235,7 @@ export class HudScene extends Phaser.Scene {
     const boxHeight = Math.max(DIALOG_HEIGHT, this.dialogText.y + textHeight + 16 + actionsHeight + 12);
 
     this.dialogBox.setSize(boxWidth, boxHeight);
+    this.dialogBox.input?.hitArea.setTo(0, 0, boxWidth, boxHeight);
     this.dialog.setPosition((width - boxWidth) / 2, height - boxHeight - 12);
     this.dialogAccept.setPosition(boxWidth - this.dialogAccept.buttonWidth / 2 - 14, boxHeight - this.dialogAccept.buttonHeight / 2 - 12);
     rows.forEach((row, r) => {
@@ -235,14 +258,18 @@ export class HudScene extends Phaser.Scene {
     const map = minimapRect(width);
     this.minimapFrame.setPosition(map.x, map.y).setSize(map.width, map.height);
     this.controls.setPosition(12, height - 12);
-    this.prompt.setPosition(width / 2, height - 60);
+    this.stick?.base.setPosition(18 + STICK_RADIUS, height - 18 - STICK_RADIUS);
+    if (this.stick && this.stick.pointerId === null) this.stick.knob.setPosition(this.stick.base.x, this.stick.base.y);
 
     this.layoutDialogBox();
-    this.header.setVisible(width > 560);
+    // Small screens (phones in either orientation) keep the view for the city.
+    this.header.setVisible(width > 560 && height > 480);
     this.cardHome = { x: width - CARD_WIDTH - 12, y: map.y + map.height + 12 };
     if (!this.cardTween?.isPlaying()) this.card.setPosition(this.cardHome.x, this.cardHome.y);
     this.idleShade.setSize(width, height);
     this.idlePanel.setPosition(width / 2, height / 2);
+    this.idleFit = Math.min(1, (width - 24) / IDLE_PANEL_WIDTH);
+    if (!this.idleModal.visible) this.idlePanel.setScale(this.idleFit);
 
     const gap = 8;
     const bottom = height - 12;
@@ -251,6 +278,8 @@ export class HudScene extends Phaser.Scene {
       button.setPosition(right - button.buttonWidth / 2, bottom - button.buttonHeight / 2);
       right -= button.buttonWidth + gap;
     }
+    this.zoomLeft = right + gap;
+    this.placePrompt();
     this.mapHint.setPosition(width / 2, 12).setWordWrapWidth(width - 24);
     // The controls hint wraps before reaching the zoom buttons on narrow screens.
     this.controls.setWordWrapWidth(Math.max(160, right - 12 - gap));
@@ -258,6 +287,7 @@ export class HudScene extends Phaser.Scene {
 
   /** In the full-map view the minimap is redundant and the toggle takes the player back. */
   private showMapMode(on: boolean) {
+    this.mapMode = on;
     this.mapHint.setVisible(on);
     this.minimapFrame.setVisible(!on && this.mapControls.visible);
     const text = gameText(this).hud;
@@ -341,7 +371,7 @@ export class HudScene extends Phaser.Scene {
   }
 
   private createBadge(text: string): Phaser.GameObjects.Container {
-    const label = this.add.text(0, 0, text, { fontFamily: FONT, fontSize: '8px', color: '#1b1b2a' }).setOrigin(0.5);
+    const label = this.add.text(0, 0, text, { fontFamily: FONT, fontSize: '9px', color: '#1b1b2a' }).setOrigin(0.5);
     const width = Math.ceil(label.width) + 16;
     const bg = this.add.rectangle(0, 0, width, Math.ceil(label.height) + 10, 0xff6b6b).setStrokeStyle(2, 0x1b1b2a);
     // Hangs from the top-right corner of the card, like a tag.
@@ -352,29 +382,29 @@ export class HudScene extends Phaser.Scene {
   private createIdleModal() {
     const copy = gameText(this).hud;
     this.idleShade = this.add.rectangle(0, 0, 10, 10, 0x000000, 0.55).setOrigin(0).setInteractive();
-    const panelWidth = 360;
-    const title = this.add.text(0, -44, copy.idleTitle, { fontFamily: FONT, fontSize: '14px', color: '#ffd166' }).setOrigin(0.5);
+    const panelWidth = IDLE_PANEL_WIDTH;
+    const title = this.add.text(0, -62, copy.idleTitle, { fontFamily: FONT, fontSize: '19px', color: '#ffd166' }).setOrigin(0.5);
     const text = this.add
-      .text(0, -6, copy.idleText, {
+      .text(0, -8, copy.idleText, {
         fontFamily: FONT,
-        fontSize: '8px',
+        fontSize: '11px',
         color: '#ffffff',
         align: 'center',
-        lineSpacing: 6,
-        wordWrap: { width: panelWidth - 40 },
+        lineSpacing: 8,
+        wordWrap: { width: panelWidth - 48 },
       })
       .setOrigin(0.5);
-    const back = new Button(this, 0, 42, copy.idleBack, () => this.closeIdleModal(), 10);
-    const bg = this.add.rectangle(0, 0, panelWidth, 150, PANEL, 0.97).setStrokeStyle(3, 0xffd166);
+    const back = new Button(this, 0, 58, copy.idleBack, () => this.closeIdleModal(), 13);
+    const bg = this.add.rectangle(0, 0, panelWidth, 200, PANEL, 0.97).setStrokeStyle(3, 0xffd166);
     this.idlePanel = this.add.container(0, 0, [bg, title, text, back]);
     this.idleModal = this.add.container(0, 0, [this.idleShade, this.idlePanel]).setDepth(10).setVisible(false);
   }
 
   private openIdleModal() {
     this.idleModal.setVisible(true).setAlpha(0);
-    this.idlePanel.setScale(0.85);
+    this.idlePanel.setScale(this.idleFit * 0.85);
     this.tweens.add({ targets: this.idleModal, alpha: 1, duration: 200 });
-    this.tweens.add({ targets: this.idlePanel, scale: 1, duration: 320, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: this.idlePanel, scale: this.idleFit, duration: 320, ease: 'Back.easeOut' });
   }
 
   private closeIdleModal() {
@@ -424,6 +454,11 @@ export class HudScene extends Phaser.Scene {
     }
   }
 
+  private setPortraitShown(shown: boolean) {
+    this.portrait.setVisible(shown);
+    this.portraitFrame.setVisible(shown);
+  }
+
   private layoutDialogText() {
     const left = this.portrait.visible ? 16 + PORTRAIT_SIZE + 16 : 18;
     const boxWidth = this.dialogBox.width;
@@ -440,12 +475,13 @@ export class HudScene extends Phaser.Scene {
 
   private showPrompt(text: string | null) {
     if (text !== null) this.prompt.setText(text);
+    this.placePrompt();
     this.prompt.setVisible(text !== null && !this.dialog.visible);
   }
 
   private showDialog(content: DialogContent | null) {
     this.dialog.setVisible(content !== null);
-    this.controls.setVisible(content === null);
+    this.controls.setVisible(content === null && !this.touch);
     this.choices = content?.choices ?? [];
     this.buildChoices();
     this.dialogAccept.setVisible(this.choices.length === 0);
@@ -454,8 +490,8 @@ export class HudScene extends Phaser.Scene {
       return;
     }
     this.prompt.setVisible(false);
-    this.portrait.setVisible(content.portrait !== undefined);
-    this.portraitFrame.setVisible(content.portrait !== undefined);
+    this.portraitWanted = content.portrait !== undefined;
+    this.setPortraitShown(this.portraitWanted && this.dialogBox.width >= PORTRAIT_MIN_BOX);
     if (content.portrait) this.portrait.setTexture(content.portrait.key, content.portrait.frame);
     this.layoutDialogText();
     this.dialogTitle.setText(content.title);
@@ -464,6 +500,76 @@ export class HudScene extends Phaser.Scene {
     this.layoutDialogBox();
     this.typingStartedAt = this.time.now;
     this.typing = true;
+  }
+
+  /**
+   * On touch screens: a stick in the bottom-left corner. The thumb that lands on it walks the player
+   * (strength from how far it is pushed, running at the edge) until it lifts; other fingers still drag the map.
+   */
+  private createStick() {
+    if (!this.touch) return;
+    this.input.addPointer(2);
+    const base = this.add.circle(0, 0, STICK_RADIUS, PANEL, 0.45).setStrokeStyle(3, 0xffd166, 0.85);
+    const knob = this.add.circle(0, 0, STICK_RADIUS * 0.45, 0xffd166, 0.9).setStrokeStyle(3, PANEL);
+    this.stick = { base, knob, pointerId: null };
+    const stick = this.stick;
+    const follow = (pointer: Phaser.Input.Pointer) => {
+      const dx = pointer.x - base.x;
+      const dy = pointer.y - base.y;
+      const reach = Math.min(1, Math.hypot(dx, dy) / STICK_RADIUS);
+      const angle = Math.atan2(dy, dx);
+      knob.setPosition(base.x + Math.cos(angle) * reach * STICK_RADIUS, base.y + Math.sin(angle) * reach * STICK_RADIUS);
+      this.registry.set(REGISTRY.touchMove, stickVector(dx, dy, STICK_RADIUS));
+    };
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (stick.pointerId !== null || !base.visible) return;
+      // A generous touch area: thumbs rarely land exactly on the circle.
+      if (Phaser.Math.Distance.Between(pointer.x, pointer.y, base.x, base.y) > STICK_RADIUS * 1.7) return;
+      stick.pointerId = pointer.id;
+      this.registry.set(REGISTRY.stickPointer, pointer.id);
+      follow(pointer);
+    });
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.id === stick.pointerId) follow(pointer);
+    });
+    const release = (pointer: Phaser.Input.Pointer) => {
+      if (pointer.id === stick.pointerId) this.releaseStick();
+    };
+    this.input.on('pointerup', release);
+    this.input.on('pointerupoutside', release);
+  }
+
+  /**
+   * The action button goes at the bottom center. On touch screens it sits between the stick and the zoom
+   * buttons when it fits there (landscape), and above them otherwise (portrait), always within thumb reach.
+   */
+  private placePrompt() {
+    const { width, height } = this.scale;
+    if (!this.touch) {
+      this.prompt.setPosition(width / 2, height - 60);
+      return;
+    }
+    const stickRight = 18 + STICK_RADIUS * 2 + 12;
+    const room = this.zoomLeft - 12 - stickRight;
+    if (this.prompt.buttonWidth <= room) this.prompt.setPosition(stickRight + room / 2, height - 18 - STICK_RADIUS);
+    else this.prompt.setPosition(width / 2, height - STICK_RADIUS * 2 - 64);
+  }
+
+  private releaseStick() {
+    if (!this.stick) return;
+    this.stick.pointerId = null;
+    this.stick.knob.setPosition(this.stick.base.x, this.stick.base.y);
+    this.registry.set(REGISTRY.touchMove, { x: 0, y: 0, run: false });
+    this.registry.set(REGISTRY.stickPointer, null);
+  }
+
+  /** The stick only shows while the player can walk: no dialog, mission panel, map view or idle question. */
+  private updateStickVisibility() {
+    if (!this.stick) return;
+    const shown = !this.dialog.visible && !this.missionPlaying && !this.mapMode && !this.idleModal.visible;
+    if (!shown && this.stick.pointerId !== null) this.releaseStick();
+    this.stick.base.setVisible(shown);
+    this.stick.knob.setVisible(shown);
   }
 
   /** First press reveals the whole text; the next one closes the page, unless the player must pick a choice. */

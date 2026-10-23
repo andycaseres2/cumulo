@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
-import { EVENTS, PLAYER_RUN_SPEED, PLAYER_SPEED } from '../../config';
+import { EVENTS, PLAYER_RUN_SPEED, PLAYER_SPEED, REGISTRY } from '../../config';
+import type { StickVector } from '../../touchStick';
 import type { Walker } from '../entities/Walker';
 
 type KeyName = 'up' | 'down' | 'left' | 'right' | 'w' | 'a' | 's' | 'd' | 'shift' | 'e' | 'space';
 
-/** Keyboard and HUD-button input for the player of one scene. */
+/** Keyboard, on-screen stick and HUD-button input for the player of one scene. */
 export class PlayerControls {
   private keys: Record<KeyName, Phaser.Input.Keyboard.Key>;
   /** Set by the HUD interaction button; consumed on the next frame like a key press. */
@@ -47,11 +48,19 @@ export class PlayerControls {
     this.scene.input.keyboard!.resetKeys();
   }
 
-  /** Walks or runs the player from the arrow/WASD keys, normalizing diagonals. */
+  /** Walks or runs the player from the arrow/WASD keys (normalizing diagonals) or from the on-screen stick. */
   drive(player: Walker) {
     const k = this.keys;
     let vx = (k.right.isDown || k.d.isDown ? 1 : 0) - (k.left.isDown || k.a.isDown ? 1 : 0);
     let vy = (k.down.isDown || k.s.isDown ? 1 : 0) - (k.up.isDown || k.w.isDown ? 1 : 0);
+    const stick = this.scene.registry.get(REGISTRY.touchMove) as StickVector | undefined;
+    if (vx === 0 && vy === 0 && stick && (stick.x !== 0 || stick.y !== 0)) {
+      // The stick already gives a direction with a strength of at most 1: there is no diagonal to normalize.
+      const stickSpeed = stick.run ? PLAYER_RUN_SPEED : PLAYER_SPEED;
+      player.move(stick.x * stickSpeed, stick.y * stickSpeed);
+      player.anims.timeScale = stick.run ? 1.6 : 1;
+      return;
+    }
     const running = k.shift.isDown;
     const speed = running ? PLAYER_RUN_SPEED : PLAYER_SPEED;
     if (vx !== 0 && vy !== 0) {

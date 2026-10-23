@@ -27,6 +27,17 @@ const text = gameMessages[locale].page;
     position: relative;
     width: 100%;
     height: 100%;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /*
+   * Touches on the city belong to the game (stick, drag, pinch), not to page scrolling or browser zoom.
+   * Only the canvas: the mission panel on top must still scroll with a finger.
+   */
+  .game-root :global(canvas) {
+    touch-action: none;
   }
 
   /*

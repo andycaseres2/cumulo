@@ -249,3 +249,20 @@
 .mp-review + .mp-primary {
   margin-top: var(--space-6);
 }
+
+/* Phones: the card takes the whole screen width and keeps more room for the scenario and the options. */
+@media (max-width: 40rem) {
+  .mission-panel {
+    padding: var(--space-2);
+  }
+
+  .mp-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .mp-body {
+    padding: var(--space-4);
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}

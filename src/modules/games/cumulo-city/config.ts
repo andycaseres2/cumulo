@@ -22,6 +22,10 @@ export const REGISTRY = {
   character: 'character',
   /** Language of the game's text (Locale). */
   locale: 'locale',
+  /** Direction of the on-screen stick (StickVector), read by the player controls of the active scene. */
+  touchMove: 'touchMove',
+  /** Id of the pointer holding the stick, so the city does not take that finger as a map drag. */
+  stickPointer: 'stickPointer',
   /** Callback to tell the host page which character the player picked. */
   onCharacterChosen: 'onCharacterChosen',
 } as const;
@@ -62,7 +66,8 @@ export function fitZoom(viewWidth: number, viewHeight: number, contentWidth: num
 }
 
 export function minimapRect(screenWidth: number) {
-  const width = 176;
+  // Phones keep a smaller minimap, so the mission card and the city stay visible under it.
+  const width = screenWidth < 520 ? 132 : 176;
   const height = Math.round((width * MAP_H) / MAP_W);
   return { x: screenWidth - width - 12, y: 12, width, height };
 }

@@ -11,6 +11,7 @@ import { Interactions } from '../systems/Interactions';
 import { PlayerControls } from '../systems/PlayerControls';
 import type { CurrentMission } from '../../missions';
 import { stepZoom, zoomLevels } from '../../cameraZoom';
+import { pinchStep } from '../../touchStick';
 import { guideArrow } from '../../world/guide';
 import { MissionTracker } from '../systems/MissionTracker';
 import { busStopTalk, STAY } from '../../busStop';
@@ -293,8 +294,30 @@ export class CityScene extends Phaser.Scene {
       else if (event.key === 'Escape') this.toggleMap(false);
     });
 
+    // Two fingers: pinching or spreading them zooms one step each time the distance changes enough.
+    if (this.input.manager.pointersTotal < 3) this.input.addPointer(2);
+    let pinchStart = 0;
+    const pinchDistance = () => {
+      const [a, b] = [this.input.pointer1, this.input.pointer2];
+      return a.isDown && b.isDown ? Phaser.Math.Distance.Between(a.x, a.y, b.x, b.y) : 0;
+    };
+
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
       if (!pointer.isDown || this.transitioning) return;
+      // The finger on the on-screen stick walks the player; it never drags the map.
+      const stickPointer = this.registry.get(REGISTRY.stickPointer);
+      if (pointer.id === stickPointer) return;
+      const distance = stickPointer === null || stickPointer === undefined ? pinchDistance() : 0;
+      if (distance > 0) {
+        pinchStart ||= distance;
+        const step = pinchStep(pinchStart, distance);
+        if (step) {
+          this.zoomBy(step);
+          pinchStart = distance;
+        }
+        this.dragging = true;
+        return;
+      }
       // A short movement is still a click; only a real drag moves the map.
       if (!this.dragging && Phaser.Math.Distance.Between(pointer.downX, pointer.downY, pointer.x, pointer.y) < 6) return;
       this.dragging = true;
@@ -306,7 +329,10 @@ export class CityScene extends Phaser.Scene {
       camera.scrollX -= (pointer.x - pointer.prevPosition.x) / camera.zoom;
       camera.scrollY -= (pointer.y - pointer.prevPosition.y) / camera.zoom;
     });
-    this.input.on('pointerup', () => (this.dragging = false));
+    this.input.on('pointerup', () => {
+      this.dragging = false;
+      pinchStart = 0;
+    });
   }
 
   private addDoor({ building, x, y }: Door) {

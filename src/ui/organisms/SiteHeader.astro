@@ -144,6 +144,10 @@ const languages = LOCALES.map((code) => ({ code, label: t.language[code], href: 
   }
 
   .lang-switch a {
+    display: grid;
+    place-items: center;
+    min-width: 2.25rem;
+    min-height: 2rem;
     padding: var(--space-1) var(--space-2);
     font-size: var(--text-xs);
     font-weight: 700;
@@ -164,6 +168,34 @@ const languages = LOCALES.map((code) => ({ code, label: t.language[code], href: 
     nav {
       order: 3;
       flex-basis: 100%;
+    }
+
+    /* Brand on the left, language and account on the right; the menu takes its own row below. */
+    .lang-switch {
+      margin-left: auto;
+    }
+
+    /* Longer labels (English) scroll sideways instead of breaking the row. */
+    .nav {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav {
+      justify-content: space-between;
+    }
+
+    .nav a {
+      padding: var(--space-2);
+      font-size: var(--text-sm);
+      white-space: nowrap;
+    }
+  }
+
+  /* The smallest phones (320 px). */
+  @media (max-width: 360px) {
+    .nav a {
+      padding-inline: var(--space-1);
     }
   }
 </style>
