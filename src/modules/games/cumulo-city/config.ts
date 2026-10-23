@@ -7,6 +7,8 @@ export const WORLD_H = MAP_H * TILE;
 export const FONT = '"Press Start 2P", monospace';
 
 export const PLAYER_SPEED = 80;
+/** Distance from the player's center to the guide arrow that circles them. */
+export const GUIDE_ORBIT = 20;
 export const PLAYER_RUN_SPEED = 130;
 export const NPC_SPEED = 32;
 export const NPC_COUNT = 12;

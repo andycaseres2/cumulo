@@ -13,21 +13,26 @@ import { districtName } from '../../world/placeNames';
 import { gameLocale, gameText } from '../locale';
 
 const PANEL = 0x1b1b2a;
-const DIALOG_HEIGHT = 150;
-const CARD_WIDTH = 280;
+const DIALOG_HEIGHT = 170;
+/** Widest mission card; narrow screens get a card that fits them. */
+const CARD_WIDTH = 340;
 /** Radius of the on-screen stick shown on touch screens. */
 const STICK_RADIUS = 54;
 /** Narrower dialogs leave the text all the width instead of showing the client's portrait. */
 const PORTRAIT_MIN_BOX = 480;
 const IDLE_PANEL_WIDTH = 420;
-/** Leaves room for the page's "Salir" button in the top-left corner. */
-const HEADER_TOP = 58;
+/** Leaves room (and a gap) under the page's "Salir" button in the top-left corner. */
+const HEADER_TOP = 72;
 const PORTRAIT_SIZE = 72;
 const CHARS_PER_SECOND = 45;
 
 /** Screen-space overlay: location, controls, interaction button, minimap frame and dialog box. */
 export class HudScene extends Phaser.Scene {
   private header!: Phaser.GameObjects.Container;
+  private headerBg!: Phaser.GameObjects.Rectangle;
+  /** Width of the mission card on this screen. */
+  private cardWidth = CARD_WIDTH;
+  private cardContent: MissionCardContent | null = null;
   private locationTitle!: Phaser.GameObjects.Text;
   private locationSubtitle!: Phaser.GameObjects.Text;
   private controls!: Phaser.GameObjects.Text;
@@ -76,6 +81,7 @@ export class HudScene extends Phaser.Scene {
   private touch = false;
   private stick?: { base: Phaser.GameObjects.Arc; knob: Phaser.GameObjects.Arc; pointerId: number | null };
   private mapMode = false;
+  private badgeWidth = 0;
   /** Left edge of the zoom buttons, the right limit of the bottom row. */
   private zoomLeft = 0;
 
@@ -83,13 +89,18 @@ export class HudScene extends Phaser.Scene {
     super('hud');
   }
 
+  /** Phone-sized screens, where texts shrink a little so they still fit. */
+  private get narrow(): boolean {
+    return this.scale.width < 480;
+  }
+
   create() {
     const text = gameText(this).hud;
     this.touch = this.sys.game.device.input.touch;
-    const headerBg = this.add.rectangle(0, 0, 330, 54, PANEL, 0.85).setOrigin(0).setStrokeStyle(2, 0xffd166);
-    this.locationTitle = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
-    this.locationSubtitle = this.add.text(12, 34, '', { fontFamily: FONT, fontSize: '8px', color: '#ffffff' });
-    this.header = this.add.container(12, HEADER_TOP, [headerBg, this.locationTitle, this.locationSubtitle]);
+    this.headerBg = this.add.rectangle(0, 0, 10, 10, PANEL, 0.85).setOrigin(0).setStrokeStyle(2, 0xffd166);
+    this.locationTitle = this.add.text(14, 12, '', { fontFamily: FONT, fontSize: '15px', color: '#ffd166' });
+    this.locationSubtitle = this.add.text(14, 40, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff' });
+    this.header = this.add.container(12, HEADER_TOP, [this.headerBg, this.locationTitle, this.locationSubtitle]);
 
     this.controls = this.add
       .text(0, 0, text.controls, {
@@ -120,15 +131,15 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0.5, 0)
       .setVisible(false);
     this.showLocation({ title: 'Cúmulo City', subtitle: districtName(START_DISTRICT, gameLocale(this)), minimap: true });
-    this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact)).setVisible(false);
+    this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact), 13).setVisible(false);
 
     this.cardBg = this.add.rectangle(0, 0, CARD_WIDTH, 10, PANEL, 0.92).setOrigin(0).setStrokeStyle(2, 0xffd166);
     const wrap = { width: CARD_WIDTH - 24 };
-    this.cardHeading = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '9px', color: '#ffd166' });
-    this.cardTitle = this.add.text(12, 28, '', { fontFamily: FONT, fontSize: '11px', color: '#ffffff', wordWrap: wrap, lineSpacing: 5 });
-    this.cardDetail = this.add.text(12, 0, '', { fontFamily: FONT, fontSize: '9px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 6 });
+    this.cardHeading = this.add.text(14, 12, '', { fontFamily: FONT, fontSize: '11px', color: '#ffd166' });
+    this.cardTitle = this.add.text(14, 34, '', { fontFamily: FONT, fontSize: '14px', color: '#ffffff', wordWrap: wrap, lineSpacing: 6 });
+    this.cardDetail = this.add.text(14, 0, '', { fontFamily: FONT, fontSize: '11px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 7 });
     const acceptMission = gameText(this).missionCard.acceptMission;
-    this.cardAction = new Button(this, 0, 0, acceptMission, () => this.game.events.emit(EVENTS.missionAccept), 11);
+    this.cardAction = new Button(this, 0, 0, acceptMission, () => this.game.events.emit(EVENTS.missionAccept), 13);
     this.card = this.add
       .container(0, 0, [this.cardBg, this.cardHeading, this.cardTitle, this.cardDetail, this.cardAction])
       .setVisible(false);
@@ -143,9 +154,9 @@ export class HudScene extends Phaser.Scene {
       .setOrigin(0)
       .setStrokeStyle(2, 0xffd166);
     this.portrait = this.add.image(16 + PORTRAIT_SIZE / 2, 16 + PORTRAIT_SIZE / 2, '__DEFAULT').setScale(4);
-    this.dialogTitle = this.add.text(18, 16, '', { fontFamily: FONT, fontSize: '15px', color: '#ffd166' });
-    this.dialogText = this.add.text(18, 46, '', { fontFamily: FONT, fontSize: '13px', color: '#ffffff', lineSpacing: 10 });
-    this.dialogAccept = new Button(this, 0, 0, text.accept, () => this.game.events.emit(EVENTS.dialogAdvance), 12);
+    this.dialogTitle = this.add.text(20, 18, '', { fontFamily: FONT, fontSize: '18px', color: '#ffd166' });
+    this.dialogText = this.add.text(20, 52, '', { fontFamily: FONT, fontSize: '16px', color: '#ffffff', lineSpacing: 12 });
+    this.dialogAccept = new Button(this, 0, 0, text.accept, () => this.game.events.emit(EVENTS.dialogAdvance), 14);
     this.dialog = this.add
       .container(0, 0, [this.dialogBox, this.portraitFrame, this.portrait, this.dialogTitle, this.dialogText, this.dialogAccept])
       .setVisible(false);
@@ -205,7 +216,7 @@ export class HudScene extends Phaser.Scene {
   private buildChoices() {
     for (const button of this.choiceButtons) button.destroy();
     this.choiceButtons = this.choices.map((choice, i) => {
-      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), 12).setVisible(false);
+      const button = new Button(this, 0, 0, `${i + 1}. ${choice.label}`, () => this.choose(choice.id), this.narrow ? 13 : 14).setVisible(false);
       this.dialog.add(button);
       return button;
     });
@@ -217,7 +228,10 @@ export class HudScene extends Phaser.Scene {
    */
   private layoutDialogBox() {
     const { width, height } = this.scale;
-    const boxWidth = Math.min(820, width - 24);
+    const boxWidth = Math.min(900, width - 24);
+    // Phones keep a slightly smaller text so a full sentence still fits in a few lines.
+    this.dialogText.setFontSize(this.narrow ? 14 : 16).setLineSpacing(this.narrow ? 10 : 12);
+    this.dialogTitle.setFontSize(this.narrow ? 16 : 18);
     this.dialogBox.setSize(boxWidth, this.dialogBox.height);
     this.setPortraitShown(this.portraitWanted && boxWidth >= PORTRAIT_MIN_BOX);
     this.layoutDialogText();
@@ -264,7 +278,11 @@ export class HudScene extends Phaser.Scene {
     this.layoutDialogBox();
     // Small screens (phones in either orientation) keep the view for the city.
     this.header.setVisible(width > 560 && height > 480);
-    this.cardHome = { x: width - CARD_WIDTH - 12, y: map.y + map.height + 12 };
+    this.cardWidth = Math.min(CARD_WIDTH, width - 24);
+    this.cardTitle.setWordWrapWidth(this.cardWidth - 28);
+    this.cardDetail.setWordWrapWidth(this.cardWidth - 28);
+    if (this.cardContent) this.drawMissionCard(this.cardContent);
+    this.cardHome = { x: width - this.cardWidth - 12, y: map.y + map.height + 12 };
     if (!this.cardTween?.isPlaying()) this.card.setPosition(this.cardHome.x, this.cardHome.y);
     this.idleShade.setSize(width, height);
     this.idlePanel.setPosition(width / 2, height / 2);
@@ -297,18 +315,8 @@ export class HudScene extends Phaser.Scene {
 
   /** The current mission, under the minimap: offer with an accept button, objective, or all done. */
   private showMissionCard(content: MissionCardContent) {
-    // Mixed case on purpose: the pixel font draws accented capitals (Ó, Ú) without room for the accent.
-    this.cardHeading.setText(content.heading);
-    this.cardTitle.setText(content.title);
-    this.cardDetail.setText(content.detail).setY(this.cardTitle.y + this.cardTitle.height + 8);
-    let bottom = this.cardDetail.y + this.cardDetail.height;
-    this.cardAction.setVisible(content.action !== null);
-    if (content.action) {
-      this.cardAction.setText(content.action);
-      this.cardAction.setPosition(12 + this.cardAction.buttonWidth / 2, bottom + 10 + this.cardAction.buttonHeight / 2);
-      bottom += 10 + this.cardAction.buttonHeight;
-    }
-    this.cardBg.setSize(CARD_WIDTH, bottom + 12);
+    this.cardContent = content;
+    this.drawMissionCard(content);
     this.card.setVisible(true);
 
     const key = cardKey(content);
@@ -318,6 +326,23 @@ export class HudScene extends Phaser.Scene {
     this.lastNudgeAt = null;
     this.hideBadge();
     this.playCardEntrance(content.kind === 'offer');
+  }
+
+  /** Fills and sizes the card for the current screen width. */
+  private drawMissionCard(content: MissionCardContent) {
+    // Mixed case on purpose: the pixel font draws accented capitals (Ó, Ú) without room for the accent.
+    this.cardHeading.setText(content.heading);
+    this.cardTitle.setText(content.title);
+    this.cardDetail.setText(content.detail).setY(this.cardTitle.y + this.cardTitle.height + 10);
+    let bottom = this.cardDetail.y + this.cardDetail.height;
+    this.cardAction.setVisible(content.action !== null);
+    if (content.action) {
+      this.cardAction.setText(content.action);
+      this.cardAction.setPosition(14 + this.cardAction.buttonWidth / 2, bottom + 12 + this.cardAction.buttonHeight / 2);
+      bottom += 12 + this.cardAction.buttonHeight;
+    }
+    this.cardBg.setSize(this.cardWidth, bottom + 14);
+    this.badge.setX(this.cardWidth - this.badgeWidth / 2 - 8);
   }
 
   /** The card slides in from the right edge; a new offer also blinks its heading to catch the eye. */
@@ -371,10 +396,11 @@ export class HudScene extends Phaser.Scene {
   }
 
   private createBadge(text: string): Phaser.GameObjects.Container {
-    const label = this.add.text(0, 0, text, { fontFamily: FONT, fontSize: '9px', color: '#1b1b2a' }).setOrigin(0.5);
+    const label = this.add.text(0, 0, text, { fontFamily: FONT, fontSize: '10px', color: '#1b1b2a' }).setOrigin(0.5);
     const width = Math.ceil(label.width) + 16;
     const bg = this.add.rectangle(0, 0, width, Math.ceil(label.height) + 10, 0xff6b6b).setStrokeStyle(2, 0x1b1b2a);
     // Hangs from the top-right corner of the card, like a tag.
+    this.badgeWidth = width;
     return this.add.container(CARD_WIDTH - width / 2 - 8, -2, [bg, label]).setVisible(false);
   }
 
@@ -466,9 +492,12 @@ export class HudScene extends Phaser.Scene {
     this.dialogText.setX(left).setWordWrapWidth(boxWidth - left - 18);
   }
 
+  /** The location box grows with its text, so long building names never spill out of it. */
   private showLocation(location: LocationInfo) {
     this.locationTitle.setText(location.title);
     this.locationSubtitle.setText(location.subtitle);
+    const textWidth = Math.max(this.locationTitle.width, this.locationSubtitle.width);
+    this.headerBg.setSize(Math.max(220, Math.ceil(textWidth) + 28), this.locationSubtitle.y + this.locationSubtitle.height + 12);
     this.minimapFrame.setVisible(location.minimap);
     this.mapControls?.setVisible(location.minimap);
   }

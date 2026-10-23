@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
 import { frameName, npcLookKey } from '../art/characters';
 import { MARKERS, placeMarker } from '../art/markers';
-import { EVENTS, FONT, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
+import { EVENTS, FONT, GUIDE_ORBIT, MAP_H, MAP_W, minimapRect, NPC_COUNT, pickZoom, REGISTRY, TILE, WORLD_H, WORLD_W } from '../../config';
 import { NameTag } from '../entities/NameTag';
 import { Npc } from '../entities/Npc';
 import { Walker } from '../entities/Walker';
@@ -111,7 +111,7 @@ export class CityScene extends Phaser.Scene {
 
     // Above the name tag (depth 9000) so it is never hidden; grows and shrinks to catch the eye, always opaque.
     this.guide = this.add.image(0, 0, MARKERS.guide).setDepth(9_100).setVisible(false);
-    this.tweens.add({ targets: this.guide, scale: { from: 1.2, to: 1.5 }, duration: 450, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: this.guide, scale: { from: 0.9, to: 1.05 }, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     this.mapMode = false;
     this.following = true;
     this.dragging = false;
@@ -423,7 +423,7 @@ export class CityScene extends Phaser.Scene {
     this.guide
       .setVisible(visible)
       .setRotation(angle)
-      .setPosition(from.x + Math.cos(angle) * 30, from.y + Math.sin(angle) * 30);
+      .setPosition(from.x + Math.cos(angle) * GUIDE_ORBIT, from.y + Math.sin(angle) * GUIDE_ORBIT);
   }
 
   /** Citizens start on free pavement: not under a building and not on a prop. */

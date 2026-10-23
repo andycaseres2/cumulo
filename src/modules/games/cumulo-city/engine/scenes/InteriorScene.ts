@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { seededRandom } from '../art/canvas';
 import { frameName, npcLookKey } from '../art/characters';
-import { EVENTS, fitZoom, REGISTRY, TILE } from '../../config';
+import { EVENTS, fitZoom, GUIDE_ORBIT, REGISTRY, TILE } from '../../config';
 import { NameTag } from '../entities/NameTag';
 import { Walker } from '../entities/Walker';
 import { Worker } from '../entities/Worker';
@@ -68,7 +68,7 @@ export class InteriorScene extends Phaser.Scene {
 
     this.guideTarget = null;
     this.guide = this.add.image(0, 0, MARKERS.guide).setDepth(9_100).setVisible(false);
-    this.tweens.add({ targets: this.guide, scale: { from: 1.2, to: 1.5 }, duration: 450, yoyo: true, repeat: -1 });
+    this.tweens.add({ targets: this.guide, scale: { from: 0.9, to: 1.05 }, duration: 500, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
 
     const workers = this.spawnWorkers();
     this.physics.add.collider(this.player, solids);
@@ -114,7 +114,7 @@ export class InteriorScene extends Phaser.Scene {
     this.guide
       .setVisible(visible)
       .setRotation(angle)
-      .setPosition(from.x + Math.cos(angle) * 30, from.y + Math.sin(angle) * 30);
+      .setPosition(from.x + Math.cos(angle) * GUIDE_ORBIT, from.y + Math.sin(angle) * GUIDE_ORBIT);
   }
 
   /** Shows the whole room centered when it fits the screen; otherwise follows the player. */

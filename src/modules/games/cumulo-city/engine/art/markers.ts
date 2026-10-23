@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { createCanvas } from './canvas';
+import { GUIDE_SIZE, guideArrowShape } from './guideArrowShape';
 
 export const MARKERS = { job: 'marker-job', done: 'marker-done', guide: 'marker-guide', busStop: 'bus-stop' } as const;
 
@@ -44,18 +45,23 @@ export function createMarkers(scene: Phaser.Scene) {
   }
   scene.textures.addCanvas(MARKERS.done, done);
 
-  // Guide arrow pointing right (16x15): shaft plus head, dark outline and solid fill; the scene rotates it.
-  const guide = createCanvas(16, 15);
+  // Guide arrow pointing right (11x11): a chevron head smaller than a character, with a dark outline and a
+  // light top edge; the scene rotates it around the player.
+  const guide = createCanvas(GUIDE_SIZE, GUIDE_SIZE);
   const g = guide.getContext('2d')!;
-  const arrow = (color: string, inset: number) => {
-    g.fillStyle = color;
-    g.fillRect(inset, 5 + inset, 8, 5 - 2 * inset);
-    for (let i = 0; i <= 7 - inset; i++) g.fillRect(8 + i, i + inset, 1, 15 - 2 * (i + inset));
-  };
-  arrow(OUTLINE, 0);
-  arrow('#f5aa57', 1);
-  g.fillStyle = '#ffc999';
-  g.fillRect(2, 6, 6, 1);
+  const fill = guideArrowShape();
+  const inside = (x: number, y: number) => fill[y]?.[x] === true;
+  for (let y = 0; y < GUIDE_SIZE; y++) {
+    for (let x = 0; x < GUIDE_SIZE; x++) {
+      if (inside(x, y)) {
+        g.fillStyle = inside(x, y - 1) ? '#f5aa57' : '#ffd9a8';
+        g.fillRect(x, y, 1, 1);
+      } else if (inside(x - 1, y) || inside(x + 1, y) || inside(x, y - 1) || inside(x, y + 1)) {
+        g.fillStyle = OUTLINE;
+        g.fillRect(x, y, 1, 1);
+      }
+    }
+  }
   scene.textures.addCanvas(MARKERS.guide, guide);
 
   // Bus stop (12x26): a blue sign with a white bus on a grey pole.
