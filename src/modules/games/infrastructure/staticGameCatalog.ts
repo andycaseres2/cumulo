@@ -13,15 +13,6 @@ const GAMES: Game[] = [
     domains: ['cloud-concepts', 'security-compliance', 'technology-services', 'billing-pricing-support'],
   },
   {
-    slug: 'practice-exam',
-    title: 'Simulacro de examen',
-    tagline: '65 preguntas con tiempo, como el examen real',
-    description: 'Practica bajo presión con preguntas de escenarios de los cuatro dominios y recibe la explicación de cada respuesta.',
-    status: 'available',
-    level: 'practitioner',
-    domains: ['cloud-concepts', 'security-compliance', 'technology-services', 'billing-pricing-support'],
-  },
-  {
     slug: 'service-duel',
     title: 'Duelo de servicios',
     tagline: 'Elige el servicio correcto antes de que acabe el tiempo',

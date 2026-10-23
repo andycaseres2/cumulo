@@ -6,7 +6,7 @@ import Badge from '@/ui/atoms/Badge.astro';
 import Button from '@/ui/atoms/Button.astro';
 import Card from '@/ui/molecules/Card.astro';
 import { gameArt } from './gameArt';
-import { gameLink } from './gameLink';
+import { routes } from '@/ui/routes';
 
 export interface Props {
   game: Game;
@@ -16,7 +16,6 @@ export interface Props {
 const { game, headingLevel = 3 } = Astro.props;
 const playable = isPlayable(game);
 const art = gameArt(game.slug);
-const link = gameLink(game.slug);
 const domains = game.domains.map(findExamDomain).filter((d) => d !== undefined);
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
 ---
@@ -36,8 +35,8 @@ const Heading = headingLevel === 2 ? 'h2' : 'h3';
     {domains.map((domain) => <li><DomainBadge domain={domain} /></li>)}
   </ul>
   <Fragment slot="footer">
-    {playable && <Button href={link.href}>Jugar ahora</Button>}
-    {playable && link.needsAccount && <span class="account-note">Requiere una cuenta gratuita</span>}
+    {playable && <Button href={routes.game(game.slug)}>Jugar ahora</Button>}
+    {playable && <span class="account-note">Requiere una cuenta gratuita</span>}
   </Fragment>
 </Card>
 
