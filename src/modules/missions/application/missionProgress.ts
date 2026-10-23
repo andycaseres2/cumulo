@@ -86,7 +86,7 @@ export async function acceptMission(store: MissionProgressStore, catalog: Missio
 export async function recordMissionResult(
   store: MissionProgressStore,
   missionId: string,
-  result: { score: number; passed: boolean },
+  result: { score: number; passed: boolean; stars?: number },
 ): Promise<void> {
   const records = await store.load();
   const previous = records[missionId];
@@ -94,6 +94,8 @@ export async function recordMissionResult(
     bestScore: Math.max(previous?.bestScore ?? 0, result.score),
     completed: (previous?.completed ?? false) || result.passed,
     accepted: true,
+    // A failed try (0 stars) never turns an older completion without rating into a 0-star one.
+    ...(Math.max(previous?.bestStars ?? 0, result.stars ?? 0) > 0 ? { bestStars: Math.max(previous?.bestStars ?? 0, result.stars ?? 0) } : {}),
   };
   await store.save(records);
 }

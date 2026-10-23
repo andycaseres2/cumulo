@@ -2,7 +2,7 @@
 export interface MissionOption {
   id: string;
   label: string;
-  /** Neutral description of the service or concept, shown before choosing in learning mode. */
+  /** Neutral description of the service or concept, shown when the player consults the manual. */
   definition: string;
   /** Why this option fits the client's situation or not, always shown after answering. */
   explanation: string;
@@ -38,4 +38,4 @@ export interface Mission {
   decisions: Decision[];
 }
 
-export type MissionMode = 'learn' | 'practice';
+

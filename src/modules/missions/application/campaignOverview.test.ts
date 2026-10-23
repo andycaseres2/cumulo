@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { inMemoryProgressStore } from '../infrastructure/inMemoryProgressStore';
 import { catalogOf, secondMission, twoStepMission as firstMission } from '../testing/fixtures';
+import { jobFee } from '../domain/MissionRun';
 import { getCampaignOverview } from './campaignOverview';
 
 describe('getCampaignOverview', () => {
@@ -14,6 +15,16 @@ describe('getCampaignOverview', () => {
       [secondMission.id, 'offered', null],
     ]);
     expect(overview).toMatchObject({ completed: 1, total: 2 });
+  });
+
+  it('adds up the stars of completed jobs and the fees their best ratings paid', async () => {
+    const store = inMemoryProgressStore({
+      [firstMission.id]: { bestScore: 1, completed: true, accepted: true, bestStars: 3 },
+      [secondMission.id]: { bestScore: 0.5, completed: false, accepted: true, bestStars: 0 },
+    });
+    const overview = await getCampaignOverview(store, catalogOf(firstMission, secondMission));
+    expect(overview.entries.map((e) => e.bestStars)).toEqual([3, null]);
+    expect(overview).toMatchObject({ stars: 3, fees: jobFee(firstMission, 3) });
   });
 
   it('counts the exam domains practiced in completed missions', async () => {

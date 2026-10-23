@@ -14,18 +14,33 @@ const options = {
 
 const overview: CampaignOverview = {
   entries: [
-    { mission: firstMission, state: 'completed', bestScore: 0.5 },
-    { mission: secondMission, state: 'offered', bestScore: null },
+    { mission: firstMission, state: 'completed', bestScore: 0.5, bestStars: null },
+    { mission: secondMission, state: 'offered', bestScore: null, bestStars: null },
   ],
   completed: 1,
   total: 2,
   practicedDomains: ['cloud-concepts'],
+  stars: 0,
+  fees: 0,
 };
 
 let host: HTMLElement;
 const card = (id: string) => host.querySelector<HTMLElement>(`[data-mission="${id}"]`)!;
 
 describe('progress view', () => {
+  it('shows the stars of rated jobs and what the player earned', () => {
+    const host = document.createElement('div');
+    const rated: CampaignOverview = {
+      ...overview,
+      entries: [{ ...overview.entries[0], bestStars: 2 }, overview.entries[1]],
+      stars: 2,
+      fees: 200,
+    };
+    renderProgress(host, rated, options);
+    expect(host.querySelector(`[data-mission="${firstMission.id}"] .pv-state`)!.textContent).toBe('Completada · ★★☆');
+    expect(host.querySelector('[data-earnings]')!.textContent).toBe('2 ★ ganadas · 200 créditos en honorarios');
+  });
+
   beforeEach(() => {
     document.body.innerHTML = '<div id="host"></div>';
     host = document.getElementById('host')!;
@@ -56,7 +71,7 @@ describe('progress view', () => {
 
   it('groups the missions by district, with how many are completed in each', () => {
     const other = { ...secondMission, id: 'other', track: 'financial' };
-    renderProgress(host, { ...overview, entries: [...overview.entries, { mission: other, state: 'locked', bestScore: null }] }, options);
+    renderProgress(host, { ...overview, entries: [...overview.entries, { mission: other, state: 'locked', bestScore: null, bestStars: null }] }, options);
     const groups = [...host.querySelectorAll<HTMLElement>('[data-track]')];
     expect(groups.map((g) => g.dataset.track)).toEqual(['downtown', 'financial']);
     expect(groups[0].querySelector('summary')?.textContent).toContain('Track downtown');

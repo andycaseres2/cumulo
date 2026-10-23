@@ -30,8 +30,13 @@ const percent = (score: number) => `${Math.round(score * 100)} %`;
 
 const messages = (options: ProgressViewOptions) => missionMessages[options.locale ?? DEFAULT_LOCALE].progress;
 
-function stateLabel({ state, bestScore }: CampaignEntry, labels: Record<MissionState, string>): string {
-  return state === 'completed' && bestScore !== null ? `${labels.completed} · ${percent(bestScore)}` : labels[state];
+const starLine = (stars: number) => '★'.repeat(stars) + '☆'.repeat(3 - stars);
+
+function stateLabel({ state, bestScore, bestStars }: CampaignEntry, labels: Record<MissionState, string>): string {
+  if (state !== 'completed') return labels[state];
+  // Jobs rated since ratings exist show their stars; older completions keep their score.
+  if (bestStars !== null) return `${labels.completed} · ${starLine(bestStars)}`;
+  return bestScore !== null ? `${labels.completed} · ${percent(bestScore)}` : labels.completed;
 }
 
 function missionCard(entry: CampaignEntry, options: ProgressViewOptions): HTMLElement {
@@ -91,6 +96,7 @@ export function renderProgress(host: HTMLElement, overview: CampaignOverview, op
     el('section', { class: 'progress-view' }, [
       el('div', { class: 'pv-summary' }, [
         el('p', { class: 'pv-count' }, [t.count(overview.completed, overview.total)]),
+        el('p', { class: 'pv-earnings', 'data-earnings': '' }, [t.earnings(overview.stars, overview.fees)]),
         el('progress', { value: String(overview.completed), max: String(overview.total), 'aria-label': t.label }),
         el('a', { class: 'pv-play', href: options.gameUrl }, [overview.completed === 0 ? t.startPlaying : t.keepPlaying]),
       ]),

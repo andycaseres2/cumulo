@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest';
+import { jobFee } from '../domain/MissionRun';
 import { twoStepMission as mission } from '../testing/fixtures';
 import { openMissionPanel } from './missionPanel';
 
@@ -10,86 +11,129 @@ function host(): HTMLElement {
   return document.getElementById('host')!;
 }
 
+const open = (locale?: 'es' | 'en') => openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl, locale });
 const panel = () => document.querySelector<HTMLElement>('[data-mission-panel]')!;
-const button = (text: string) =>
-  [...panel().querySelectorAll('button')].find((b) => b.textContent?.includes(text)) as HTMLButtonElement;
-const options = () => [...panel().querySelectorAll<HTMLButtonElement>('[data-option]')];
+const click = (selector: string) => panel().querySelector<HTMLButtonElement>(selector)!.click();
 const option = (id: string) => panel().querySelector<HTMLButtonElement>(`[data-option="${id}"]`)!;
+const satisfaction = () => Number(panel().querySelector<HTMLElement>('[data-satisfaction]')!.dataset.satisfaction);
+const definitionsShown = () => [...panel().querySelectorAll<HTMLElement>('[data-definition]')].filter((d) => !d.hidden).length;
 
-describe('mission panel', () => {
+describe('mission panel: a consulting job', () => {
   beforeEach(() => host());
 
-  it('starts by letting the player choose between learning and practice', () => {
-    void openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl });
-    expect(panel().textContent).toContain('Test mission');
-    expect(button('Aprender')).toBeDefined();
-    expect(button('Práctica')).toBeDefined();
+  it('opens with a work order: the client, what they told you, the terms and one button to take the job', () => {
+    void open();
+    const text = panel().textContent!;
+    expect(text).toContain('Orden de trabajo');
+    expect(text).toContain('Rosa · Owner');
+    expect(text).toContain('Hello');
+    expect(text).toContain(`hasta ${jobFee(mission, 3)} créditos`);
+    expect(text).not.toContain('Aprender');
+    expect(text).not.toContain('Práctica');
+    expect(panel().querySelector('[data-take-job]')).not.toBeNull();
   });
 
-  it('in learning mode, shows definitions before choosing and explains right after answering', async () => {
-    const result = openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl });
-    button('Aprender').click();
+  it('shows each request as the client speaking, with the satisfaction meter and the proposals', () => {
+    void open();
+    click('[data-take-job]');
+    const text = panel().textContent!;
+    expect(text).toContain('Pedido 1 de 2');
+    expect(text).toContain('First question');
+    expect(panel().querySelector('.mp-chat')!.textContent).toContain('Rosa');
+    expect(satisfaction()).toBe(50);
+    expect(definitionsShown()).toBe(0);
+  });
 
-    expect(panel().textContent).toContain('First question');
-    expect(options()).toHaveLength(4);
-    expect(panel().querySelectorAll('details')).toHaveLength(4);
-    expect(panel().textContent).toContain('What a is');
-
+  it('answers a proposal at once: right or wrong, the client reaction, the senior note and the meter', () => {
+    void open();
+    click('[data-take-job]');
     option('b').click();
-    const feedback = panel().querySelector('[data-feedback]')!.textContent!;
-    expect(feedback).toContain('No es la mejor opción');
-    expect(feedback).toContain('Why b does not fit');
-    expect(feedback).toContain('Why a fits');
-    expect(panel().querySelector<HTMLAnchorElement>('[data-theory-link]')!.getAttribute('href')).toBe('/theory/cloud-practitioner/cloud-benefits');
-    expect(options().every((o) => o.disabled)).toBe(true);
+    const feedback = panel().querySelector<HTMLElement>('[data-feedback]')!;
+    expect(feedback.textContent).toContain('No era lo que necesitaba');
+    expect(feedback.querySelector('.mp-chat.is-upset')).not.toBeNull();
+    expect(feedback.textContent).toContain('Nota del consultor senior');
+    expect(feedback.textContent).toContain('Why b does not fit');
+    expect(feedback.textContent).toContain('La propuesta indicada era Option a.');
+    expect(feedback.querySelector('a')!.getAttribute('href')).toBe('/theory/cloud-practitioner/cloud-benefits');
+    expect(option('a').className).toContain('is-correct');
+    expect(option('b').className).toContain('is-wrong');
+    expect(satisfaction()).toBeLessThan(50);
+  });
 
-    button('Siguiente').click();
+  it('opens the manual on demand, showing what every option is', () => {
+    void open();
+    click('[data-take-job]');
+    click('[data-manual]');
+    expect(definitionsShown()).toBe(4);
+    expect(panel().textContent).toContain('What a is');
+    expect(panel().querySelector<HTMLButtonElement>('[data-manual]')!.disabled).toBe(true);
+  });
+
+  it('closes a perfect job with three stars and the full fee, and saves it when going back', async () => {
+    const result = open();
+    click('[data-take-job]');
+    option('a').click();
+    click('[data-next]');
     option('f').click();
-    expect(panel().querySelector('[data-feedback]')!.textContent).toContain('¡Correcto!');
-    button('Ver resultado').click();
-
-    expect(panel().textContent).toContain('1 de 2');
-    button('Volver a la oficina').click();
-    await expect(result).resolves.toMatchObject({ correct: 1, total: 2, passed: false });
+    click('[data-next]');
+    const report = panel().querySelector<HTMLElement>('[data-report]')!;
+    expect(report.dataset.report).toBe('approved');
+    expect(report.querySelector<HTMLElement>('[data-stars]')!.dataset.stars).toBe('3');
+    expect(report.querySelector<HTMLElement>('[data-fee]')!.dataset.fee).toBe(String(jobFee(mission, 3)));
+    expect(report.textContent).toContain('Lo que aprendiste');
+    expect(report.textContent).toContain('Why f fits');
+    click('[data-back]');
+    await expect(result).resolves.toMatchObject({ passed: true, stars: 3, fee: jobFee(mission, 3), correct: 2 });
     expect(document.querySelector('[data-mission-panel]')).toBeNull();
   });
 
-  it('in practice mode, hides definitions and feedback until the end, then reviews every answer', async () => {
-    const result = openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl });
-    button('Práctica').click();
-
-    expect(panel().querySelectorAll('details')).toHaveLength(0);
+  it('rates a job done with the manual lower', async () => {
+    const result = open();
+    click('[data-take-job]');
+    click('[data-manual]');
     option('a').click();
-    expect(panel().querySelector('[data-feedback]')).toBeNull();
-    expect(panel().textContent).toContain('Second question');
+    click('[data-next]');
     option('f').click();
+    click('[data-next]');
+    click('[data-back]');
+    await expect(result).resolves.toMatchObject({ passed: true, stars: 2 });
+  });
 
-    const review = panel().textContent!;
-    expect(review).toContain('2 de 2');
-    expect(review).toContain('Why a fits');
-    expect(review).toContain('Why f fits');
-    button('Volver a la oficina').click();
-    await expect(result).resolves.toMatchObject({ correct: 2, passed: true });
+  it('pays nothing when the client is not satisfied, and lets the player try the job again', () => {
+    void open();
+    click('[data-take-job]');
+    option('b').click();
+    click('[data-next]');
+    option('e').click();
+    click('[data-next]');
+    const report = panel().querySelector<HTMLElement>('[data-report]')!;
+    expect(report.dataset.report).toBe('rejected');
+    expect(report.querySelector<HTMLElement>('[data-stars]')!.dataset.stars).toBe('0');
+    expect(report.textContent).toContain('Sin honorarios');
+    click('[data-retry]');
+    expect(panel().querySelector('[data-take-job]')).not.toBeNull();
   });
 
   it('can be left before finishing, which saves nothing', async () => {
-    const result = openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl });
-    button('Salir').click();
+    const result = open();
+    click('[data-take-job]');
+    click('.mp-close');
     await expect(result).resolves.toBeNull();
-    expect(document.querySelector('[data-mission-panel]')).toBeNull();
   });
 
-  it('lets the player answer with the number keys', () => {
-    void openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl });
-    button('Práctica').click();
+  it('lets the player propose with the number keys', () => {
+    void open();
+    click('[data-take-job]');
     panel().dispatchEvent(new KeyboardEvent('keydown', { key: '1', bubbles: true }));
-    expect(panel().textContent).toContain('Second question');
+    expect(panel().querySelector('[data-feedback]')!.textContent).toContain('¡Buena propuesta!');
   });
 
   it('speaks English when asked', () => {
-    void openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl, locale: 'en' });
-    expect(panel().textContent).toContain('How do you want to play?');
-    button('Learn').click();
-    expect(panel().textContent).toContain('Decision 1 of 2');
+    void open('en');
+    expect(panel().textContent).toContain('Work order');
+    expect(panel().textContent).toContain('Take the job');
+    click('[data-take-job]');
+    expect(panel().textContent).toContain('Request 1 of 2');
+    expect(panel().textContent).toContain('Client satisfaction');
   });
 });

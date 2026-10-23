@@ -25,6 +25,10 @@ const catalog = staticMissionCatalog(currentLocale());
 
 let store: Promise<MissionProgressStore> | undefined;
 
+/** The database (or PostgREST's schema cache) does not know the best_stars column yet. */
+const missingStarsColumn = (error: { message: string; code?: string } | null) =>
+  error !== null && /best_stars/.test(error.message) && (error.code === '42703' || error.code === 'PGRST204' || /column/i.test(error.message));
+
 async function createStore(): Promise<MissionProgressStore> {
   migrateLegacyStorage();
   const client = supabase();
@@ -40,8 +44,19 @@ async function createStore(): Promise<MissionProgressStore> {
   const remote = renamedProgressStore(
     supabaseProgressStore(
       {
-        select: async () => await client.from('mission_progress').select('mission_id, best_score, completed, accepted'),
-        upsert: async (rows) => await client.from('mission_progress').upsert(rows, { onConflict: 'user_id,mission_id' }),
+        // Until the best_stars migration runs, the column is missing: read and write without it instead of failing.
+        select: async () => {
+          const withStars = await client.from('mission_progress').select('mission_id, best_score, completed, accepted, best_stars');
+          return missingStarsColumn(withStars.error)
+            ? await client.from('mission_progress').select('mission_id, best_score, completed, accepted')
+            : withStars;
+        },
+        upsert: async (rows) => {
+          const saved = await client.from('mission_progress').upsert(rows, { onConflict: 'user_id,mission_id' });
+          if (!missingStarsColumn(saved.error)) return saved;
+          const withoutStars = rows.map(({ best_stars: _stars, ...row }) => row);
+          return await client.from('mission_progress').upsert(withoutStars, { onConflict: 'user_id,mission_id' });
+        },
       },
       userId,
     ),

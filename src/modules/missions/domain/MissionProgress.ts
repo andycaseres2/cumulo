@@ -3,6 +3,8 @@ export interface MissionRecord {
   completed: boolean;
   /** Missing in progress saved before missions had to be accepted; read as false. */
   accepted?: boolean;
+  /** Best rating of the job (0–3 stars); missing in progress saved before jobs had ratings. */
+  bestStars?: number;
 }
 
 export type ProgressRecords = Record<string, MissionRecord>;

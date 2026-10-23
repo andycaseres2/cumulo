@@ -5,6 +5,8 @@ function mergeRecord(a: MissionRecord | undefined, b: MissionRecord | undefined)
     bestScore: Math.max(a?.bestScore ?? 0, b?.bestScore ?? 0),
     completed: Boolean(a?.completed || b?.completed),
     accepted: Boolean(a?.accepted || b?.accepted),
+    // Only records that have a rating carry one, so progress saved before ratings stays as it was.
+    ...(a?.bestStars !== undefined || b?.bestStars !== undefined ? { bestStars: Math.max(a?.bestStars ?? 0, b?.bestStars ?? 0) } : {}),
   };
 }
 
