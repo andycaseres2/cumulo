@@ -5,6 +5,7 @@ import { buildingName, districtName } from '@/modules/games/cumulo-city/world/pl
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { examHistoryMessages } from '@/i18n/messages/examHistory';
 import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf, localePaths } from '@/i18n/page';
 
@@ -14,6 +15,7 @@ export function getStaticPaths() {
 
 const locale = localeOf(Astro);
 const t = pagesMessages[locale].profile;
+const examTitle = examHistoryMessages[locale].profileTitle;
 
 // Names known at build time, handed to the client view that renders the player's progress.
 const topics = (await theory.catalog(locale)).flatMap((s) => s.topics);
@@ -34,6 +36,8 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, districtNam
       <div data-profile></div>
       <h2 class="section-title">{t.theory}</h2>
       <div data-theory-progress data-topics={JSON.stringify(topics)}></div>
+      <h2 class="section-title">{examTitle}</h2>
+      <div data-exam-history></div>
       <h2 class="section-title">{t.duel}</h2>
       <div data-duel-progress></div>
       <h2 class="section-title">{t.missions}</h2>
@@ -64,6 +68,9 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, districtNam
 
 <script>
   import { duelProgressStore } from '@/composition/duel';
+  import { examAttemptStore } from '@/composition/examAttempts';
+  import { examHistory } from '@/modules/exam/domain/ExamAttempt';
+  import { renderExamHistory } from '@/modules/exam/presentation/examHistoryView';
   import { campaignOverview } from '@/composition/missions';
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { renderProgress } from '@/modules/missions/presentation/progressView';
@@ -99,6 +106,12 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, districtNam
       const theoryHost = document.querySelector<HTMLElement>('[data-theory-progress]')!;
       const allTopics: Topic[] = JSON.parse(theoryHost.dataset.topics ?? '[]');
       renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.course('cloud-practitioner'), locale });
+      const attempts = await examAttemptStore();
+      renderExamHistory(document.querySelector<HTMLElement>('[data-exam-history]')!, examHistory(attempts ? await attempts.list() : []), {
+        locale,
+        limit: 3,
+        moreUrl: routes.practiceExam,
+      });
       renderDuelProgress(document.querySelector<HTMLElement>('[data-duel-progress]')!, await (await duelProgressStore()).load(), {
         rivals: RIVALS,
         familyCount: FAMILY_ORDER.length,

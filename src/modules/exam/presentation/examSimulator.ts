@@ -13,7 +13,8 @@ export interface ExamSimulatorOptions {
   questionCount: number;
   theoryUrl: (slug: string) => string;
   durationMinutes: number;
-  onFinished?: (result: PracticeExamResult) => void;
+  /** Called once per exam with its result and how long the player took. */
+  onFinished?: (result: PracticeExamResult, details: { elapsedMs: number }) => void;
   /** Language of the copy; Spanish when omitted. */
   locale?: Locale;
 }
@@ -166,7 +167,8 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
       clearInterval(timer);
       leaving.abort();
       const result = scorePracticeExam(exam, answers);
-      options.onFinished?.(result);
+      const durationMs = options.durationMinutes * 60_000;
+      options.onFinished?.(result, { elapsedMs: Math.min(durationMs, durationMs - Math.max(0, deadline - Date.now())) });
       showResults(exam, answers, result, timeUp);
     }
 

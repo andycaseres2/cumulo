@@ -7,6 +7,7 @@ import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 import { localeOf, localePaths } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 import { examSimulatorMessages } from '@/i18n/messages/examSimulator';
+import { examHistoryMessages } from '@/i18n/messages/examHistory';
 
 export function getStaticPaths() {
   return localePaths();
@@ -15,6 +16,7 @@ export function getStaticPaths() {
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
 const t = examSimulatorMessages[locale].page;
+const history = examHistoryMessages[locale];
 
 // The bank (every theory topic's quiz and practice questions) is served at /practice-exam/bank.json; only its size is needed here.
 const bank = await theory.quizBank(locale);
@@ -37,8 +39,13 @@ const bank = await theory.quizBank(locale);
         data-bank-url={routes.practiceExamBank}
         data-questions={EXAM_FORMAT.questions}
         data-minutes={EXAM_FORMAT.durationMinutes}
+        data-sign-in-reason={history.authReason}
       >
       </div>
+      <section class="history" data-history-section hidden>
+        <h2 class="history-title">{history.title}</h2>
+        <div data-exam-history></div>
+      </section>
     </div>
   </Container>
 </PageLayout>
@@ -49,10 +56,31 @@ const bank = await theory.quizBank(locale);
     gap: var(--space-6);
     padding-block: var(--space-12);
   }
+
+  .history {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .history[hidden] {
+    display: none;
+  }
+
+  .history-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+  }
 </style>
 
 <script>
+  import { examAttemptStore } from '@/composition/examAttempts';
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { attemptFrom, examHistory } from '@/modules/exam/domain/ExamAttempt';
   import { buildPracticeExam, type BankQuestion } from '@/modules/exam/domain/PracticeExam';
+  import { renderExamHistory } from '@/modules/exam/presentation/examHistoryView';
+  import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { renderExamSimulator } from '@/modules/exam/presentation/examSimulator';
   import { currentLocale } from '@/i18n/client';
   import { routesFor } from '@/ui/routes';
@@ -61,7 +89,26 @@ const bank = await theory.quizBank(locale);
   const routes = routesFor(locale);
 
   const host = document.querySelector<HTMLElement>('[data-practice-exam]');
-  if (host) {
+  const player = host ? await currentPlayer() : null;
+  const store = player && !player.isGuest ? await examAttemptStore() : null;
+  if (host && !store) {
+    // The exam needs an account: every attempt and its score are saved in it.
+    host.replaceChildren();
+    openAuthModal({
+      auth: playerAuth(),
+      locale,
+      reason: host.dataset.signInReason,
+      onSignedIn: () => window.location.reload(),
+      onDismiss: () => window.location.assign(routes.home),
+    });
+  } else if (host && store) {
+    const historySection = document.querySelector<HTMLElement>('[data-history-section]')!;
+    const historyHost = document.querySelector<HTMLElement>('[data-exam-history]')!;
+    const showHistory = async () => {
+      renderExamHistory(historyHost, examHistory(await store.list()), { locale });
+      historySection.hidden = false;
+    };
+    void showHistory();
     const bank: BankQuestion[] = await fetch(host.dataset.bankUrl!).then((response) => response.json());
     const total = Number(host.dataset.questions);
     const preview = buildPracticeExam(bank, { total });
@@ -71,6 +118,10 @@ const bank = await theory.quizBank(locale);
       theoryUrl: routes.topic,
       durationMinutes: Number(host.dataset.minutes),
       locale,
+      onFinished: async (result, { elapsedMs }) => {
+        await store.add(attemptFrom(result, elapsedMs, new Date(), crypto.randomUUID()));
+        await showHistory();
+      },
     });
   }
 </script>

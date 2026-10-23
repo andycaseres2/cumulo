@@ -55,6 +55,8 @@ Until the table exists (or while offline), the game keeps working with the brows
 
 Theory progress (topics completed with their quiz) uses its own table: run [`supabase/migrations/20261022000000_theory_progress.sql`](supabase/migrations/20261022000000_theory_progress.sql) the same way. It creates `theory_progress`, also with Row Level Security, and works the same: until it exists, completed topics stay in the browser.
 
+Practice exam attempts go to their own table: run [`supabase/migrations/20261024000000_exam_attempts.sql`](supabase/migrations/20261024000000_exam_attempts.sql). Attempts are only added, never edited; one that cannot be uploaded waits in the browser and is uploaded on the next visit.
+
 The Service Duel keeps its progress (rivals beaten, best time attack, best training per family) in one row per player: run [`supabase/migrations/20261023000000_duel_progress.sql`](supabase/migrations/20261023000000_duel_progress.sql). Until it exists, the progress stays in the browser and is uploaded once the table is available.
 
 Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
@@ -73,7 +75,7 @@ Every page exists in Spanish and English under a language prefix: `/es/...` and 
 | `/theory/[course]` | A course: its theory grouped by exam domain (`/theory/cloud-practitioner`) |
 | `/theory/[course]/[slug]` | One theory topic |
 | `/sign-in` | Sign in or create an account (also available as a modal from the header and the game) |
-| `/practice-exam` | Practice exam: 65 questions drawn from the bank (topic quizzes plus `practice` questions, served at `/practice-exam/bank.json`), 90 minutes, estimated score and review |
+| `/practice-exam` | Practice exam (requires an account; every attempt is saved with its score, answers, time and result per domain, listed under "Your attempts" and in the profile): 65 questions drawn from the bank (topic quizzes plus `practice` questions, served at `/practice-exam/bank.json`), 90 minutes, estimated score and review |
 | `/profile` | Profile (requires an account): name, email, character, completed missions, best scores and exam domains practiced. Also reached from the avatar menu. `/progreso` and `/perfil` redirect here |
 
 The "Salir" button at the top left leaves the game. Game controls: WASD or arrow keys to walk, Shift to run, E, Space or click to interact. Mouse wheel, +/− or the buttons at the bottom right zoom the city; drag with the mouse or a finger to look around (walking brings the camera back). M or the "Mapa" button shows the whole district, and M, Esc or "Volver" returns to the player. Press E at a building door to go inside its office; walk back over the doormat to return to the street. In dialogs, the first press reveals the whole text and the second closes it; pick answers with the buttons or the keys 1–3. On touch screens a stick at the bottom left walks the player (push it to the edge to run), the action button above or beside it interacts, a tap on a dialog works like E, two fingers pinch to zoom and one finger drags the map; the keyboard hint is hidden.

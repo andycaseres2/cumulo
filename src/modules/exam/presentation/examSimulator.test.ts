@@ -78,7 +78,7 @@ describe('exam simulator', () => {
     expect(text()).toContain('2 preguntas sin responder');
     button('Terminar igual').click();
 
-    expect(onFinished).toHaveBeenCalledWith(expect.objectContaining({ correct: 1, total: 3 }));
+    expect(onFinished).toHaveBeenCalledWith(expect.objectContaining({ correct: 1, total: 3 }), { elapsedMs: expect.any(Number) });
     expect(host.querySelector('[data-exam-score]')?.textContent).toBe('400');
     expect(text()).toContain('No aprobado');
     expect(host.querySelectorAll('[data-exam-review]')).toHaveLength(3);
@@ -93,6 +93,17 @@ describe('exam simulator', () => {
     vi.advanceTimersByTime(60_000);
     expect(onFinished).toHaveBeenCalledOnce();
     expect(text()).toContain('Se acabó el tiempo');
+    // The whole time was used, and no more.
+    expect(onFinished.mock.calls[0][1]).toEqual({ elapsedMs: 60_000 });
+  });
+
+  it('reports how long the player took when finishing early', () => {
+    const onFinished = start();
+    vi.advanceTimersByTime(90_000);
+    for (const answer of [answers()[0]]) answer.click();
+    button('Terminar examen').click();
+    button('Terminar igual').click();
+    expect(onFinished.mock.calls[0][1].elapsedMs).toBe(90_000);
   });
 
   it('asks the browser to confirm leaving only while an exam is in progress', () => {
