@@ -1,0 +1,692 @@
+/* Service Duel: pixel cards like the rest of the site, health bars, a shrinking clock and short hit animations. */
+.service-duel {
+  --sd-tone-0: var(--color-domain-cloud-concepts);
+  --sd-tone-1: var(--color-domain-technology-services);
+  --sd-tone-2: var(--color-domain-security-compliance);
+  --sd-tone-3: var(--color-domain-billing-pricing-support);
+  --sd-tone-4: #ff6b6b;
+  --sd-good: var(--color-domain-technology-services);
+  --sd-bad: #ff6b6b;
+  display: grid;
+  gap: var(--space-6);
+  /* Clears the sticky site header, which takes two rows on phones. */
+  scroll-margin-top: 8rem;
+}
+
+.sd-card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.sd-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--color-accent);
+}
+
+.sd-subtitle {
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+}
+
+.sd-card p {
+  margin: 0;
+}
+
+.sd-primary,
+.sd-secondary,
+.sd-option,
+.sd-family {
+  font: inherit;
+  cursor: pointer;
+  border: var(--border-width) solid var(--color-shadow);
+  border-radius: var(--radius);
+}
+
+.sd-primary,
+.sd-secondary {
+  padding: var(--space-3) var(--space-6);
+  font-weight: 700;
+  box-shadow: var(--shadow-pixel);
+}
+
+.sd-primary {
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+}
+
+.sd-primary:hover {
+  background: var(--color-accent-strong);
+}
+
+.sd-secondary {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.sd-primary:focus-visible,
+.sd-secondary:focus-visible,
+.sd-option:focus-visible,
+.sd-family:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.sd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/* ---------- Menu ---------- */
+
+.sd-menu {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sd-ladder,
+.sd-families,
+.sd-rules,
+.sd-stats,
+.sd-review {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-ladder {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sd-rival {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.sd-rival.is-locked {
+  opacity: 0.55;
+}
+
+.sd-rival.is-beaten {
+  border-color: var(--sd-good);
+}
+
+.sd-rival-name {
+  font-weight: 700;
+}
+
+.sd-rival-title,
+.sd-rival-status,
+.sd-locked-note,
+.sd-family-meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-rival.is-beaten .sd-rival-status {
+  color: var(--sd-good);
+  font-weight: 700;
+}
+
+.sd-avatar {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--color-accent-ink);
+  background: var(--tone);
+  border: var(--border-width) solid var(--color-shadow);
+  border-radius: 50%;
+}
+
+.sd-best {
+  font-weight: 700;
+}
+
+.sd-families {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+}
+
+.sd-family {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border-color: var(--color-border);
+}
+
+.sd-family:hover {
+  border-color: var(--color-accent);
+}
+
+.sd-family-title {
+  font-weight: 700;
+}
+
+/* ---------- Intro ---------- */
+
+.sd-versus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.sd-fighter {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  text-align: center;
+}
+
+.sd-fighter .sd-avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: var(--text-md);
+}
+
+.sd-vs {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-accent);
+  animation: sd-pulse 900ms ease-in-out infinite alternate;
+}
+
+.sd-intro > .sd-rival-title {
+  text-align: center;
+}
+
+.sd-quote {
+  margin: 0;
+  font-style: italic;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.sd-rules {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.sd-rules li::before {
+  content: '▸ ';
+  color: var(--color-accent);
+}
+
+.sd-cheatsheet {
+  display: grid;
+  grid-template-columns: minmax(8rem, auto) 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+}
+
+.sd-cheatsheet dt {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.sd-cheatsheet dd {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Board ---------- */
+
+.sd-hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.sd-hud-center {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.sd-round {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.sd-streak {
+  min-height: 1.2em;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+}
+
+.sd-hp {
+  position: relative;
+  flex: 1 1 12rem;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.sd-hp.is-rival {
+  text-align: right;
+}
+
+.sd-hp-label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-weight: 700;
+}
+
+.sd-hp.is-rival .sd-hp-label {
+  flex-direction: row-reverse;
+}
+
+.sd-hp-track {
+  height: 0.9rem;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: var(--border-width) solid var(--color-shadow);
+  border-radius: var(--radius);
+}
+
+.sd-hp-fill {
+  height: 100%;
+  background: var(--sd-good);
+  transition: width 400ms ease-out, background 200ms;
+}
+
+.sd-hp.is-rival .sd-hp-fill {
+  margin-left: auto;
+}
+
+.sd-hp.is-low .sd-hp-fill {
+  background: var(--sd-bad);
+}
+
+.sd-time {
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+}
+
+.sd-time-fill {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width 100ms linear;
+}
+
+.sd-time-fill.is-hurry {
+  background: var(--sd-bad);
+}
+
+.sd-rival-thinking {
+  min-height: 1.5em;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.sd-rival-thinking.is-missed,
+.sd-rival-thinking.is-player {
+  color: var(--sd-good);
+}
+
+.sd-rival-thinking.is-rival {
+  color: var(--sd-bad);
+}
+
+.sd-stage {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sd-prompt {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.5;
+  animation: sd-enter 220ms ease-out;
+}
+
+.sd-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--space-3);
+}
+
+.sd-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border-color: var(--color-border);
+  animation: sd-enter 220ms ease-out backwards;
+}
+
+.sd-option:nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.sd-option:nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.sd-option:nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.sd-option:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.sd-option:disabled {
+  cursor: default;
+}
+
+.sd-option.is-answer {
+  border-color: var(--sd-good);
+  background: color-mix(in srgb, var(--sd-good) 18%, var(--color-bg));
+}
+
+.sd-option.is-wrong {
+  border-color: var(--sd-bad);
+  background: color-mix(in srgb, var(--sd-bad) 18%, var(--color-bg));
+}
+
+.sd-key {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 1.8rem;
+  height: 1.8rem;
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  color: var(--color-accent-ink);
+  background: var(--color-text-muted);
+  border-radius: 50%;
+}
+
+.sd-tag {
+  margin-left: auto;
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+  border-radius: var(--radius);
+}
+
+.sd-tag.is-rival {
+  background: var(--sd-tone-4);
+}
+
+.sd-tag + .sd-tag {
+  margin-left: var(--space-1);
+}
+
+.sd-explanation {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+  animation: sd-enter 220ms ease-out;
+}
+
+.sd-explanation ul {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sd-explanation li {
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-border);
+}
+
+.sd-explanation li.is-answer {
+  border-left-color: var(--sd-good);
+}
+
+.sd-explanation li.is-wrong {
+  border-left-color: var(--sd-bad);
+}
+
+.sd-explanation a {
+  justify-self: start;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.sd-verdict {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+}
+
+.sd-verdict.is-right {
+  color: var(--sd-good);
+}
+
+.sd-verdict.is-wrong {
+  color: var(--sd-bad);
+}
+
+/* Damage and time penalty numbers float up from where they hit. */
+.sd-damage {
+  position: absolute;
+  top: -0.5rem;
+  right: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  color: var(--sd-bad);
+  pointer-events: none;
+  animation: sd-float 900ms ease-out forwards;
+}
+
+.sd-hp.is-player .sd-damage {
+  right: auto;
+  left: 0;
+}
+
+/* ---------- Time attack ---------- */
+
+.sd-clock {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-accent);
+}
+
+.sd-clock.is-hurry {
+  color: var(--sd-bad);
+  animation: sd-pulse 500ms ease-in-out infinite alternate;
+}
+
+.sd-score {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+}
+
+/* ---------- Result ---------- */
+
+.sd-outcome.is-won {
+  color: var(--sd-good);
+  animation: sd-pop 400ms ease-out;
+}
+
+.sd-outcome.is-lost {
+  color: var(--sd-bad);
+}
+
+.sd-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.sd-stats strong {
+  font-family: var(--font-display);
+  color: var(--color-accent);
+}
+
+.sd-review {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sd-review > li {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-left: 6px solid var(--sd-good);
+  border-radius: var(--radius);
+}
+
+.sd-review > li.is-missed {
+  border-left-color: var(--sd-bad);
+}
+
+.sd-review-prompt {
+  font-weight: 600;
+}
+
+.sd-review-answer {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ---------- Effects ---------- */
+
+.sd-shake {
+  animation: sd-shake 360ms ease-in-out;
+}
+
+.sd-pop {
+  animation: sd-pop 300ms ease-out;
+}
+
+.sd-flash-good {
+  animation: sd-flash-good 400ms ease-out;
+}
+
+.sd-flash-bad {
+  animation: sd-flash-bad 400ms ease-out;
+}
+
+@keyframes sd-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes sd-shake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes sd-pop {
+  from {
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes sd-pulse {
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes sd-float {
+  to {
+    opacity: 0;
+    transform: translateY(-2rem);
+  }
+}
+
+@keyframes sd-flash-good {
+  from {
+    box-shadow: 0 0 0 4px var(--sd-good);
+  }
+}
+
+@keyframes sd-flash-bad {
+  from {
+    box-shadow: 0 0 0 4px var(--sd-bad);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-duel *,
+  .service-duel *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 40rem) {
+  .sd-card {
+    padding: var(--space-4);
+  }
+
+  .sd-rival {
+    grid-template-columns: auto 1fr;
+  }
+
+  .sd-rival > :last-child {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+
+  .sd-cheatsheet {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-prompt {
+    font-size: var(--text-md);
+  }
+}

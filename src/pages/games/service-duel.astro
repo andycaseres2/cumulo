@@ -1,0 +1,69 @@
+---
+import Container from '@/ui/atoms/Container.astro';
+import PageLayout from '@/ui/layouts/PageLayout.astro';
+import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+---
+
+<PageLayout
+  title="Duelo de servicios"
+  description="Elige el servicio de AWS correcto antes que tu rival: duelos, contrarreloj y entrenamiento con los servicios que más se confunden en el examen CLF-C02."
+>
+  <Container>
+    <div class="page">
+      <SectionHeading
+        level={1}
+        eyebrow="Juego"
+        title="Duelo de servicios"
+        description="S3, EBS o EFS; RDS o DynamoDB; GuardDuty o Inspector. Elige el servicio correcto antes de que acabe el tiempo, y aprende de cada respuesta."
+      />
+      <div data-service-duel><p class="loading">Cargando el duelo…</p></div>
+    </div>
+  </Container>
+</PageLayout>
+
+<style>
+  .page {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-12);
+  }
+
+  .loading {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  import { duelProgressStore } from '@/composition/duel';
+  import { currentPlayer, playerAuth } from '@/composition/player';
+  import { SERVICE_FAMILIES } from '@/modules/duel/infrastructure/serviceFamilies';
+  import { RIVALS } from '@/modules/duel/infrastructure/rivals';
+  import { renderDuelGame } from '@/modules/duel/presentation/duelGame';
+  import { openAuthModal } from '@/modules/player/presentation/authModal';
+  import { routes } from '@/ui/routes';
+
+  const host = document.querySelector<HTMLElement>('[data-service-duel]');
+  if (host) {
+    const player = await currentPlayer();
+    if (player.isGuest) {
+      // Playing requires an account, like every game: the progress belongs to the player.
+      host.replaceChildren();
+      openAuthModal({
+        auth: playerAuth(),
+        reason: 'Necesitas una cuenta gratuita para jugar. Ingresa o créala en un minuto.',
+        onSignedIn: () => window.location.reload(),
+        onDismiss: () => window.location.assign(routes.games),
+      });
+    } else {
+      const store = await duelProgressStore();
+      renderDuelGame(host, {
+        families: SERVICE_FAMILIES,
+        rivals: RIVALS,
+        progress: await store.load(),
+        playerName: player.displayName,
+        onProgress: (progress) => void store.save(progress),
+        theoryUrl: routes.topic,
+      });
+    }
+  }
+</script>

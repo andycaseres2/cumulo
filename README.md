@@ -55,6 +55,8 @@ Until the table exists (or while offline), the game keeps working with the brows
 
 Theory progress (topics completed with their quiz) uses its own table: run [`supabase/migrations/20261022000000_theory_progress.sql`](supabase/migrations/20261022000000_theory_progress.sql) the same way. It creates `theory_progress`, also with Row Level Security, and works the same: until it exists, completed topics stay in the browser.
 
+The Service Duel keeps its progress (rivals beaten, best time attack, best training per family) in one row per player: run [`supabase/migrations/20261023000000_duel_progress.sql`](supabase/migrations/20261023000000_duel_progress.sql). Until it exists, the progress stays in the browser and is uploaded once the table is available.
+
 Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
 
 ## Routes
@@ -64,6 +66,7 @@ Supabase's built-in email service only sends a few emails per hour; configure cu
 | `/` | Home: games and theory sections, featured game, exam domains |
 | `/games` | Game catalog |
 | `/games/cumulo-city` | The Cúmulo City game. Add `?play=man` or `?play=woman` to skip character selection |
+| `/games/service-duel` | Service Duel (requires an account): duels against a ladder of five rivals, a 60-second time attack and training by service family, over 178 fact-checked scenarios of easily confused services (`src/modules/duel`) |
 | `/theory` | Course catalog |
 | `/theory/[course]` | A course: its theory grouped by exam domain (`/theory/cloud-practitioner`) |
 | `/theory/[course]/[slug]` | One theory topic |

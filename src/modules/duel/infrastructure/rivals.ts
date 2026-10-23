@@ -1,0 +1,55 @@
+import type { Rival } from '../domain/Rival';
+
+/** The duel ladder, from the easiest rival to the champion: faster, sharper, and less time to answer. */
+export const RIVALS: Rival[] = [
+  {
+    id: 'trainee',
+    name: 'Bruno Byte',
+    title: 'Practicante de la nube',
+    quote: 'Recién aprendí la diferencia entre bloques y objetos. ¿Me la vas a poner difícil?',
+    families: ['storage', 's3-classes', 'compute'],
+    roundSeconds: 15,
+    accuracy: 0.55,
+    answerMs: [7000, 13500],
+  },
+  {
+    id: 'analyst',
+    name: 'Ana Datos',
+    title: 'Analista de datos',
+    quote: 'Bases de datos, analítica y colas: aquí cada servicio tiene su lugar.',
+    families: ['databases', 'analytics', 'integration'],
+    roundSeconds: 13,
+    accuracy: 0.65,
+    answerMs: [5500, 11500],
+  },
+  {
+    id: 'guardian',
+    name: 'Inés Escudo',
+    title: 'Especialista en seguridad',
+    quote: 'Identidad, amenazas y auditoría. Un error de servicio aquí sale caro.',
+    families: ['identity', 'threat-protection', 'monitoring'],
+    roundSeconds: 12,
+    accuracy: 0.72,
+    answerMs: [4500, 10000],
+  },
+  {
+    id: 'architect',
+    name: 'Valeria Andes',
+    title: 'Arquitecta de soluciones',
+    quote: 'Redes, migración, IA y costos. Diseño para que todo encaje.',
+    families: ['networking', 'migration', 'ai-ml', 'billing'],
+    roundSeconds: 10,
+    accuracy: 0.8,
+    answerMs: [3500, 8500],
+  },
+  {
+    id: 'champion',
+    name: 'La Campeona Cúmulo',
+    title: 'Campeona de la ciudad',
+    quote: 'Todas las familias, poco tiempo. Muéstrame que estás lista o listo para el examen.',
+    families: [],
+    roundSeconds: 8,
+    accuracy: 0.88,
+    answerMs: [2500, 6500],
+  },
+];

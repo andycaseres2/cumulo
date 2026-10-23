@@ -24,6 +24,8 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
       <div data-profile></div>
       <h2 class="section-title">Teoría</h2>
       <div data-theory-progress data-topics={JSON.stringify(topics)}></div>
+      <h2 class="section-title">Duelo de servicios</h2>
+      <div data-duel-progress></div>
       <h2 class="section-title">Misiones</h2>
       <div data-progress data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)} data-districts={JSON.stringify(districtNames)}>
         <p class="loading">Cargando tu progreso…</p>
@@ -51,6 +53,7 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
 </style>
 
 <script>
+  import { duelProgressStore } from '@/composition/duel';
   import { campaignOverview } from '@/composition/missions';
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { renderProgress } from '@/modules/missions/presentation/progressView';
@@ -59,6 +62,9 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
   import { theoryProgressStore } from '@/composition/theoryProgress';
   import { getTheoryOverview } from '@/modules/theory/application/theoryProgress';
   import type { Topic } from '@/modules/theory/domain/Topic';
+  import { FAMILY_ORDER } from '@/modules/duel/infrastructure/familyOrder';
+  import { RIVALS } from '@/modules/duel/infrastructure/rivals';
+  import { renderDuelProgress } from '@/modules/duel/presentation/duelProgressView';
   import { renderTheoryProgress } from '@/modules/theory/presentation/theoryProgressView';
   import { routes } from '@/ui/routes';
 
@@ -78,6 +84,11 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
       const theoryHost = document.querySelector<HTMLElement>('[data-theory-progress]')!;
       const allTopics: Topic[] = JSON.parse(theoryHost.dataset.topics ?? '[]');
       renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.course('cloud-practitioner') });
+      renderDuelProgress(document.querySelector<HTMLElement>('[data-duel-progress]')!, await (await duelProgressStore()).load(), {
+        rivals: RIVALS,
+        familyCount: FAMILY_ORDER.length,
+        gameUrl: routes.game('service-duel'),
+      });
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       const districts: Record<string, string> = JSON.parse(host.dataset.districts ?? '{}');

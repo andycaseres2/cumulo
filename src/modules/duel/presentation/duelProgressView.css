@@ -1,0 +1,50 @@
+.duel-progress {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pixel);
+}
+
+.duel-progress p {
+  margin: 0;
+}
+
+.dp-count {
+  font-weight: 700;
+}
+
+.dp-rivals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dp-rivals li {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.dp-rivals li.is-beaten {
+  color: var(--color-accent-ink);
+  background: var(--color-domain-technology-services);
+  border-color: var(--color-shadow);
+}
+
+.dp-rivals li.is-beaten::before {
+  content: '✓ ';
+}
+
+.dp-play {
+  justify-self: start;
+  font-weight: 700;
+  color: var(--color-accent);
+}
