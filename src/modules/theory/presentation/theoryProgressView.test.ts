@@ -35,4 +35,11 @@ describe('theory progress view', () => {
     renderTheoryProgress(host, overview, { theoryUrl: '/theory' });
     expect(host.querySelector('a[href="/theory"]')?.textContent).toContain('Seguir estudiando');
   });
+
+  it('speaks English when asked, with English domain titles', () => {
+    renderTheoryProgress(host, overview, { theoryUrl: '/theory', locale: 'en' });
+    expect(host.textContent).toContain('3 of 42 topics completed');
+    expect(host.querySelector('[data-domain="cloud-concepts"]')?.textContent).toContain('Cloud Concepts');
+    expect(host.querySelector('a')?.textContent).toBe('Keep studying');
+  });
 });

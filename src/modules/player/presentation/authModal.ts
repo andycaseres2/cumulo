@@ -1,3 +1,5 @@
+import { playerMessages } from '@/i18n/messages/player';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import type { PlayerAuth } from '../domain/PlayerAuth';
 import { renderAuthForms } from './authForms';
 import { SITE_NAME } from '@/ui/site';
@@ -10,13 +12,16 @@ export interface AuthModalOptions {
   onDismiss?: () => void;
   /** Why the modal opened, e.g. "Necesitas una cuenta para jugar." */
   reason?: string;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 /**
  * Sign-in / sign-up in a native <dialog>: focus stays inside, Escape and a click on the backdrop close it.
  * The forms are the same ones used on the /ingresar page.
  */
-export function openAuthModal({ auth, onSignedIn, onDismiss, reason }: AuthModalOptions): () => void {
+export function openAuthModal({ auth, onSignedIn, onDismiss, reason, locale = DEFAULT_LOCALE }: AuthModalOptions): () => void {
+  const t = playerMessages[locale].modal;
   const dialog = document.createElement('dialog');
   dialog.className = 'auth-modal';
   dialog.setAttribute('data-auth-modal', '');
@@ -25,13 +30,13 @@ export function openAuthModal({ auth, onSignedIn, onDismiss, reason }: AuthModal
   const title = document.createElement('h2');
   title.id = 'auth-modal-title';
   title.className = 'auth-modal-title';
-  title.textContent = `Ingresa a ${SITE_NAME}`;
+  title.textContent = t.title(SITE_NAME);
 
   const close = document.createElement('button');
   close.type = 'button';
   close.className = 'auth-modal-close';
   close.setAttribute('data-auth-close', '');
-  close.setAttribute('aria-label', 'Cerrar');
+  close.setAttribute('aria-label', t.close);
   close.textContent = '✕';
 
   const header = document.createElement('header');
@@ -64,6 +69,7 @@ export function openAuthModal({ auth, onSignedIn, onDismiss, reason }: AuthModal
 
   renderAuthForms(forms, {
     auth,
+    locale,
     onSignedIn: () => {
       remove();
       onSignedIn();

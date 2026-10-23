@@ -2,11 +2,13 @@
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import type { Topic } from '@/modules/theory/domain/Topic';
 import Card from '@/ui/molecules/Card.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].topic;
 
 export interface Props {
   topic: Topic;
@@ -19,10 +21,8 @@ const { topic } = Astro.props;
   <h3 class="title"><a href={routes.topic(topic.slug)}>{topic.title}</a></h3>
   <p class="summary">{topic.summary}</p>
   <p class="meta">
-    {topic.readingMinutes} min de lectura{
-      topic.services.length > 0 && ` · ${topic.services.length} ${topic.services.length === 1 ? 'servicio' : 'servicios'}`
-    }
-    <span class="done" data-done hidden>✓ Completado</span>
+    {t.reading(topic.readingMinutes)}{topic.services.length > 0 && ` · ${t.services(topic.services.length)}`}
+    <span class="done" data-done hidden>{t.done}</span>
   </p>
 </Card>
 

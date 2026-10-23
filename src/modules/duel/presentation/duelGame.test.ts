@@ -154,3 +154,29 @@ describe('training', () => {
     expect(saved.at(-1)!.bestPractice).toEqual({ storage: 0.5 });
   });
 });
+
+describe('english', () => {
+  it('shows the menu, the duel and the result in English when the locale is en', () => {
+    mount({ locale: 'en' });
+    expect(host.textContent).toContain('Time attack');
+    expect(host.querySelector('[data-rival="slow"]')!.textContent).toContain('Available');
+    expect(host.querySelector('[data-rival="fast"]')!.textContent).toContain('Beat the previous rival');
+    click('[data-rival="slow"] button');
+    expect(host.querySelector('[data-start-duel]')!.textContent).toBe('Duel on!');
+    click('[data-start-duel]');
+    expect(host.querySelector('.sd-round')!.textContent).toBe('Round 1 of 12');
+    expect(host.querySelector('.sd-rival-thinking')!.textContent).toBe('Rival slow is thinking…');
+    pick('Right');
+    expect(host.querySelector('.sd-rival-thinking')!.textContent).toContain('Hit!');
+    expect(host.querySelector('.sd-explanation a')!.textContent).toBe('Review the topic →');
+  });
+
+  it('counts time attack answers in English', () => {
+    mount({ locale: 'en' });
+    click('[data-start-time-attack]');
+    pick('Right');
+    advance(TIME_ATTACK_MS);
+    expect(host.querySelector('[data-outcome="time-attack"] .sd-title')!.textContent).toBe('1 right');
+    expect(host.textContent).toContain('New record!');
+  });
+});

@@ -18,3 +18,17 @@ describe('bus stop', () => {
     expect(busStopTalk('market').choices?.map((c) => c.id)).toEqual(['downtown', 'financial', 'tech', STAY]);
   });
 });
+
+describe('bus stop in English', () => {
+  it('asks in English, with English district names and exam domain titles', () => {
+    const talk = busStopTalk('downtown', 'en');
+    expect(talk.title).toBe('Bus stop');
+    expect(talk.text).toBe("You're in the Downtown District. Which district do you want to go to?");
+    expect(talk.choices).toEqual([
+      { id: 'financial', label: 'Financial District · Security and Compliance' },
+      { id: 'tech', label: 'Tech District · Cloud Technology and Services' },
+      { id: 'market', label: 'Market District · Billing, Pricing, and Support' },
+      { id: STAY, label: 'Stay here' },
+    ]);
+  });
+});

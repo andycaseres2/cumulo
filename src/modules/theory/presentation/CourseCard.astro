@@ -3,11 +3,13 @@ import type { Course } from '@/modules/theory/domain/Course';
 import Badge from '@/ui/atoms/Badge.astro';
 import Button from '@/ui/atoms/Button.astro';
 import Card from '@/ui/molecules/Card.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].courseCard;
 
 export interface Props {
   course: Course;
@@ -27,9 +29,9 @@ const hours = Math.round(readingMinutes / 60);
   </p>
   <h2 class="title"><a href={routes.course(course.slug)}>{course.title}</a></h2>
   <p class="summary">{course.summary}</p>
-  <p class="stat">{topicCount} temas · {domainCount} dominios · unas {hours} horas de lectura</p>
+  <p class="stat">{t.stat(topicCount, domainCount, hours)}</p>
   <p class="progress" data-course-progress data-total={topicCount} hidden></p>
-  <Fragment slot="footer"><Button href={routes.course(course.slug)}>Ver temas</Button></Fragment>
+  <Fragment slot="footer"><Button href={routes.course(course.slug)}>{t.action}</Button></Fragment>
 </Card>
 
 <style>

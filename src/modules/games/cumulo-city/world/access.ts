@@ -1,6 +1,9 @@
+import { gameMessages } from '@/i18n/messages/game';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import type { CurrentMission } from '../missions';
 import type { BuildingDef } from './cityMap';
 import { districtOf, findBuilding } from './districts';
+import { buildingName, districtName } from './placeNames';
 
 export type AccessDecision = { allowed: true } | { allowed: false; reason: string };
 
@@ -15,25 +18,20 @@ export const openAccess: AccessPolicy = {
 };
 
 /** A consultant only gets in where a client waits: the building of the active mission. */
-export function missionAccess(current: CurrentMission | null): AccessPolicy {
+export function missionAccess(current: CurrentMission | null, locale: Locale = DEFAULT_LOCALE): AccessPolicy {
+  const text = gameMessages[locale].access;
   return {
     canEnter(building) {
+      const name = buildingName(building.id, locale);
       if (current?.state === 'active' && current.brief.buildingId === building.id) return { allowed: true };
       if (current?.state === 'active') {
         const target = findBuilding(current.brief.buildingId);
-        const way =
-          target && target.district !== building.district
-            ? `, en el ${districtOf(target.id)?.name}: toma el bus en la parada`
-            : ': sigue la flecha';
-        return { allowed: false, reason: `${building.name} no te espera hoy. Tu misión activa es en ${target?.name ?? 'otro edificio'}${way}.` };
+        const targetDistrict = target && target.district !== building.district ? districtOf(target.id) : undefined;
+        const busDistrict = targetDistrict ? districtName(targetDistrict.id, locale) : null;
+        return { allowed: false, reason: text.notExpected(name, target ? buildingName(target.id, locale) : null, busDistrict) };
       }
-      if (current?.state === 'offered') {
-        return {
-          allowed: false,
-          reason: `${building.name} solo recibe consultores con una cita. Acepta la misión de la tarjeta para entrar al edificio de tu cliente.`,
-        };
-      }
-      return { allowed: false, reason: `${building.name} no tiene trabajo para ti por ahora.` };
+      if (current?.state === 'offered') return { allowed: false, reason: text.needsAppointment(name) };
+      return { allowed: false, reason: text.noWork(name) };
     },
   };
 }

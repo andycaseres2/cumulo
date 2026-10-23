@@ -1,15 +1,17 @@
 ---
 /** Signed-in players see a round avatar with their initials that opens their menu; everyone else sees "Ingresar". */
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].playerChip;
 ---
 
 <div class="player" data-player-chip data-profile-url={routes.profile}>
   <div data-player-menu hidden></div>
-  <a class="action" href={routes.signIn} data-sign-in>Ingresar</a>
+  <a class="action" href={routes.signIn} data-sign-in>{t.signIn}</a>
 </div>
 
 <style>
@@ -45,13 +47,14 @@ const routes = routesFor(locale);
   import { currentLocale } from '@/i18n/client';
   import { routesFor } from '@/ui/routes';
 
-  const routes = routesFor(currentLocale());
+  const locale = currentLocale();
+  const routes = routesFor(locale);
 
   // "Ingresar" opens the sign-in modal; the link to /ingresar stays as a fallback without JavaScript.
   for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-player-chip] [data-sign-in]')) {
     link.addEventListener('click', (event) => {
       event.preventDefault();
-      openAuthModal({ auth: playerAuth(), onSignedIn: () => window.location.reload() });
+      openAuthModal({ auth: playerAuth(), locale, onSignedIn: () => window.location.reload() });
     });
   }
 
@@ -69,7 +72,7 @@ const routes = routesFor(locale);
       chip.querySelector<HTMLElement>('[data-sign-in]')!.hidden = !player.isGuest;
       menuHost.hidden = player.isGuest;
       if (player.isGuest) menuHost.replaceChildren();
-      else renderPlayerMenu(menuHost, { player, profileUrl: chip.dataset.profileUrl!, onSignOut: signOut });
+      else renderPlayerMenu(menuHost, { player, locale, profileUrl: chip.dataset.profileUrl!, onSignOut: signOut });
     }
   }
 

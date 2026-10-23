@@ -4,6 +4,8 @@ import { recordDuelWin, recordPractice, recordTimeAttack, type DuelProgress } fr
 import { isRivalUnlocked, type Rival } from '../domain/Rival';
 import { answerOption, type DuelCard, type ServiceFamily } from '../domain/ServiceFamily';
 import { TIME_ATTACK_MS, WRONG_PENALTY_MS, answerTimeAttack, startTimeAttack, timeLeft, type TimeAttackState } from '../domain/TimeAttack';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
+import { duelMessages } from '@/i18n/messages/duel';
 import './duelGame.css';
 
 export interface DuelGameOptions {
@@ -16,6 +18,8 @@ export interface DuelGameOptions {
   theoryUrl: (topicSlug: string) => string;
   random?: () => number;
   now?: () => number;
+  /** Language of the game copy; defaults to Spanish. */
+  locale?: Locale;
 }
 
 /** Scenarios in a training session. */
@@ -46,7 +50,6 @@ const initials = (name: string) =>
     .map((word) => word[0])
     .join('');
 
-const percent = (share: number) => `${Math.round(share * 100)} %`;
 const seconds = (ms: number) => `${Math.ceil(ms / 1000)} s`;
 
 /** A short shake or pop on an element, restarted when it plays again. */
@@ -60,6 +63,7 @@ function play(node: Element, effect: 'sd-shake' | 'sd-pop' | 'sd-flash-good' | '
 export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () => void {
   const random = options.random ?? Math.random;
   const now = options.now ?? (() => Date.now());
+  const t = duelMessages[options.locale ?? DEFAULT_LOCALE];
   let progress = options.progress;
   const root = el('section', { class: 'service-duel' });
   host.replaceChildren(root);
@@ -129,8 +133,8 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       node.disabled = true;
       if (service === card.answer) node.classList.add('is-answer');
       else if (service === picked) node.classList.add('is-wrong');
-      if (service === picked) node.append(el('span', { class: 'sd-tag' }, ['Tú']));
-      if (rivalPick !== undefined && service === rivalPick) node.append(el('span', { class: 'sd-tag is-rival' }, ['Rival']));
+      if (service === picked) node.append(el('span', { class: 'sd-tag' }, [t.you]));
+      if (rivalPick !== undefined && service === rivalPick) node.append(el('span', { class: 'sd-tag is-rival' }, [t.rival]));
     }
   }
 
@@ -147,7 +151,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
         ];
     return el('div', { class: 'sd-explanation' }, [
       el('ul', {}, items),
-      el('a', { href: options.theoryUrl(card.topicSlug), target: '_blank', rel: 'noopener' }, ['Repasar el tema →']),
+      el('a', { href: options.theoryUrl(card.topicSlug), target: '_blank', rel: 'noopener' }, [t.reviewTopic]),
     ]);
   }
 
@@ -160,8 +164,8 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
           el('p', { class: 'sd-review-prompt' }, [card.prompt]),
           el('p', { class: 'sd-review-answer' }, [
             picked === card.answer ? '✓ ' : '✗ ',
-            picked === null ? 'Sin respuesta' : `Tu respuesta: ${picked}`,
-            picked === card.answer ? '' : ` · Correcta: ${card.answer}`,
+            picked === null ? t.noAnswer : t.yourAnswer(picked),
+            picked === card.answer ? '' : t.correctAnswer(card.answer),
           ]),
           explanation(card, picked),
         ]),
@@ -175,17 +179,17 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
     const ladder = options.rivals.map((rival, i) => {
       const beaten = progress.beatenRivals.includes(rival.id);
       const open = isRivalUnlocked(options.rivals, rival.id, progress.beatenRivals);
-      const status = beaten ? 'Vencido' : open ? 'Disponible' : 'Bloqueado';
+      const status = beaten ? t.menu.beaten : open ? t.menu.available : t.menu.locked;
       return el('li', { class: `sd-rival ${beaten ? 'is-beaten' : open ? 'is-open' : 'is-locked'}`, 'data-rival': rival.id }, [
         avatar(rival.name, rivalTone(rival)),
         el('div', { class: 'sd-rival-info' }, [
           el('p', { class: 'sd-rival-name' }, [`${i + 1}. ${rival.name}`]),
-          el('p', { class: 'sd-rival-title' }, [`${rival.title} · ${rival.roundSeconds} s por round`]),
+          el('p', { class: 'sd-rival-title' }, [`${rival.title} · ${t.menu.perRound(rival.roundSeconds)}`]),
           el('p', { class: 'sd-rival-status' }, [beaten ? '✓ ' : open ? '' : '🔒 ', status]),
         ]),
         open
-          ? button(beaten ? 'Revancha' : 'Retar', () => showRivalIntro(rival), { class: beaten ? 'sd-secondary' : 'sd-primary' })
-          : el('span', { class: 'sd-locked-note' }, ['Vence al rival anterior']),
+          ? button(beaten ? t.menu.rematch : t.menu.challenge, () => showRivalIntro(rival), { class: beaten ? 'sd-secondary' : 'sd-primary' })
+          : el('span', { class: 'sd-locked-note' }, [t.menu.beatPrevious]),
       ]);
     });
 
@@ -193,7 +197,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       const best = progress.bestPractice[family.id];
       return el('li', {}, [
         button(
-          [el('span', { class: 'sd-family-title' }, [family.title]), el('span', { class: 'sd-family-meta' }, [`${family.cards.length} escenarios${best !== undefined ? ` · mejor ${percent(best)}` : ''}`])],
+          [el('span', { class: 'sd-family-title' }, [family.title]), el('span', { class: 'sd-family-meta' }, [`${t.menu.scenarios(family.cards.length)}${best !== undefined ? t.menu.best(t.percent(best)) : ''}`])],
           () => showTrainingIntro(family),
           { class: 'sd-family', 'data-family': family.id },
         ),
@@ -203,21 +207,19 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
     show(
       el('div', { class: 'sd-menu' }, [
         el('section', { class: 'sd-card sd-mode' }, [
-          el('h2', { class: 'sd-title' }, ['Duelo']),
-          el('p', {}, [
-            'Gana el round quien responde bien primero: le quita vida a su rival. Responder rápido y encadenar aciertos pega más fuerte. Vence a cada rival para desbloquear el siguiente.',
-          ]),
+          el('h2', { class: 'sd-title' }, [t.menu.duelTitle]),
+          el('p', {}, [t.menu.duelText]),
           el('ol', { class: 'sd-ladder' }, ladder),
         ]),
         el('section', { class: 'sd-card sd-mode' }, [
-          el('h2', { class: 'sd-title' }, ['Contrarreloj']),
-          el('p', {}, [`${TIME_ATTACK_MS / 1000} segundos para acertar todo lo que puedas, de todas las familias. Cada error te quita ${WRONG_PENALTY_MS / 1000} segundos.`]),
-          el('p', { class: 'sd-best', 'data-best-time-attack': '' }, [progress.bestTimeAttack > 0 ? `Tu récord: ${progress.bestTimeAttack} aciertos` : 'Aún no tienes récord']),
-          button('Jugar contrarreloj', startTimeAttackMode, { class: 'sd-primary', 'data-start-time-attack': '' }),
+          el('h2', { class: 'sd-title' }, [t.menu.timeAttackTitle]),
+          el('p', {}, [t.menu.timeAttackText(TIME_ATTACK_MS / 1000, WRONG_PENALTY_MS / 1000)]),
+          el('p', { class: 'sd-best', 'data-best-time-attack': '' }, [progress.bestTimeAttack > 0 ? t.menu.record(progress.bestTimeAttack) : t.menu.noRecord]),
+          button(t.menu.playTimeAttack, startTimeAttackMode, { class: 'sd-primary', 'data-start-time-attack': '' }),
         ]),
         el('section', { class: 'sd-card sd-mode' }, [
-          el('h2', { class: 'sd-title' }, ['Entrenamiento']),
-          el('p', {}, [`Elige una familia de servicios, repasa su chuleta y practica ${TRAINING_CARDS} escenarios sin reloj, con la explicación de cada opción.`]),
+          el('h2', { class: 'sd-title' }, [t.menu.trainingTitle]),
+          el('p', {}, [t.menu.trainingText(TRAINING_CARDS)]),
           el('ul', { class: 'sd-families' }, families),
         ]),
       ]),
@@ -240,7 +242,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
   }
 
   function showRivalIntro(rival: Rival) {
-    const start = button('¡A duelo!', () => startDuel(rival), { class: 'sd-primary', 'data-start-duel': '' });
+    const start = button(t.duel.start, () => startDuel(rival), { class: 'sd-primary', 'data-start-duel': '' });
     show(
       el('div', { class: 'sd-card sd-intro' }, [
         el('div', { class: 'sd-versus' }, [
@@ -251,12 +253,12 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
         el('p', { class: 'sd-rival-title' }, [rival.title]),
         el('blockquote', { class: 'sd-quote' }, [`“${rival.quote}”`]),
         el('ul', { class: 'sd-rules' }, [
-          el('li', {}, [`${rival.roundSeconds} segundos por round, hasta ${MAX_ROUNDS} rounds.`]),
-          el('li', {}, ['Gana el round la primera respuesta correcta. Si te equivocas, pierdes la oportunidad.']),
-          el('li', {}, ['Cuanto más rápido aciertas, más daño haces; las rachas suman combo.']),
-          el('li', {}, ['Responde con las teclas 1–4 o tocando la opción.']),
+          el('li', {}, [t.duel.ruleTime(rival.roundSeconds, MAX_ROUNDS)]),
+          el('li', {}, [t.duel.ruleFirst]),
+          el('li', {}, [t.duel.ruleSpeed]),
+          el('li', {}, [t.duel.ruleKeys]),
         ]),
-        el('div', { class: 'sd-actions' }, [button('Volver', showMenu, { class: 'sd-secondary' }), start]),
+        el('div', { class: 'sd-actions' }, [button(t.duel.back, showMenu, { class: 'sd-secondary' }), start]),
       ]),
     );
     listenKeys(null, () => start);
@@ -287,9 +289,9 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       const plan: RivalPlan = planRivalAnswer(rival, card, random);
       const startedAt = now();
       let finished = false;
-      roundLabel.textContent = `Round ${state.round + 1} de ${MAX_ROUNDS}`;
-      streakLabel.textContent = state.streak >= 2 ? `Racha x${state.streak}` : '';
-      rivalStatus.textContent = `${rival.name} está pensando…`;
+      roundLabel.textContent = t.duel.round(state.round + 1, MAX_ROUNDS);
+      streakLabel.textContent = state.streak >= 2 ? t.duel.streak(state.streak) : '';
+      rivalStatus.textContent = t.duel.thinking(rival.name);
       rivalStatus.className = 'sd-rival-thinking';
       timeFill.style.width = '100%';
       timeFill.classList.remove('is-hurry');
@@ -319,7 +321,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
         if (elapsed >= plan.atMs && plan.atMs <= limit) {
           if (plan.correct) return finish(null);
           if (!rivalStatus.classList.contains('is-missed')) {
-            rivalStatus.textContent = `${rival.name} falló. ¡Es tu oportunidad!`;
+            rivalStatus.textContent = t.duel.rivalMissed(rival.name);
             rivalStatus.className = 'sd-rival-thinking is-missed';
           }
         }
@@ -333,10 +335,10 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       setHp(rivalBar, state.rivalHp);
       const headline =
         result.winner === 'player'
-          ? `¡Golpe! −${result.damage} a ${rival.name}`
+          ? t.duel.hit(result.damage, rival.name)
           : result.winner === 'rival'
-            ? `${rival.name} respondió primero: −${result.damage} para ti`
-            : 'Nadie acertó a tiempo';
+            ? t.duel.rivalFirst(rival.name, result.damage)
+            : t.duel.nobody;
       rivalStatus.textContent = headline;
       rivalStatus.className = `sd-rival-thinking is-${result.winner}`;
       if (result.winner === 'player') play(rivalBar, 'sd-shake');
@@ -349,7 +351,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       }
 
       const outcome = matchResult(state);
-      const next = button(outcome === 'playing' ? 'Siguiente round' : 'Ver resultado', () => (outcome === 'playing' ? nextRound() : showDuelResult(rival, outcome, results)), {
+      const next = button(outcome === 'playing' ? t.duel.nextRound : t.duel.seeResult, () => (outcome === 'playing' ? nextRound() : showDuelResult(rival, outcome, results)), {
         class: 'sd-primary',
         'data-next': '',
       });
@@ -369,29 +371,29 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
     const index = options.rivals.indexOf(rival);
     const nextRival = options.rivals[index + 1];
     const actions = [
-      button('Menú', showMenu, { class: 'sd-secondary' }),
-      button('Revancha', () => showRivalIntro(rival), { class: 'sd-secondary' }),
-      ...(outcome === 'won' && nextRival ? [button(`Retar a ${nextRival.name}`, () => showRivalIntro(nextRival), { class: 'sd-primary', 'data-next-rival': '' })] : []),
+      button(t.duel.menu, showMenu, { class: 'sd-secondary' }),
+      button(t.duel.rematch, () => showRivalIntro(rival), { class: 'sd-secondary' }),
+      ...(outcome === 'won' && nextRival ? [button(t.duel.challengeNext(nextRival.name), () => showRivalIntro(nextRival), { class: 'sd-primary', 'data-next-rival': '' })] : []),
     ];
     const champion = outcome === 'won' && !nextRival;
     show(
       el('div', { class: 'sd-card sd-result', 'data-outcome': outcome }, [
         el('h2', { class: `sd-title sd-outcome is-${outcome}` }, [
-          outcome === 'won' ? (champion ? '¡Eres la nueva leyenda de Cúmulo!' : `¡Venciste a ${rival.name}!`) : outcome === 'lost' ? `${rival.name} ganó esta vez` : 'Empate',
+          outcome === 'won' ? (champion ? t.duel.champion : t.duel.won(rival.name)) : outcome === 'lost' ? t.duel.lost(rival.name) : t.duel.draw,
         ]),
         el('p', {}, [
           outcome === 'won'
             ? nextRival
-              ? `Desbloqueaste a ${nextRival.name}.`
-              : 'Venciste a todos los rivales. Sigue practicando en contrarreloj para mantener el ritmo.'
-            : 'Repasa las explicaciones de abajo y pide la revancha.',
+              ? t.duel.unlocked(nextRival.name)
+              : t.duel.allBeaten
+            : t.duel.tryAgain,
         ]),
         el('ul', { class: 'sd-stats' }, [
-          el('li', {}, [el('strong', {}, [`${won}`]), ' rounds ganados']),
-          el('li', {}, [el('strong', {}, [`${right} de ${results.length}`]), ' respuestas correctas']),
+          el('li', {}, [el('strong', {}, [`${won}`]), t.duel.roundsWon]),
+          el('li', {}, [el('strong', {}, [t.duel.rightOf(right, results.length)]), t.duel.rightAnswers]),
         ]),
         el('div', { class: 'sd-actions' }, actions),
-        el('h3', { class: 'sd-subtitle' }, ['Repaso de cada round']),
+        el('h3', { class: 'sd-subtitle' }, [t.duel.review]),
         reviewList(results.map((r) => ({ card: r.card, picked: r.playerChoice }))),
       ]),
     );
@@ -406,7 +408,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
     let deck: DuelCard[] = [];
     const answered: { card: DuelCard; picked: string | null }[] = [];
     const clock = el('p', { class: 'sd-clock' });
-    const score = el('p', { class: 'sd-score' }, ['0 aciertos']);
+    const score = el('p', { class: 'sd-score' }, [t.timeAttack.score(0)]);
     const stage = el('div', { class: 'sd-stage' });
     const board = el('div', { class: 'sd-card sd-board sd-time-attack' }, [el('div', { class: 'sd-hud' }, [clock, score]), stage]);
 
@@ -417,7 +419,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
         const correct = service === card.answer;
         state = answerTimeAttack(state, correct, now());
         answered.push({ card, picked: service });
-        score.textContent = `${state.score} ${state.score === 1 ? 'acierto' : 'aciertos'}`;
+        score.textContent = t.timeAttack.score(state.score);
         play(board, correct ? 'sd-flash-good' : 'sd-flash-bad');
         if (!correct) {
           const popup = el('span', { class: 'sd-damage' }, [`−${WRONG_PENALTY_MS / 1000} s`]);
@@ -435,13 +437,13 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       const record = state.score > progress.bestTimeAttack;
       if (record) save(recordTimeAttack(progress, state.score));
       const mistakes = answered.filter((a) => a.picked !== a.card.answer);
-      const again = button('Jugar otra vez', startTimeAttackMode, { class: 'sd-primary', 'data-again': '' });
+      const again = button(t.timeAttack.playAgain, startTimeAttackMode, { class: 'sd-primary', 'data-again': '' });
       show(
         el('div', { class: 'sd-card sd-result', 'data-outcome': 'time-attack' }, [
-          el('h2', { class: 'sd-title' }, [`${state.score} ${state.score === 1 ? 'acierto' : 'aciertos'}`]),
-          el('p', {}, [record ? '¡Nuevo récord!' : `Tu récord sigue en ${progress.bestTimeAttack} aciertos.`, ` Respondiste ${state.answered} escenarios.`]),
-          el('div', { class: 'sd-actions' }, [button('Menú', showMenu, { class: 'sd-secondary' }), again]),
-          ...(mistakes.length > 0 ? [el('h3', { class: 'sd-subtitle' }, ['Tus errores, explicados']), reviewList(mistakes)] : [el('p', {}, ['Sin errores. Impecable.'])]),
+          el('h2', { class: 'sd-title' }, [t.timeAttack.score(state.score)]),
+          el('p', {}, [record ? t.timeAttack.newRecord : t.timeAttack.recordStays(progress.bestTimeAttack), t.timeAttack.answered(state.answered)]),
+          el('div', { class: 'sd-actions' }, [button(t.duel.menu, showMenu, { class: 'sd-secondary' }), again]),
+          ...(mistakes.length > 0 ? [el('h3', { class: 'sd-subtitle' }, [t.timeAttack.mistakes]), reviewList(mistakes)] : [el('p', {}, [t.timeAttack.flawless])]),
         ]),
       );
       listenKeys(null, () => again);
@@ -461,7 +463,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
   // ---------- Training ----------
 
   function showTrainingIntro(family: ServiceFamily) {
-    const start = button(`Practicar ${TRAINING_CARDS} escenarios`, () => startTraining(family), { class: 'sd-primary', 'data-start-training': '' });
+    const start = button(t.training.start(TRAINING_CARDS), () => startTraining(family), { class: 'sd-primary', 'data-start-training': '' });
     show(
       el('div', { class: 'sd-card sd-intro' }, [
         el('h2', { class: 'sd-title' }, [family.title]),
@@ -471,7 +473,7 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
           { class: 'sd-cheatsheet' },
           family.services.flatMap((service) => [el('dt', {}, [service.name]), el('dd', {}, [service.summary])]),
         ),
-        el('div', { class: 'sd-actions' }, [button('Volver', showMenu, { class: 'sd-secondary' }), start]),
+        el('div', { class: 'sd-actions' }, [button(t.duel.back, showMenu, { class: 'sd-secondary' }), start]),
       ]),
     );
     listenKeys(null, () => start);
@@ -486,15 +488,15 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
 
     function nextCard() {
       const card = deck[answered.length];
-      progressLabel.textContent = `${answered.length + 1} de ${deck.length}`;
+      progressLabel.textContent = t.training.progress(answered.length + 1, deck.length);
       const buttons = optionButtons(card, (service) => {
         if (buttons[0].disabled) return;
         answered.push({ card, picked: service });
         markOptions(buttons, card, service);
         const last = answered.length === deck.length;
-        const next = button(last ? 'Ver resultado' : 'Siguiente', () => (last ? finishTraining() : nextCard()), { class: 'sd-primary', 'data-next': '' });
+        const next = button(last ? t.duel.seeResult : t.training.next, () => (last ? finishTraining() : nextCard()), { class: 'sd-primary', 'data-next': '' });
         stage.append(
-          el('p', { class: `sd-verdict ${service === card.answer ? 'is-right' : 'is-wrong'}`, 'aria-live': 'polite' }, [service === card.answer ? '¡Correcto!' : 'No es esta.']),
+          el('p', { class: `sd-verdict ${service === card.answer ? 'is-right' : 'is-wrong'}`, 'aria-live': 'polite' }, [service === card.answer ? t.training.right : t.training.wrong]),
           explanation(card, service, true),
           el('div', { class: 'sd-actions' }, [next]),
         );
@@ -509,13 +511,13 @@ export function renderDuelGame(host: HTMLElement, options: DuelGameOptions): () 
       const right = answered.filter((a) => a.picked === a.card.answer).length;
       const share = right / answered.length;
       save(recordPractice(progress, family.id, share));
-      const again = button('Practicar otra vez', () => startTraining(family), { class: 'sd-primary', 'data-again': '' });
+      const again = button(t.training.practiceAgain, () => startTraining(family), { class: 'sd-primary', 'data-again': '' });
       show(
         el('div', { class: 'sd-card sd-result', 'data-outcome': 'training' }, [
-          el('h2', { class: 'sd-title' }, [`${right} de ${answered.length} correctas`]),
-          el('p', {}, [share === 1 ? 'Dominas esta familia. Pruébala ahora en un duelo.' : 'Repasa los escenarios que fallaste y vuelve a intentarlo.']),
-          el('div', { class: 'sd-actions' }, [button('Menú', showMenu, { class: 'sd-secondary' }), again]),
-          el('h3', { class: 'sd-subtitle' }, ['Repaso']),
+          el('h2', { class: 'sd-title' }, [t.training.score(right, answered.length)]),
+          el('p', {}, [share === 1 ? t.training.mastered : t.training.keepGoing]),
+          el('div', { class: 'sd-actions' }, [button(t.duel.menu, showMenu, { class: 'sd-secondary' }), again]),
+          el('h3', { class: 'sd-subtitle' }, [t.training.review]),
           reviewList(answered),
         ]),
       );

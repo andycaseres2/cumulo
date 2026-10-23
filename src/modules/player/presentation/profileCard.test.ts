@@ -22,4 +22,9 @@ describe('profile card', () => {
     renderProfileCard(host, { displayName: 'Andy', isGuest: false, character: null });
     expect(host.textContent).toContain('Personaje: elígelo al entrar al juego');
   });
+
+  it('speaks English when asked', () => {
+    renderProfileCard(host, { displayName: 'Andy', isGuest: false, character: 'woman' }, { locale: 'en' });
+    expect(host.textContent).toContain('Character: Woman');
+  });
 });

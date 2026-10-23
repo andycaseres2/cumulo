@@ -1,16 +1,23 @@
 ---
 import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
 import Card from '@/ui/molecules/Card.astro';
+import { catalogMessages } from '@/i18n/messages/catalog';
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
+
+const locale = localeOf(Astro);
+const t = pagesMessages[locale].examFormat;
+const questionTypes = catalogMessages[locale].examQuestionTypes;
 
 const facts = [
-  { value: String(EXAM_FORMAT.questions), label: `preguntas (${EXAM_FORMAT.scoredQuestions} puntúan, ${EXAM_FORMAT.unscoredQuestions} no)` },
-  { value: `${EXAM_FORMAT.durationMinutes} min`, label: 'de duración' },
-  { value: String(EXAM_FORMAT.passingScore), label: `para aprobar (escala ${EXAM_FORMAT.minScore}–${EXAM_FORMAT.maxScore})` },
+  { value: String(EXAM_FORMAT.questions), label: t.questions(EXAM_FORMAT.scoredQuestions, EXAM_FORMAT.unscoredQuestions) },
+  { value: `${EXAM_FORMAT.durationMinutes} min`, label: t.duration },
+  { value: String(EXAM_FORMAT.passingScore), label: t.passing(EXAM_FORMAT.minScore, EXAM_FORMAT.maxScore) },
 ];
 ---
 
 <Card as="div">
-  <h2 class="title">Cómo es el examen {EXAM_FORMAT.code}</h2>
+  <h2 class="title">{t.title(EXAM_FORMAT.code)}</h2>
   <dl class="facts">
     {
       facts.map((fact) => (
@@ -22,11 +29,11 @@ const facts = [
     }
   </dl>
   <ul class="types">
-    {EXAM_FORMAT.questionTypes.map((type) => <li>{type}</li>)}
+    {questionTypes.map((type) => <li>{type}</li>)}
   </ul>
   <p class="note">
-    Las preguntas sin puntaje no se identifican y las respuestas en blanco cuentan como incorrectas: responde todas.{' '}
-    <a href={EXAM_FORMAT.sourceUrl} rel="noopener noreferrer" target="_blank">Guía oficial del examen</a>
+    {t.note}{' '}
+    <a href={EXAM_FORMAT.sourceUrl} rel="noopener noreferrer" target="_blank">{t.guide}</a>
   </p>
 </Card>
 

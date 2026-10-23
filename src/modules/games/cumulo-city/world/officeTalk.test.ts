@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ALL_BUILDINGS as BUILDINGS } from './districts';
+import { gameMessages } from '@/i18n/messages/game';
 import { BUILDING_CONCERNS, workerLine, workerName } from './officeTalk';
 
 describe('office talk', () => {
@@ -18,5 +19,20 @@ describe('office talk', () => {
   it('names workers so the dialog shows who is talking', () => {
     expect(workerName('bank', 0)).not.toBe(workerName('bank', 1));
     expect(workerName('bank', 2)).toBe(workerName('bank', 2));
+  });
+});
+
+describe('office talk in English', () => {
+  it('gives every building an English concern, said by its first worker', () => {
+    const english = gameMessages.en.office.concerns;
+    for (const b of BUILDINGS) {
+      expect(english[b.id], b.id).toBeTruthy();
+      expect(workerLine(b.id, 0, 'en')).toBe(english[b.id]);
+    }
+    expect(Object.keys(english).sort()).toEqual(Object.keys(BUILDING_CONCERNS).sort());
+  });
+
+  it('uses English everyday lines for the other workers', () => {
+    expect(gameMessages.en.office.everyday).toContain(workerLine('bank', 1, 'en'));
   });
 });

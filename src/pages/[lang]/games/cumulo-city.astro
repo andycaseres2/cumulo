@@ -2,6 +2,7 @@
 import GameLayout from '@/ui/layouts/GameLayout.astro';
 import { localeOf, localePaths } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
+import { gameMessages } from '@/i18n/messages/game';
 
 export function getStaticPaths() {
   return localePaths();
@@ -9,11 +10,12 @@ export function getStaticPaths() {
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const text = gameMessages[locale].page;
 ---
 
 <GameLayout
-  title="Cúmulo City"
-  description="Recorre Cúmulo City como consultor cloud y ayuda a sus negocios con problemas reales de AWS."
+  title={text.title}
+  description={text.description}
   exitHref={routes.games}
 >
   <div class="game-root" data-cumulo-city></div>
@@ -47,9 +49,11 @@ const routes = routesFor(locale);
   import { mountCumuloCity } from '@/modules/games/cumulo-city/mount';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { currentLocale } from '@/i18n/client';
+  import { gameMessages } from '@/i18n/messages/game';
   import { routesFor } from '@/ui/routes';
 
-  const routes = routesFor(currentLocale());
+  const locale = currentLocale();
+  const routes = routesFor(locale);
 
   const root = document.querySelector<HTMLElement>('[data-cumulo-city]');
   if (root) {
@@ -59,7 +63,7 @@ const routes = routesFor(locale);
       root.classList.add(deviceHasCharacter() ? 'is-locked' : 'is-intro');
       openAuthModal({
         auth: playerAuth(),
-        reason: 'Necesitas una cuenta gratuita para jugar. Ingresa o créala en un minuto.',
+        reason: gameMessages[locale].page.authReason,
         onSignedIn: () => window.location.reload(),
         onDismiss: () => window.location.assign(routes.games),
       });
@@ -67,6 +71,7 @@ const routes = routesFor(locale);
       if (player.character) rememberCharacterOnDevice();
       await mountCumuloCity(root, {
         playerName: player.displayName,
+        locale,
         missions: gameMissions(root),
         character: player.character,
         onCharacterChosen: (character) => void chooseCharacter(character),

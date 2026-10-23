@@ -1,3 +1,4 @@
+import type { Locale } from '@/i18n/locales';
 import type { Rival } from '../domain/Rival';
 
 /** The duel ladder, from the easiest rival to the champion: faster, sharper, and less time to answer. */
@@ -53,3 +54,33 @@ export const RIVALS: Rival[] = [
     answerMs: [2500, 6500],
   },
 ];
+
+/** English title and quote of each rival, by id; names, ladder and stats are shared with Spanish. */
+const ENGLISH_COPY: Record<string, Pick<Rival, 'title' | 'quote'>> = {
+  trainee: {
+    title: 'Cloud intern',
+    quote: 'I just learned the difference between block and object storage. Are you going to make this hard?',
+  },
+  analyst: {
+    title: 'Data analyst',
+    quote: 'Databases, analytics and queues: every service has its place here.',
+  },
+  guardian: {
+    title: 'Security specialist',
+    quote: 'Identity, threats and auditing. Picking the wrong service here costs you.',
+  },
+  architect: {
+    title: 'Solutions architect',
+    quote: 'Networking, migration, AI and costs. I design so everything fits.',
+  },
+  champion: {
+    title: 'City champion',
+    quote: 'Every family, little time. Show me you are ready for the exam.',
+  },
+};
+
+/** The rival ladder in the given language: same ids, order and stats, with translated titles and quotes. */
+export function rivalsFor(locale: Locale): Rival[] {
+  if (locale === 'es') return RIVALS;
+  return RIVALS.map((rival) => ({ ...rival, ...ENGLISH_COPY[rival.id] }));
+}

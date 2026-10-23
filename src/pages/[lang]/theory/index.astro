@@ -4,6 +4,7 @@ import CourseCard from '@/modules/theory/presentation/CourseCard.astro';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf, localePaths } from '@/i18n/page';
 
 export function getStaticPaths() {
@@ -11,25 +12,26 @@ export function getStaticPaths() {
 }
 
 const locale = localeOf(Astro);
+const t = pagesMessages[locale].theory;
 
 const catalog = await theory.catalog(locale);
 const topics = catalog.flatMap((section) => section.topics);
 const readingMinutes = topics.reduce((total, topic) => total + topic.readingMinutes, 0);
 ---
 
-<PageLayout title="Teoría" description="Elige un curso para estudiar su teoría, tema por tema, con preguntas al final de cada uno.">
+<PageLayout title={t.title} description={t.description}>
   <Container>
     <div class="page">
       <SectionHeading
         level={1}
-        eyebrow="Estudia"
-        title="Cursos"
-        description="Elige un curso para ver sus temas. Cada tema termina con preguntas que lo marcan como completado."
+        eyebrow={t.eyebrow}
+        title={t.heading}
+        description={t.lead}
       />
       <ul class="courses">
         {
           theory
-            .courses()
+            .courses(locale)
             .map((course) => (
               <CourseCard course={course} topicCount={topics.length} domainCount={catalog.length} readingMinutes={readingMinutes} />
             ))
@@ -56,12 +58,16 @@ const readingMinutes = topics.reduce((total, topic) => total + topic.readingMinu
 
 <script>
   import { theoryProgressStore } from '@/composition/theoryProgress';
+  import { currentLocale } from '@/i18n/client';
+  import { pagesMessages } from '@/i18n/messages/pages';
+
+  const t = pagesMessages[currentLocale()].theory;
 
   // Every topic belongs to the only course for now, so all completed topics count towards it.
   const completed = (await (await theoryProgressStore()).load()).length;
   for (const progress of document.querySelectorAll<HTMLElement>('[data-course-progress]')) {
     if (completed === 0) continue;
-    progress.textContent = `${completed} de ${progress.dataset.total} temas completados`;
+    progress.textContent = t.completed(completed, progress.dataset.total ?? '');
     progress.hidden = false;
   }
 </script>

@@ -1,4 +1,7 @@
+import { missionMessages } from '@/i18n/messages/missions';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import { EXAM_DOMAINS } from '@/modules/exam/domain/ExamDomain';
+import { domainText } from '@/modules/exam/presentation/examText';
 import type { CampaignEntry, CampaignOverview } from '../application/campaignOverview';
 import type { MissionState } from '../domain/MissionProgress';
 import './progressView.css';
@@ -10,6 +13,8 @@ export interface ProgressViewOptions {
   topicTitle: (slug: string) => string;
   /** Name of a campaign track (in Cúmulo City, a district). */
   trackName: (track: string) => string;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 type Child = Node | string;
@@ -23,34 +28,30 @@ function el(tag: string, attrs: Record<string, string> = {}, children: Child[] =
 
 const percent = (score: number) => `${Math.round(score * 100)} %`;
 
-const STATE_LABELS: Record<MissionState, string> = {
-  completed: 'Completada',
-  active: 'En curso',
-  offered: 'Disponible',
-  locked: 'Bloqueada',
-};
+const messages = (options: ProgressViewOptions) => missionMessages[options.locale ?? DEFAULT_LOCALE].progress;
 
-function stateLabel({ state, bestScore }: CampaignEntry): string {
-  return state === 'completed' && bestScore !== null ? `${STATE_LABELS.completed} · ${percent(bestScore)}` : STATE_LABELS[state];
+function stateLabel({ state, bestScore }: CampaignEntry, labels: Record<MissionState, string>): string {
+  return state === 'completed' && bestScore !== null ? `${labels.completed} · ${percent(bestScore)}` : labels[state];
 }
 
 function missionCard(entry: CampaignEntry, options: ProgressViewOptions): HTMLElement {
   const { mission, state } = entry;
+  const t = messages(options);
   const topics = [...new Set(mission.decisions.map((d) => d.topicSlug))];
   const card = el('li', { class: 'pv-mission', 'data-mission': mission.id, 'data-state': state }, [
     el('div', { class: 'pv-mission-head' }, [
       el('div', {}, [
         el('p', { class: 'pv-building' }, [options.buildingName(mission.buildingId)]),
-        el('h3', { class: 'pv-title' }, [state === 'locked' ? 'Misión por descubrir' : mission.title]),
+        el('h3', { class: 'pv-title' }, [state === 'locked' ? t.lockedTitle : mission.title]),
         el('p', { class: 'pv-client' }, [`${mission.client.name} · ${mission.client.role}`]),
       ]),
-      el('span', { class: 'pv-state' }, [stateLabel(entry)]),
+      el('span', { class: 'pv-state' }, [stateLabel(entry, t.states)]),
     ]),
   ]);
   // The theory behind a mission is shown once it was solved, as a way to review it.
   if (state === 'completed') {
     card.append(
-      el('p', { class: 'pv-topics-label' }, ['Repasa la teoría:']),
+      el('p', { class: 'pv-topics-label' }, [t.reviewTheory]),
       el(
         'ul',
         { class: 'pv-topics' },
@@ -74,7 +75,7 @@ function trackGroups(entries: CampaignEntry[], options: ProgressViewOptions): HT
     return el('details', { class: 'pv-track', 'data-track': track, ...(track === openTrack ? { open: '' } : {}) }, [
       el('summary', { class: 'pv-track-summary' }, [
         el('span', {}, [options.trackName(track)]),
-        el('span', { class: 'pv-track-count' }, [`${done} de ${inTrack.length}`]),
+        el('span', { class: 'pv-track-count' }, [messages(options).trackCount(done, inTrack.length)]),
       ]),
       el('ol', { class: 'pv-missions' }, inTrack.map((entry) => missionCard(entry, options))),
     ]);
@@ -84,26 +85,28 @@ function trackGroups(entries: CampaignEntry[], options: ProgressViewOptions): HT
 /** Renders the player's campaign progress: summary, exam domains practiced and every mission. */
 export function renderProgress(host: HTMLElement, overview: CampaignOverview, options: ProgressViewOptions): void {
   const practiced = new Set(overview.practicedDomains);
+  const locale = options.locale ?? DEFAULT_LOCALE;
+  const t = messages(options);
   host.replaceChildren(
     el('section', { class: 'progress-view' }, [
       el('div', { class: 'pv-summary' }, [
-        el('p', { class: 'pv-count' }, [`${overview.completed} de ${overview.total} misiones completadas`]),
-        el('progress', { value: String(overview.completed), max: String(overview.total), 'aria-label': 'Avance de la campaña' }),
-        el('a', { class: 'pv-play', href: options.gameUrl }, [overview.completed === 0 ? 'Empezar a jugar' : 'Seguir jugando']),
+        el('p', { class: 'pv-count' }, [t.count(overview.completed, overview.total)]),
+        el('progress', { value: String(overview.completed), max: String(overview.total), 'aria-label': t.label }),
+        el('a', { class: 'pv-play', href: options.gameUrl }, [overview.completed === 0 ? t.startPlaying : t.keepPlaying]),
       ]),
-      el('h2', { class: 'pv-heading' }, ['Dominios del examen practicados']),
+      el('h2', { class: 'pv-heading' }, [t.domainsHeading]),
       el(
         'ul',
         { class: 'pv-domains' },
         EXAM_DOMAINS.map((d) =>
           el('li', { class: 'pv-domain', 'data-domain': d.id, 'data-practiced': String(practiced.has(d.id)) }, [
             el('span', { class: 'pv-domain-mark', 'aria-hidden': 'true' }, [practiced.has(d.id) ? '✓' : '·']),
-            `${d.order}. ${d.title}`,
-            el('span', { class: 'visually-hidden' }, [practiced.has(d.id) ? ' (practicado)' : ' (pendiente)']),
+            `${d.order}. ${domainText(d, locale).title}`,
+            el('span', { class: 'visually-hidden' }, [practiced.has(d.id) ? t.practiced : t.pending]),
           ]),
         ),
       ),
-      el('h2', { class: 'pv-heading' }, ['Misiones']),
+      el('h2', { class: 'pv-heading' }, [t.missionsHeading]),
       ...trackGroups(overview.entries, options),
     ]),
   );

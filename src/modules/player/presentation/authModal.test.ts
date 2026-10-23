@@ -55,4 +55,10 @@ describe('auth modal', () => {
     openAuthModal({ auth: fakeAuth(), onSignedIn: () => {}, reason: 'Necesitas una cuenta para jugar.' });
     expect(dialog()!.textContent).toContain('Necesitas una cuenta para jugar.');
   });
+
+  it('speaks English when asked', () => {
+    openAuthModal({ auth: fakeAuth(), onSignedIn: vi.fn(), locale: 'en' });
+    expect(dialog()!.querySelector('#auth-modal-title')?.textContent).toBe('Sign in to Cúmulo');
+    expect(dialog()!.querySelector('[data-auth-close]')?.getAttribute('aria-label')).toBe('Close');
+  });
 });

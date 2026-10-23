@@ -1,9 +1,11 @@
 ---
 import { theory } from '@/composition/theory';
 import { ALL_BUILDINGS, DISTRICTS } from '@/modules/games/cumulo-city/world/districts';
+import { buildingName, districtName } from '@/modules/games/cumulo-city/world/placeNames';
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf, localePaths } from '@/i18n/page';
 
 export function getStaticPaths() {
@@ -11,31 +13,32 @@ export function getStaticPaths() {
 }
 
 const locale = localeOf(Astro);
+const t = pagesMessages[locale].profile;
 
 // Names known at build time, handed to the client view that renders the player's progress.
 const topics = (await theory.catalog(locale)).flatMap((s) => s.topics);
 const topicTitles = Object.fromEntries(topics.map((t) => [t.slug, t.title]));
-const buildingNames = Object.fromEntries(ALL_BUILDINGS.map((b) => [b.id, b.name]));
-const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
+const buildingNames = Object.fromEntries(ALL_BUILDINGS.map((b) => [b.id, buildingName(b.id, locale)]));
+const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, districtName(d.id, locale)]));
 ---
 
-<PageLayout title="Mi perfil" description="Tu cuenta, los temas de teoría que completaste, tus misiones en Cúmulo City y los dominios del examen que ya practicaste.">
+<PageLayout title={t.title} description={t.description}>
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
-        eyebrow="Tu cuenta"
-        title="Mi perfil"
-        description="Tu cuenta y tu avance: los temas de teoría que completaste, las misiones que resolviste en Cúmulo City y los dominios del examen CLF-C02 que ya practicaste."
+        eyebrow={t.eyebrow}
+        title={t.title}
+        description={t.lead}
       />
       <div data-profile></div>
-      <h2 class="section-title">Teoría</h2>
+      <h2 class="section-title">{t.theory}</h2>
       <div data-theory-progress data-topics={JSON.stringify(topics)}></div>
-      <h2 class="section-title">Duelo de servicios</h2>
+      <h2 class="section-title">{t.duel}</h2>
       <div data-duel-progress></div>
-      <h2 class="section-title">Misiones</h2>
-      <div data-progress data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)} data-districts={JSON.stringify(districtNames)}>
-        <p class="loading">Cargando tu progreso…</p>
+      <h2 class="section-title">{t.missions}</h2>
+      <div data-progress data-sign-in-reason={t.signInReason} data-topics={JSON.stringify(topicTitles)} data-buildings={JSON.stringify(buildingNames)} data-districts={JSON.stringify(districtNames)}>
+        <p class="loading">{t.loading}</p>
       </div>
     </div>
   </Container>
@@ -76,7 +79,8 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
   import { currentLocale } from '@/i18n/client';
   import { routesFor } from '@/ui/routes';
 
-  const routes = routesFor(currentLocale());
+  const locale = currentLocale();
+  const routes = routesFor(locale);
 
   const host = document.querySelector<HTMLElement>('[data-progress]');
   if (host) {
@@ -85,25 +89,28 @@ const districtNames = Object.fromEntries(DISTRICTS.map((d) => [d.id, d.name]));
       host.replaceChildren();
       openAuthModal({
         auth: playerAuth(),
-        reason: 'Ingresa para ver tu perfil y tu progreso en las misiones.',
+        locale,
+        reason: host.dataset.signInReason,
         onSignedIn: () => window.location.reload(),
         onDismiss: () => window.location.assign(routes.home),
       });
     } else {
-      renderProfileCard(document.querySelector<HTMLElement>('[data-profile]')!, player);
+      renderProfileCard(document.querySelector<HTMLElement>('[data-profile]')!, player, { locale });
       const theoryHost = document.querySelector<HTMLElement>('[data-theory-progress]')!;
       const allTopics: Topic[] = JSON.parse(theoryHost.dataset.topics ?? '[]');
-      renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.course('cloud-practitioner') });
+      renderTheoryProgress(theoryHost, await getTheoryOverview(await theoryProgressStore(), allTopics), { theoryUrl: routes.course('cloud-practitioner'), locale });
       renderDuelProgress(document.querySelector<HTMLElement>('[data-duel-progress]')!, await (await duelProgressStore()).load(), {
         rivals: RIVALS,
         familyCount: FAMILY_ORDER.length,
         gameUrl: routes.game('service-duel'),
+        locale,
       });
       const topics: Record<string, string> = JSON.parse(host.dataset.topics ?? '{}');
       const buildings: Record<string, string> = JSON.parse(host.dataset.buildings ?? '{}');
       const districts: Record<string, string> = JSON.parse(host.dataset.districts ?? '{}');
       renderProgress(host, await campaignOverview(), {
         gameUrl: routes.game('cumulo-city'),
+        locale,
         theoryUrl: routes.topic,
         buildingName: (id) => buildings[id] ?? id,
         topicTitle: (slug) => topics[slug] ?? slug,

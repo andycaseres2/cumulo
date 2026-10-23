@@ -48,3 +48,24 @@ describe('building access', () => {
     expect(!none.allowed && none.reason).toContain('Banco Andino');
   });
 });
+
+describe('building access in English', () => {
+  it('explains refusals in English with English place names', () => {
+    const cafe = BUILDINGS.find((b) => b.id === 'cafe')!;
+    const sameDistrict = missionAccess(mission('bakery', 'active'), 'en').canEnter(cafe);
+    expect(!sameDistrict.allowed && sameDistrict.reason).toBe(
+      "Byte Café isn't expecting you today. Your active mission is at Dulce Nube Bakery: follow the arrow.",
+    );
+
+    const elsewhere = missionAccess(mission('bank', 'active'), 'en').canEnter(cafe);
+    expect(!elsewhere.allowed && elsewhere.reason).toBe(
+      "Byte Café isn't expecting you today. Your active mission is at Andino Bank, in the Financial District: take the bus at the stop.",
+    );
+
+    const offered = missionAccess(mission('bakery', 'offered'), 'en').canEnter(bank);
+    expect(!offered.allowed && offered.reason).toContain('Accept the mission on the card');
+
+    const none = missionAccess(null, 'en').canEnter(bank);
+    expect(!none.allowed && none.reason).toBe('Andino Bank has no work for you right now.');
+  });
+});

@@ -17,6 +17,8 @@ import { ALL_BUILDINGS, findBuilding } from '../../world/districts';
 import { guideArrow } from '../../world/guide';
 import { buildOfficeLayout, walkableGrid, type OfficeLayout } from '../../world/office';
 import { workerLine, workerName } from '../../world/officeTalk';
+import { buildingName } from '../../world/placeNames';
+import { gameLocale, gameText } from '../locale';
 import type { CityWakeData } from './CityScene';
 
 export interface InteriorData {
@@ -80,8 +82,8 @@ export class InteriorScene extends Phaser.Scene {
     this.events.once('shutdown', () => this.scale.off('resize', onResize));
 
     this.game.events.emit(EVENTS.location, {
-      title: this.building.name,
-      subtitle: 'Sal por la puerta para volver a la calle',
+      title: buildingName(this.building.id, gameLocale(this)),
+      subtitle: gameText(this).interior.exitHint,
       minimap: false,
     });
     camera.fadeIn(FADE_MS, 0, 0, 0);
@@ -139,7 +141,7 @@ export class InteriorScene extends Phaser.Scene {
       const worker = new Worker(
         this,
         npcLookKey(i + lookOffset),
-        workerLine(this.building.id, i),
+        workerLine(this.building.id, i, gameLocale(this)),
         station,
         this.layout.breakSpots,
         walkable,
@@ -154,7 +156,7 @@ export class InteriorScene extends Phaser.Scene {
         get y() {
           return worker.talkPoint.y;
         },
-        prompt: `[E] Hablar con ${name}`,
+        prompt: gameText(this).interior.talkTo(name),
         open: () => {
           worker.frozen = true;
           worker.face(this.player.x, this.player.y);
@@ -185,12 +187,12 @@ export class InteriorScene extends Phaser.Scene {
     let marker = placeMarker(this, worker.x, worker.y - 22, state === 'completed');
     if (state === 'active') this.guideTarget = worker;
 
-    talk.prompt = `[E] Hablar con ${brief.client.name}`;
+    talk.prompt = gameText(this).interior.talkTo(brief.client.name);
     talk.open = () => {
       worker.frozen = true;
       worker.face(this.player.x, this.player.y);
       return {
-        pages: clientOffer(brief, state, portrait),
+        pages: clientOffer(brief, state, portrait, gameLocale(this)),
         onChoice: (choice) => {
           if (choice === START) void play();
         },

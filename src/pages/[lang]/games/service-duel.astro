@@ -2,26 +2,29 @@
 import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
-import { localePaths } from '@/i18n/page';
+import { localeOf, localePaths } from '@/i18n/page';
+import { duelMessages } from '@/i18n/messages/duel';
 
 export function getStaticPaths() {
   return localePaths();
 }
+
+const t = duelMessages[localeOf(Astro)].page;
 ---
 
 <PageLayout
-  title="Duelo de servicios"
-  description="Elige el servicio de AWS correcto antes que tu rival: duelos, contrarreloj y entrenamiento con los servicios que más se confunden en el examen CLF-C02."
+  title={t.title}
+  description={t.description}
 >
   <Container>
     <div class="page">
       <SectionHeading
         level={1}
-        eyebrow="Juego"
-        title="Duelo de servicios"
-        description="S3, EBS o EFS; RDS o DynamoDB; GuardDuty o Inspector. Elige el servicio correcto antes de que acabe el tiempo, y aprende de cada respuesta."
+        eyebrow={t.eyebrow}
+        title={t.title}
+        description={t.intro}
       />
-      <div data-service-duel><p class="loading">Cargando el duelo…</p></div>
+      <div data-service-duel><p class="loading">{t.loading}</p></div>
     </div>
   </Container>
 </PageLayout>
@@ -42,13 +45,15 @@ export function getStaticPaths() {
   import { duelProgressStore } from '@/composition/duel';
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { familiesFor } from '@/modules/duel/infrastructure/serviceFamilies';
-  import { RIVALS } from '@/modules/duel/infrastructure/rivals';
+  import { rivalsFor } from '@/modules/duel/infrastructure/rivals';
   import { renderDuelGame } from '@/modules/duel/presentation/duelGame';
   import { openAuthModal } from '@/modules/player/presentation/authModal';
   import { currentLocale } from '@/i18n/client';
+  import { duelMessages } from '@/i18n/messages/duel';
   import { routesFor } from '@/ui/routes';
 
-  const routes = routesFor(currentLocale());
+  const locale = currentLocale();
+  const routes = routesFor(locale);
 
   const host = document.querySelector<HTMLElement>('[data-service-duel]');
   if (host) {
@@ -58,19 +63,20 @@ export function getStaticPaths() {
       host.replaceChildren();
       openAuthModal({
         auth: playerAuth(),
-        reason: 'Necesitas una cuenta gratuita para jugar. Ingresa o créala en un minuto.',
+        reason: duelMessages[locale].page.authReason,
         onSignedIn: () => window.location.reload(),
         onDismiss: () => window.location.assign(routes.games),
       });
     } else {
       const store = await duelProgressStore();
       renderDuelGame(host, {
-        families: familiesFor(currentLocale()),
-        rivals: RIVALS,
+        families: familiesFor(locale),
+        rivals: rivalsFor(locale),
         progress: await store.load(),
         playerName: player.displayName,
         onProgress: (progress) => void store.save(progress),
         theoryUrl: routes.topic,
+        locale,
       });
     }
   }

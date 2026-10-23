@@ -13,8 +13,10 @@ import {
   type GroundGrid,
   type StreetPropKind,
 } from '../../world/cityMap';
+import { buildingName } from '../../world/placeNames';
 import { G, isRoad } from '../../world/tileTypes';
 import { composeBuilding, GROUND, PROP, SHEET } from '../art/kenney';
+import { gameLocale } from '../locale';
 
 type AddSolid = (cx: number, cy: number, w: number, h: number) => void;
 
@@ -94,13 +96,14 @@ function renderSign(scene: Phaser.Scene, def: BuildingDef, top: number) {
   const facadeRows = def.h >= 8 ? 4 : 3;
   const cx = (def.x + def.w / 2) * TILE;
   const cy = (top + def.h - facadeRows) * TILE + 7;
-  const width = Math.min(def.w * TILE - 10, def.name.length * 4 + 10);
+  const name = buildingName(def.id, gameLocale(scene));
+  const width = Math.min(def.w * TILE - 10, name.length * 4 + 10);
   scene.add
     .rectangle(cx, cy, width, 10, 0x2b2b3a)
     .setStrokeStyle(1, 0xffd166)
     .setDepth(4);
   scene.add
-    .text(cx, cy, def.name, { fontFamily: FONT, fontSize: '4px', color: '#ffffff', resolution: 4 })
+    .text(cx, cy, name, { fontFamily: FONT, fontSize: '4px', color: '#ffffff', resolution: 4 })
     .setOrigin(0.5)
     .setDepth(4.5)
     .texture.setFilter(Phaser.Textures.FilterMode.LINEAR);

@@ -1,10 +1,12 @@
 ---
 import type { Topic } from '@/modules/theory/domain/Topic';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].topic;
 
 export interface Props {
   previous: Topic | null;
@@ -14,11 +16,11 @@ export interface Props {
 const { previous, next } = Astro.props;
 ---
 
-<nav class="pager" aria-label="Temas">
+<nav class="pager" aria-label={t.pager}>
   {
     previous && (
       <a class="link previous" href={routes.topic(previous.slug)}>
-        <span class="direction">← Anterior</span>
+        <span class="direction">{t.previous}</span>
         <span class="title">{previous.title}</span>
       </a>
     )
@@ -26,7 +28,7 @@ const { previous, next } = Astro.props;
   {
     next && (
       <a class="link next" href={routes.topic(next.slug)}>
-        <span class="direction">Siguiente →</span>
+        <span class="direction">{t.next}</span>
         <span class="title">{next.title}</span>
       </a>
     )

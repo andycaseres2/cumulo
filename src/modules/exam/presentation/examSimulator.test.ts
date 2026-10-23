@@ -117,4 +117,12 @@ describe('exam simulator', () => {
     expect(createExam).toHaveBeenCalledTimes(2);
     expect(text()).toContain('Pregunta 1 de 3');
   });
+
+  it('speaks English when asked, with English domain titles', () => {
+    renderExamSimulator(host, { createExam: () => exam, questionCount: 3, theoryUrl: (s) => s, durationMinutes: 90, locale: 'en' });
+    expect(text()).toContain('3 questions from the four domains');
+    button('Start practice exam').click();
+    expect(text()).toContain('Question 1 of 3');
+    expect(text()).toContain('Cloud Concepts');
+  });
 });

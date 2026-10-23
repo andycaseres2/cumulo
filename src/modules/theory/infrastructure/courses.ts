@@ -1,14 +1,20 @@
+import { catalogMessages } from '@/i18n/messages/catalog';
+import type { Locale } from '@/i18n/locales';
 import { EXAM_FORMAT } from '@/modules/exam/domain/ExamFormat';
 import type { Course } from '../domain/Course';
 
-/** Courses on offer. Every theory topic belongs to the first one for now. */
-export const COURSES: Course[] = [
+type CourseSlug = keyof (typeof catalogMessages)['es']['courses'];
+
+/** Courses on offer, without their copy. Every theory topic belongs to the first one for now. */
+const COURSES: (Omit<Course, 'level' | 'summary'> & { slug: CourseSlug })[] = [
   {
     slug: 'cloud-practitioner',
     title: 'AWS Certified Cloud Practitioner',
     examCode: EXAM_FORMAT.code,
-    level: 'Fundamentos',
-    summary:
-      'La certificación de entrada de AWS: conceptos de la nube, seguridad, servicios principales, facturación y soporte. No necesitas experiencia previa.',
   },
 ];
+
+/** Courses on offer with their level and summary in `locale`. */
+export function coursesIn(locale: Locale): Course[] {
+  return COURSES.map((course) => ({ ...course, ...catalogMessages[locale].courses[course.slug] }));
+}

@@ -1,5 +1,8 @@
+import { gameMessages } from '@/i18n/messages/game';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import type { CurrentMission } from './missions';
-import { districtOf, findBuilding, findDistrict, type DistrictId } from './world/districts';
+import { districtOf, type DistrictId } from './world/districts';
+import { buildingName, districtName } from './world/placeNames';
 
 /** What the HUD mission card shows. */
 export interface MissionCardContent {
@@ -13,34 +16,35 @@ export interface MissionCardContent {
 }
 
 /** Card for the mission of the player's district (`here`), or the active one wherever it is. */
-export function missionCard(current: CurrentMission | null, here: DistrictId): MissionCardContent {
+export function missionCard(current: CurrentMission | null, here: DistrictId, locale: Locale = DEFAULT_LOCALE): MissionCardContent {
+  const text = gameMessages[locale].missionCard;
   if (!current) {
     return {
       kind: 'done',
-      heading: 'Misiones al día',
-      title: `¡Ayudaste a todos los clientes del ${findDistrict(here).name}!`,
-      detail: 'Toma el bus en la parada para buscar clientes en otros distritos.',
+      heading: text.doneHeading,
+      title: text.doneTitle(districtName(here, locale)),
+      detail: text.doneDetail,
       action: null,
     };
   }
   const { brief, state } = current;
-  const place = findBuilding(brief.buildingId)?.name ?? brief.buildingId;
+  const place = buildingName(brief.buildingId, locale);
   if (state === 'offered') {
     return {
       kind: 'offer',
-      heading: 'Nueva misión',
+      heading: text.offerHeading,
       title: brief.title,
-      detail: `${brief.client.name} te espera en ${place}.`,
-      action: 'Aceptar misión',
+      detail: text.offerDetail(brief.client.name, place),
+      action: text.acceptMission,
     };
   }
   const district = districtOf(brief.buildingId);
-  const bus = district && district.id !== here ? `toma el bus al ${district.name}, entra` : 'entra';
+  const busDistrict = district && district.id !== here ? districtName(district.id, locale) : null;
   return {
     kind: 'active',
-    heading: 'Misión activa',
+    heading: text.activeHeading,
     title: brief.title,
-    detail: `Objetivo: ${bus} a ${place} y habla con ${brief.client.name}. Sigue la flecha.`,
+    detail: text.activeDetail(place, brief.client.name, busDistrict),
     action: null,
   };
 }

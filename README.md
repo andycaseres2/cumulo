@@ -45,7 +45,7 @@ PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 Players sign up at `/sign-in` with their name, email and password, and confirm their email before signing in. Playing requires an account: signed-out visitors who open a game get a sign-in modal, and the game loads right after signing in (theory stays public). Behind the modal they see the plain selection background until a character was picked on that device, and the city afterwards. The character is picked once and saved in the account (Supabase `user_metadata.character`, a preference, never a permission), so the game skips the selection screen next time. "Ingresar" in the header opens the same modal on any page; `/sign-in` is the full-page fallback and where the confirmation email lands. The player's name shows in the header and above their character. In the Supabase dashboard:
 
 1. **Authentication → Sign In / Providers → Email**: enabled (default), with "Confirm email" on.
-2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/sign-in` (and later the production URL + `/sign-in`) to **Redirect URLs**. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
+2. **Authentication → URL Configuration**: set **Site URL** to the site address (`http://localhost:4321` in development) and add `http://localhost:4321/es/sign-in` and `http://localhost:4321/en/sign-in` (and later the production URL + `/es/sign-in` and `/en/sign-in`) to **Redirect URLs**: the confirmation email returns to the language the player signed up in. Otherwise the confirmation email points to `http://localhost:3000`, the Supabase default.
 
 ### Mission progress in the account
 
@@ -60,6 +60,8 @@ The Service Duel keeps its progress (rivals beaten, best time attack, best train
 Supabase's built-in email service only sends a few emails per hour; configure custom SMTP (Authentication → Emails) before launching. After signing in, `?next=` returns the player to the page they came from (same-site paths only).
 
 ## Routes
+
+Every page exists in Spanish and English under a language prefix: `/es/...` and `/en/...` (the table omits it). `/` sends visitors to the language they picked with the ES | EN switch in the header (saved in the browser as `cumulo:locale`), else to their browser language, else to Spanish. Older unprefixed and Spanish URLs redirect to the Spanish pages.
 
 | Route | Page |
 | --- | --- |
@@ -154,3 +156,13 @@ Not affiliated with or endorsed by Amazon Web Services.
 ## English identifiers
 
 Routes, topic slugs, mission ids, district and building ids are English; the copy players read stays in Spanish until the site gets translations. The old Spanish URLs redirect to the new ones (`astro.config.mjs`). Progress saved under the old topic slugs and mission ids is read under the new ones (`src/infrastructure/legacyIds.ts`), and `supabase/migrations/20261022120000_english_ids.sql` renames the stored rows; it can run more than once.
+
+## Languages
+
+The site speaks Spanish (the original) and English (`src/i18n`): `locales.ts` picks the language, `messages/*.ts` hold the interface copy of each area (`defineMessages` makes English mirror the Spanish shape), `localeOf(Astro)` gives a page its language and `currentLocale()` gives it to browser scripts. Content is translated next to the original with the same ids and right answers, and anything not translated yet falls back to Spanish:
+
+- Theory: `src/content/theory/es/<slug>.md` and `src/content/theory/en/<slug>.md`.
+- Missions: `src/modules/missions/infrastructure/translations/en/` mirrors `content/`.
+- Service Duel: `src/modules/duel/infrastructure/translations/en/` mirrors `content/`.
+
+Contract tests (`theoryTranslations`, `missionTranslations`, `duelTranslations`) check that every translation keeps the structure of its original.

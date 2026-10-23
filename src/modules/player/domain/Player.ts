@@ -27,7 +27,7 @@ export function initials(displayName: string): string {
   if (words.length === 0) return '?';
   const first = [...words[0]][0];
   const last = words.length > 1 ? [...words[words.length - 1]][0] : '';
-  return (first + last).toLocaleUpperCase('es');
+  return (first + last).toUpperCase();
 }
 
 /** A player is always shown with a non-empty, trimmed name. */

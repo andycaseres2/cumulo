@@ -1,3 +1,5 @@
+import { missionMessages } from '@/i18n/messages/missions';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import { answer, currentDecision, isFinished, runResult, startRun, type MissionResult, type MissionRun } from '../domain/MissionRun';
 import type { Mission, MissionMode } from '../domain/Mission';
 import './missionPanel.css';
@@ -8,6 +10,8 @@ export interface MissionPanelOptions {
   host: HTMLElement;
   /** URL of a theory topic, opened in a new tab. */
   theoryUrl: (slug: string) => string;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 type Child = Node | string;
@@ -31,18 +35,19 @@ const percent = (score: number) => `${Math.round(score * 100)} %`;
  * Plays a mission in an overlay: mode choice, decisions, explanations and results.
  * Resolves with the result when the player finishes, or null if they leave early.
  */
-export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptions): Promise<MissionResult | null> {
+export function openMissionPanel({ mission, host, theoryUrl, locale = DEFAULT_LOCALE }: MissionPanelOptions): Promise<MissionResult | null> {
+  const t = missionMessages[locale].panel;
   return new Promise((resolve) => {
     let run: MissionRun | null = null;
     let waitingForNext = false;
 
     const body = el('div', { class: 'mp-body' });
-    const close = button('Salir ✕', () => finish(null), { class: 'mp-close', 'aria-label': 'Salir de la misión' });
+    const close = button(t.exit, () => finish(null), { class: 'mp-close', 'aria-label': t.exitLabel });
     const root = el('section', { class: 'mission-panel', 'data-mission-panel': '', role: 'dialog', 'aria-modal': 'true', 'aria-label': mission.title }, [
       el('div', { class: 'mp-card' }, [
         el('header', { class: 'mp-header' }, [
           el('div', {}, [
-            el('p', { class: 'mp-eyebrow' }, [`Misión · ${mission.client.name}`]),
+            el('p', { class: 'mp-eyebrow' }, [t.eyebrow(mission.client.name)]),
             el('h2', { class: 'mp-title' }, [mission.title]),
           ]),
           close,
@@ -67,9 +72,7 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
     }
 
     function theoryLink(slug: string) {
-      return el('a', { class: 'mp-theory', 'data-theory-link': '', href: theoryUrl(slug), target: '_blank', rel: 'noopener' }, [
-        'Repasar este tema en la teoría ↗',
-      ]);
+      return el('a', { class: 'mp-theory', 'data-theory-link': '', href: theoryUrl(slug), target: '_blank', rel: 'noopener' }, [t.theoryLink]);
     }
 
     function renderModes() {
@@ -82,10 +85,10 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
           el('p', {}, [text]),
         ]);
       show(
-        heading('¿Cómo quieres jugar?'),
+        heading(t.chooseMode),
         el('ul', { class: 'mp-modes' }, [
-          mode('learn', 'Aprender', 'Ves qué es cada servicio antes de elegir y la explicación justo después de cada respuesta. Ideal si recién empiezas.'),
-          mode('practice', 'Práctica', 'Como en el examen: sin definiciones ni pistas. Al final ves tu puntaje y la explicación de cada respuesta.'),
+          mode('learn', t.learn, t.learnText),
+          mode('practice', t.practice, t.practiceText),
         ]),
       );
     }
@@ -101,17 +104,17 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
         decision.options.map((option, i) =>
           el('li', {}, [
             button(`${i + 1}. ${option.label}`, () => choose(option.id), { class: 'mp-option', 'data-option': option.id }),
-            ...(learning ? [el('details', {}, [el('summary', {}, ['¿Qué es esto?']), el('p', {}, [option.definition])])] : []),
+            ...(learning ? [el('details', {}, [el('summary', {}, [t.whatIsThis]), el('p', {}, [option.definition])])] : []),
           ]),
         ),
       );
       show(
         el('p', { class: 'mp-progress' }, [
-          `Decisión ${run.answers.length + 1} de ${mission.decisions.length}`,
-          el('span', { class: 'mp-badge' }, [learning ? 'Aprender' : 'Práctica']),
+          t.progress(run.answers.length + 1, mission.decisions.length),
+          el('span', { class: 'mp-badge' }, [learning ? t.learn : t.practice]),
         ]),
         el('blockquote', { class: 'mp-quote' }, [el('strong', {}, [mission.client.name]), el('p', {}, [decision.prompt])]),
-        heading('¿Qué le recomiendas?'),
+        heading(t.recommend),
         list,
       );
     }
@@ -137,13 +140,13 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
       const finished = isFinished(run, mission);
       body.append(
         el('div', { class: `mp-feedback ${feedback.correct ? 'is-correct' : 'is-wrong'}`, 'data-feedback': '', role: 'status' }, [
-          el('h4', {}, [feedback.correct ? '✓ ¡Correcto!' : '✗ No es la mejor opción']),
+          el('h4', {}, [feedback.correct ? t.right : t.wrong]),
           el('p', {}, [feedback.chosen.explanation]),
           ...(feedback.correct
             ? []
-            : [el('p', {}, [el('strong', {}, [`La respuesta correcta: ${feedback.correctOption.label}. `]), feedback.correctOption.explanation])]),
+            : [el('p', {}, [el('strong', {}, [t.rightAnswer(feedback.correctOption.label)]), feedback.correctOption.explanation])]),
           theoryLink(decision.topicSlug),
-          button(finished ? 'Ver resultado' : 'Siguiente', () => (finished ? renderResults() : renderDecision()), { class: 'mp-primary' }),
+          button(finished ? t.seeResult : t.next, () => (finished ? renderResults() : renderDecision()), { class: 'mp-primary' }),
         ]),
       );
       body.querySelector<HTMLButtonElement>('.mp-primary')?.focus({ preventScroll: true });
@@ -157,22 +160,20 @@ export function openMissionPanel({ mission, host, theoryUrl }: MissionPanelOptio
       const review = result.review.map((entry, i) =>
         el('li', { class: entry.correct ? 'is-correct' : 'is-wrong' }, [
           el('p', { class: 'mp-review-question' }, [`${i + 1}. ${entry.decision.prompt}`]),
-          el('p', {}, [`${entry.correct ? '✓' : '✗'} Tu respuesta: ${entry.chosen.label}`]),
-          ...(entry.correct ? [] : [el('p', {}, [`Correcta: ${entry.correctOption.label}`])]),
+          el('p', {}, [t.yourAnswer(entry.correct ? '✓' : '✗', entry.chosen.label)]),
+          ...(entry.correct ? [] : [el('p', {}, [t.correctAnswer(entry.correctOption.label)])]),
           el('p', { class: 'mp-review-why' }, [entry.correctOption.explanation]),
           theoryLink(entry.decision.topicSlug),
         ]),
       );
       show(
-        heading(result.passed ? '¡Misión cumplida!' : 'Todavía no'),
-        el('p', { class: 'mp-score' }, [`${result.correct} de ${result.total} correctas (${percent(result.score)})`]),
+        heading(result.passed ? t.passed : t.notYet),
+        el('p', { class: 'mp-score' }, [t.score(result.correct, result.total, percent(result.score))]),
         el('p', {}, [
-          result.passed
-            ? 'Resolviste el problema del cliente. Repasa abajo cada decisión para fijar lo aprendido.'
-            : `Necesitas ${percent(mission.passingScore)} para completar la misión. Lee las explicaciones y vuelve a intentarlo.`,
+          result.passed ? t.passedText : t.failedText(percent(mission.passingScore)),
         ]),
         el('ol', { class: 'mp-review' }, review),
-        button('Volver a la oficina', () => finish(result), { class: 'mp-primary' }),
+        button(t.backToOffice, () => finish(result), { class: 'mp-primary' }),
       );
     }
 

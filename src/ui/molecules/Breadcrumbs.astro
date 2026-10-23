@@ -1,4 +1,7 @@
 ---
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
+
 export interface Crumb {
   label: string;
   href?: string;
@@ -9,9 +12,10 @@ export interface Props {
 }
 
 const { items } = Astro.props;
+const t = pagesMessages[localeOf(Astro)].layout;
 ---
 
-<nav aria-label="Ruta de navegación">
+<nav aria-label={t.breadcrumbs}>
   <ol class="crumbs">
     {
       items.map((item) => (

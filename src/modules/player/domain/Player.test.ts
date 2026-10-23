@@ -7,6 +7,7 @@ describe('initials', () => {
     ['andy', 'A'],
     ['  María José  Pérez Soto ', 'MS'],
     ['Ángel', 'Á'],
+    ['ñandú veloz', 'ÑV'],
     ['', '?'],
   ])('of "%s" is "%s"', (name, expected) => {
     expect(initials(name)).toBe(expected);

@@ -59,4 +59,11 @@ describe('player menu', () => {
     expect(onSignOut).toHaveBeenCalledOnce();
     expect(button.disabled).toBe(true);
   });
+
+  it('speaks English when asked', () => {
+    renderPlayerMenu(host, { player, profileUrl: '/profile', onSignOut: vi.fn(async () => {}), locale: 'en' });
+    expect(trigger().getAttribute('aria-label')).toBe("Andy Caseres's menu");
+    expect(menu().querySelector('a[href="/profile"]')?.textContent).toBe('My profile');
+    expect(menu().textContent).toContain('Sign out');
+  });
 });

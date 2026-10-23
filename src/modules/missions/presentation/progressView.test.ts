@@ -68,4 +68,11 @@ describe('progress view', () => {
     renderProgress(host, overview, options);
     expect(host.querySelector('a[href="/games/cumulo-city"]')?.textContent).toContain('Seguir jugando');
   });
+
+  it('speaks English when asked, with English domain titles', () => {
+    renderProgress(host, overview, { ...options, locale: 'en' });
+    expect(host.textContent).toContain('1 of 2 missions completed');
+    expect(card(firstMission.id).textContent).toContain('Completed · 50 %');
+    expect(host.querySelector('[data-domain="cloud-concepts"]')?.textContent).toContain('Cloud Concepts');
+  });
 });

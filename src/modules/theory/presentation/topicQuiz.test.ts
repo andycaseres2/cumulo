@@ -92,4 +92,16 @@ describe('topic quiz', () => {
     [...result().querySelectorAll('button')].find((b) => b.textContent?.includes('Ingresar'))!.click();
     expect(options.onSignIn).toHaveBeenCalledOnce();
   });
+
+  it('speaks English when asked, and the English sign-in button still signs in', async () => {
+    const options = render({ signedIn: false, locale: 'en' });
+    expect(host.textContent).toContain('Test what you learned');
+    choose(1, 2);
+    choose(2, 0);
+    choose(3, 3);
+    await flush();
+    expect(result().textContent).toContain('3 of 3 correct');
+    [...result().querySelectorAll('button')].find((b) => b.textContent === 'Sign in')!.click();
+    expect(options.onSignIn).toHaveBeenCalledOnce();
+  });
 });

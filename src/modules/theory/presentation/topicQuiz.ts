@@ -1,3 +1,5 @@
+import { theoryViewMessages } from '@/i18n/messages/theoryViews';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import type { QuizQuestion } from '../domain/TheoryProgress';
 import './topicQuiz.css';
 
@@ -10,6 +12,8 @@ export interface TopicQuizOptions {
   /** Saves the attempt; resolves with whether the topic is now completed. */
   onFinished: (result: { correct: number; total: number }) => Promise<{ completed: boolean }>;
   onSignIn: () => void;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D'];
@@ -21,13 +25,12 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Record<string,
   return node;
 }
 
-const COMPLETED_BADGE = '✓ Tema completado';
-
 /** The three questions at the end of a theory topic: answer, read why, and complete the topic with all of them right. */
 export function renderTopicQuiz(host: HTMLElement, options: TopicQuizOptions): void {
   const { questions } = options;
+  const t = theoryViewMessages[options.locale ?? DEFAULT_LOCALE].quiz;
   const answers: (boolean | null)[] = questions.map(() => null);
-  const status = el('p', { class: 'tq-status', 'data-quiz-status': '' }, options.completed ? [COMPLETED_BADGE] : []);
+  const status = el('p', { class: 'tq-status', 'data-quiz-status': '' }, options.completed ? [t.completedBadge] : []);
   status.hidden = !options.completed;
   const result = el('div', { class: 'tq-result', 'data-quiz-result': '', role: 'status' });
   result.hidden = true;
@@ -53,7 +56,7 @@ export function renderTopicQuiz(host: HTMLElement, options: TopicQuizOptions): v
         });
         const right = q.options.find((o) => o.correct)!;
         feedback.replaceChildren(
-          el('p', { class: chosen.correct ? 'tq-verdict is-right' : 'tq-verdict is-wrong' }, [chosen.correct ? '¡Correcto!' : 'No es correcto.']),
+          el('p', { class: chosen.correct ? 'tq-verdict is-right' : 'tq-verdict is-wrong' }, [chosen.correct ? t.right : t.wrong]),
           el('p', {}, [chosen.explanation]),
           ...(chosen.correct ? [] : [el('p', {}, [el('strong', {}, [`${right.label}: `]), right.explanation])]),
         );
@@ -77,30 +80,30 @@ export function renderTopicQuiz(host: HTMLElement, options: TopicQuizOptions): v
     const correct = answers.filter(Boolean).length;
     const total = questions.length;
     const { completed } = await options.onFinished({ correct, total });
-    const children: (Node | string)[] = [el('p', { class: 'tq-score' }, [`${correct} de ${total} correctas`])];
+    const children: (Node | string)[] = [el('p', { class: 'tq-score' }, [t.score(correct, total)])];
     if (correct === total) {
-      children.push(el('p', {}, ['¡Tema completado! Dominas lo esencial de este tema.']));
+      children.push(el('p', {}, [t.allRight]));
     } else {
       children.push(
-        el('p', {}, ['Repasa las explicaciones y vuelve a intentarlo: el tema se completa con todas las respuestas correctas.']),
-        el('button', { type: 'button', class: 'tq-action' }, ['Intentar de nuevo']),
+        el('p', {}, [t.tryAgainHint]),
+        el('button', { type: 'button', class: 'tq-action' }, [t.tryAgain]),
       );
     }
     if (completed && !options.signedIn) {
       children.push(
         el('div', { class: 'tq-guest' }, [
-          el('p', {}, ['Tu avance se guarda en este navegador. Ingresa para guardarlo en tu cuenta y verlo en cualquier dispositivo.']),
-          el('button', { type: 'button', class: 'tq-action' }, ['Ingresar']),
+          el('p', {}, [t.guestNote]),
+          el('button', { type: 'button', class: 'tq-action', 'data-quiz-sign-in': '' }, [t.signIn]),
         ]),
       );
     }
     result.replaceChildren(...children);
     for (const button of result.querySelectorAll('button')) {
-      button.addEventListener('click', () => (button.textContent === 'Ingresar' ? options.onSignIn() : reset()));
+      button.addEventListener('click', () => (button.hasAttribute('data-quiz-sign-in') ? options.onSignIn() : reset()));
     }
     result.hidden = false;
     if (completed) {
-      status.replaceChildren(COMPLETED_BADGE);
+      status.replaceChildren(t.completedBadge);
       status.hidden = false;
     }
   }
@@ -108,10 +111,10 @@ export function renderTopicQuiz(host: HTMLElement, options: TopicQuizOptions): v
   host.replaceChildren(
     el('section', { class: 'topic-quiz', 'aria-labelledby': 'topic-quiz-title' }, [
       el('div', { class: 'tq-header' }, [
-        el('h2', { id: 'topic-quiz-title', class: 'tq-title' }, ['Pon a prueba lo que aprendiste']),
+        el('h2', { id: 'topic-quiz-title', class: 'tq-title' }, [t.title]),
         status,
       ]),
-      el('p', { class: 'tq-intro' }, ['Responde las tres preguntas. Si aciertas todas, el tema queda completado en tu progreso.']),
+      el('p', { class: 'tq-intro' }, [t.intro]),
       list,
       result,
     ]),

@@ -1,21 +1,26 @@
 ---
 import { findExamTask } from '@/modules/exam/domain/ExamTask';
+import { taskTitle } from '@/modules/exam/presentation/examText';
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
 
 export interface Props {
   taskIds: string[];
 }
 
 const tasks = Astro.props.taskIds.map(findExamTask).filter((task) => task !== undefined);
+const locale = localeOf(Astro);
+const t = pagesMessages[locale].topic;
 ---
 
 <section class="tasks" aria-labelledby="tareas-del-examen">
-  <h2 id="tareas-del-examen">Qué parte del examen cubre</h2>
+  <h2 id="tareas-del-examen">{t.examTasks}</h2>
   <ul>
     {
       tasks.map((task) => (
         <li>
           <span class="id">{task.id}</span>
-          {task.title}
+          {taskTitle(task, locale)}
         </li>
       ))
     }

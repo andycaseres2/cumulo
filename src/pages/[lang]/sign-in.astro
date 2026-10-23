@@ -3,21 +3,24 @@ import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 import { SITE_NAME } from '@/ui/site';
-import { localePaths } from '@/i18n/page';
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf, localePaths } from '@/i18n/page';
 
 export function getStaticPaths() {
   return localePaths();
 }
+
+const t = pagesMessages[localeOf(Astro)].signIn;
 ---
 
-<PageLayout title="Ingresar" description={`Ingresa o crea tu cuenta para guardar tu progreso en ${SITE_NAME}.`}>
+<PageLayout title={t.title} description={t.description(SITE_NAME)}>
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
-        eyebrow="Tu cuenta"
-        title={`Ingresa a ${SITE_NAME}`}
-        description="Necesitas una cuenta para jugar. Con ella, tu nombre aparece en el juego y tu avance en las misiones queda guardado en tu cuenta. La teoría es libre para todos."
+        eyebrow={t.eyebrow}
+        title={t.heading(SITE_NAME)}
+        description={t.lead}
       />
       <div data-auth-forms></div>
     </div>
@@ -35,6 +38,7 @@ export function getStaticPaths() {
   import { currentPlayer, playerAuth } from '@/composition/player';
   import { renderAuthForms } from '@/modules/player/presentation/authForms';
   import { safeNextPath } from '@/modules/player/presentation/safeNextPath';
+  import { currentLocale } from '@/i18n/client';
 
   const next = safeNextPath(new URLSearchParams(window.location.search).get('next'));
   const host = document.querySelector<HTMLElement>('[data-auth-forms]');
@@ -42,6 +46,6 @@ export function getStaticPaths() {
   if (host) {
     const player = await currentPlayer();
     if (!player.isGuest) window.location.replace(next);
-    else renderAuthForms(host, { auth: playerAuth(), onSignedIn: () => window.location.assign(next) });
+    else renderAuthForms(host, { auth: playerAuth(), locale: currentLocale(), onSignedIn: () => window.location.assign(next) });
   }
 </script>

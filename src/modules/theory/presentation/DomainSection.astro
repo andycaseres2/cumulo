@@ -2,6 +2,9 @@
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
 import WeightStat from '@/ui/molecules/WeightStat.astro';
+import { domainText } from '@/modules/exam/presentation/examText';
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
 import TopicCard from './TopicCard.astro';
 
 export interface Props {
@@ -10,14 +13,17 @@ export interface Props {
 
 const { section } = Astro.props;
 const { domain, topics } = section;
+const locale = localeOf(Astro);
+const t = pagesMessages[locale].domains;
+const text = domainText(domain, locale);
 ---
 
 <section class="domain" aria-labelledby={domain.id} style={`--domain-color: ${domainColor(domain.id)}`}>
   <header class="header">
-    <p class="number">Dominio {domain.order}</p>
-    <h2 id={domain.id}>{domain.title}</h2>
-    <p class="description">{domain.description}</p>
-    <WeightStat label="del examen" value={domain.weight} color={domainColor(domain.id)} />
+    <p class="number">{t.domain(domain.order)}</p>
+    <h2 id={domain.id}>{text.title}</h2>
+    <p class="description">{text.description}</p>
+    <WeightStat label={t.weight} value={domain.weight} color={domainColor(domain.id)} />
     {/* Filled in the browser with the visitor's completed topics. */}
     {topics.some((t) => t.hasQuiz) && <p class="progress" data-domain-progress={domain.id} data-total={topics.length} hidden />}
   </header>
@@ -31,7 +37,7 @@ const { domain, topics } = section;
         ))}
       </ul>
     ) : (
-      <p class="empty">Muy pronto agregaremos temas de este dominio.</p>
+      <p class="empty">{t.empty}</p>
     )
   }
 </section>

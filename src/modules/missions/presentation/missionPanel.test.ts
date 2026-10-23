@@ -85,4 +85,11 @@ describe('mission panel', () => {
     panel().dispatchEvent(new KeyboardEvent('keydown', { key: '1', bubbles: true }));
     expect(panel().textContent).toContain('Second question');
   });
+
+  it('speaks English when asked', () => {
+    void openMissionPanel({ mission, host: document.getElementById('host')!, theoryUrl, locale: 'en' });
+    expect(panel().textContent).toContain('How do you want to play?');
+    button('Learn').click();
+    expect(panel().textContent).toContain('Decision 1 of 2');
+  });
 });

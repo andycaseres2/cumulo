@@ -1,3 +1,5 @@
+import { gameMessages } from '@/i18n/messages/game';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import type { DialogContent } from './engine/ui/dialog';
 import type { MissionBrief } from './missions';
 
@@ -7,15 +9,21 @@ export const LATER = 'later';
 type Portrait = DialogContent['portrait'];
 
 /** What the client says: the story of an active mission, or a replay offer once completed. */
-export function clientOffer(brief: MissionBrief, state: 'active' | 'completed', portrait: Portrait): DialogContent[] {
-  const page = (text: string): DialogContent => ({ title: brief.client.name, text, portrait });
+export function clientOffer(
+  brief: MissionBrief,
+  state: 'active' | 'completed',
+  portrait: Portrait,
+  locale: Locale = DEFAULT_LOCALE,
+): DialogContent[] {
+  const text = gameMessages[locale].missionTalk;
+  const page = (line: string): DialogContent => ({ title: brief.client.name, text: line, portrait });
   if (state === 'completed') {
     return [
       {
-        ...page(`¡Qué gusto verte otra vez! Gracias a ti, "${brief.title}" quedó en el pasado. ¿Quieres repasar el caso?`),
+        ...page(text.replay(brief.title)),
         choices: [
-          { id: START, label: 'Jugar otra vez' },
-          { id: LATER, label: 'Ahora no' },
+          { id: START, label: text.playAgain },
+          { id: LATER, label: text.later },
         ],
       },
     ];
@@ -24,8 +32,8 @@ export function clientOffer(brief: MissionBrief, state: 'active' | 'completed', 
   pages[pages.length - 1] = {
     ...pages[pages.length - 1],
     choices: [
-      { id: START, label: 'Empecemos' },
-      { id: LATER, label: 'Ahora no' },
+      { id: START, label: text.start },
+      { id: LATER, label: text.later },
     ],
   };
   return pages;

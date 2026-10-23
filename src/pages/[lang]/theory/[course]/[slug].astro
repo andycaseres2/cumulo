@@ -9,18 +9,21 @@ import PageLayout from '@/ui/layouts/PageLayout.astro';
 import Breadcrumbs from '@/ui/molecules/Breadcrumbs.astro';
 import Prose from '@/ui/molecules/Prose.astro';
 import { LOCALES } from '@/i18n/locales';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
+import { domainText } from '@/modules/exam/presentation/examText';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].theory;
 
 export async function getStaticPaths() {
   // Every topic belongs to the first course until the platform offers more than one.
   const [course] = theory.courses();
   const catalog = await theory.catalog('es');
   return LOCALES.flatMap((lang) =>
-    catalog.flatMap((section) => section.topics.map((topic) => ({ params: { lang, course: course.slug, slug: topic.slug }, props: { course } }))),
+    catalog.flatMap((section) => section.topics.map((topic) => ({ params: { lang, course: course.slug, slug: topic.slug }, props: { course: theory.findCourse(course.slug, lang)! } }))),
   );
 }
 
@@ -30,7 +33,7 @@ const navigation = await theory.navigation(slug, locale);
 if (!navigation) throw new Error(`Unknown theory topic: ${slug}`);
 
 const { topic, domain, previous, next } = navigation;
-const { Content, sources, quiz } = await theory.renderBody(slug, locale);
+const { Content, sources, quiz, translated } = await theory.renderBody(slug, locale);
 ---
 
 <PageLayout title={topic.title} description={topic.summary}>
@@ -38,15 +41,16 @@ const { Content, sources, quiz } = await theory.renderBody(slug, locale);
     <article class="topic">
       <Breadcrumbs
         items={[
-          { label: 'Teoría', href: routes.theory },
+          { label: t.title, href: routes.theory },
           { label: course.title, href: routes.course(course.slug) },
-          { label: domain.title, href: routes.theoryDomain(domain.id, course.slug) },
+          { label: domainText(domain, locale).title, href: routes.theoryDomain(domain.id, course.slug) },
           { label: topic.title },
         ]}
       />
       <TopicHeader topic={topic} domain={domain} />
       <ExamTaskList taskIds={topic.examTasks} />
-      <Prose><Content /></Prose>
+      {!translated && <p class="untranslated">{t.untranslated}</p>}
+      <Prose lang={translated ? undefined : 'es'}><Content /></Prose>
       <SourceList sources={sources} />
       {quiz.length > 0 && <div data-topic-quiz data-slug={topic.slug} data-quiz={JSON.stringify(quiz)} />}
       <TopicPager previous={previous} next={next} />
@@ -58,6 +62,14 @@ const { Content, sources, quiz } = await theory.renderBody(slug, locale);
   .topic {
     padding-top: var(--space-8);
   }
+
+  .untranslated {
+    margin: var(--space-6) 0 0;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text-muted);
+    border: var(--border-width) dashed var(--color-border);
+    border-radius: var(--radius);
+  }
 </style>
 
 <script>
@@ -67,18 +79,21 @@ const { Content, sources, quiz } = await theory.renderBody(slug, locale);
   import { recordQuizResult } from '@/modules/theory/application/theoryProgress';
   import type { QuizQuestion } from '@/modules/theory/domain/TheoryProgress';
   import { renderTopicQuiz } from '@/modules/theory/presentation/topicQuiz';
+  import { currentLocale } from '@/i18n/client';
 
   const host = document.querySelector<HTMLElement>('[data-topic-quiz]');
   if (host) {
+    const locale = currentLocale();
     const slug = host.dataset.slug!;
     const questions: QuizQuestion[] = JSON.parse(host.dataset.quiz ?? '[]');
     const [player, store] = await Promise.all([currentPlayer(), theoryProgressStore()]);
     renderTopicQuiz(host, {
+      locale,
       questions,
       completed: (await store.load()).includes(slug),
       signedIn: !player.isGuest,
       onFinished: (result) => recordQuizResult(store, slug, result),
-      onSignIn: () => openAuthModal({ auth: playerAuth(), onSignedIn: () => window.location.reload() }),
+      onSignIn: () => openAuthModal({ auth: playerAuth(), locale, onSignedIn: () => window.location.reload() }),
     });
   }
 </script>

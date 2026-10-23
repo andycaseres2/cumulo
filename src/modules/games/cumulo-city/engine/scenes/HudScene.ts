@@ -7,6 +7,9 @@ import { Button } from '../ui/Button';
 import { choiceRows } from '../ui/choiceLayout';
 import type { DialogChoice, DialogContent, LocationInfo } from '../ui/dialog';
 import { revealedText } from '../ui/typewriter';
+import { START_DISTRICT } from '../../world/districts';
+import { districtName } from '../../world/placeNames';
+import { gameLocale, gameText } from '../locale';
 
 const PANEL = 0x1b1b2a;
 const DIALOG_HEIGHT = 140;
@@ -66,13 +69,14 @@ export class HudScene extends Phaser.Scene {
   }
 
   create() {
+    const text = gameText(this).hud;
     const headerBg = this.add.rectangle(0, 0, 330, 54, PANEL, 0.85).setOrigin(0).setStrokeStyle(2, 0xffd166);
     this.locationTitle = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
     this.locationSubtitle = this.add.text(12, 34, '', { fontFamily: FONT, fontSize: '8px', color: '#ffffff' });
     this.header = this.add.container(12, HEADER_TOP, [headerBg, this.locationTitle, this.locationSubtitle]);
 
     this.controls = this.add
-      .text(0, 0, 'WASD/Flechas: caminar   Shift: correr   E o clic: interactuar   Rueda o +/-: zoom   M: mapa', {
+      .text(0, 0, text.controls, {
         fontFamily: FONT,
         fontSize: '8px',
         color: '#ffffff',
@@ -86,10 +90,10 @@ export class HudScene extends Phaser.Scene {
     // Zoom and full-map controls of the city, bottom right; hidden inside buildings.
     this.zoomOut = new Button(this, 0, 0, '-', () => this.game.events.emit(EVENTS.zoomOut), 12);
     this.zoomIn = new Button(this, 0, 0, '+', () => this.game.events.emit(EVENTS.zoomIn), 12);
-    this.mapToggle = new Button(this, 0, 0, 'Mapa', () => this.game.events.emit(EVENTS.toggleMap), 10);
+    this.mapToggle = new Button(this, 0, 0, text.map, () => this.game.events.emit(EVENTS.toggleMap), 10);
     this.mapControls = this.add.container(0, 0, [this.zoomOut, this.zoomIn, this.mapToggle]);
     this.mapHint = this.add
-      .text(0, 0, 'Vista del mapa: arrastra para recorrerlo · rueda o +/- para el zoom · M o Esc para volver', {
+      .text(0, 0, text.mapHint, {
         fontFamily: FONT,
         fontSize: '8px',
         color: '#ffd166',
@@ -98,7 +102,7 @@ export class HudScene extends Phaser.Scene {
       })
       .setOrigin(0.5, 0)
       .setVisible(false);
-    this.showLocation({ title: 'Cúmulo City', subtitle: 'Distrito Centro', minimap: true });
+    this.showLocation({ title: 'Cúmulo City', subtitle: districtName(START_DISTRICT, gameLocale(this)), minimap: true });
     this.prompt = new Button(this, 0, 0, '', () => this.game.events.emit(EVENTS.interact)).setVisible(false);
 
     this.cardBg = this.add.rectangle(0, 0, CARD_WIDTH, 10, PANEL, 0.92).setOrigin(0).setStrokeStyle(2, 0xffd166);
@@ -106,11 +110,12 @@ export class HudScene extends Phaser.Scene {
     this.cardHeading = this.add.text(12, 10, '', { fontFamily: FONT, fontSize: '8px', color: '#ffd166' });
     this.cardTitle = this.add.text(12, 26, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff', wordWrap: wrap, lineSpacing: 4 });
     this.cardDetail = this.add.text(12, 0, '', { fontFamily: FONT, fontSize: '8px', color: '#c7d2fe', wordWrap: wrap, lineSpacing: 5 });
-    this.cardAction = new Button(this, 0, 0, 'Aceptar misión', () => this.game.events.emit(EVENTS.missionAccept), 10);
+    const acceptMission = gameText(this).missionCard.acceptMission;
+    this.cardAction = new Button(this, 0, 0, acceptMission, () => this.game.events.emit(EVENTS.missionAccept), 10);
     this.card = this.add
       .container(0, 0, [this.cardBg, this.cardHeading, this.cardTitle, this.cardDetail, this.cardAction])
       .setVisible(false);
-    this.badge = this.createBadge('¡Tienes una misión activa!');
+    this.badge = this.createBadge(text.activeBadge);
     this.card.add(this.badge);
 
     this.dialogBox = this.add.rectangle(0, 0, 10, DIALOG_HEIGHT, PANEL, 0.95).setOrigin(0).setStrokeStyle(3, 0xffd166);
@@ -121,7 +126,7 @@ export class HudScene extends Phaser.Scene {
     this.portrait = this.add.image(16 + PORTRAIT_SIZE / 2, 16 + PORTRAIT_SIZE / 2, '__DEFAULT').setScale(4);
     this.dialogTitle = this.add.text(18, 14, '', { fontFamily: FONT, fontSize: '12px', color: '#ffd166' });
     this.dialogText = this.add.text(18, 40, '', { fontFamily: FONT, fontSize: '10px', color: '#ffffff', lineSpacing: 8 });
-    this.dialogAccept = new Button(this, 0, 0, 'Aceptar', () => this.game.events.emit(EVENTS.dialogAdvance), 10);
+    this.dialogAccept = new Button(this, 0, 0, text.accept, () => this.game.events.emit(EVENTS.dialogAdvance), 10);
     this.dialog = this.add
       .container(0, 0, [this.dialogBox, this.portraitFrame, this.portrait, this.dialogTitle, this.dialogText, this.dialogAccept])
       .setVisible(false);
@@ -255,7 +260,8 @@ export class HudScene extends Phaser.Scene {
   private showMapMode(on: boolean) {
     this.mapHint.setVisible(on);
     this.minimapFrame.setVisible(!on && this.mapControls.visible);
-    this.mapToggle.setText(on ? 'Volver' : 'Mapa');
+    const text = gameText(this).hud;
+    this.mapToggle.setText(on ? text.mapBack : text.map);
     this.layout();
   }
 
@@ -344,11 +350,12 @@ export class HudScene extends Phaser.Scene {
 
   /** Full-screen shade with a centered panel; any key or click closes it. */
   private createIdleModal() {
+    const copy = gameText(this).hud;
     this.idleShade = this.add.rectangle(0, 0, 10, 10, 0x000000, 0.55).setOrigin(0).setInteractive();
     const panelWidth = 360;
-    const title = this.add.text(0, -44, '¿Sigues ahí?', { fontFamily: FONT, fontSize: '14px', color: '#ffd166' }).setOrigin(0.5);
+    const title = this.add.text(0, -44, copy.idleTitle, { fontFamily: FONT, fontSize: '14px', color: '#ffd166' }).setOrigin(0.5);
     const text = this.add
-      .text(0, -6, 'Notamos que llevas un rato sin moverte. Tu avance está guardado.', {
+      .text(0, -6, copy.idleText, {
         fontFamily: FONT,
         fontSize: '8px',
         color: '#ffffff',
@@ -357,7 +364,7 @@ export class HudScene extends Phaser.Scene {
         wordWrap: { width: panelWidth - 40 },
       })
       .setOrigin(0.5);
-    const back = new Button(this, 0, 42, 'Sigo aquí', () => this.closeIdleModal(), 10);
+    const back = new Button(this, 0, 42, copy.idleBack, () => this.closeIdleModal(), 10);
     const bg = this.add.rectangle(0, 0, panelWidth, 150, PANEL, 0.97).setStrokeStyle(3, 0xffd166);
     this.idlePanel = this.add.container(0, 0, [bg, title, text, back]);
     this.idleModal = this.add.container(0, 0, [this.idleShade, this.idlePanel]).setDepth(10).setVisible(false);

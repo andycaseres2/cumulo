@@ -2,6 +2,8 @@ import type Phaser from 'phaser';
 import { EVENTS, REGISTRY } from '../../config';
 import { missionCard } from '../../missionCard';
 import type { CurrentMission, GameMissions } from '../../missions';
+import type { Locale } from '@/i18n/locales';
+import { gameLocale } from '../locale';
 import { START_DISTRICT, type DistrictId } from '../../world/districts';
 
 /**
@@ -16,6 +18,7 @@ export class MissionTracker {
   private constructor(
     private readonly game: Phaser.Game,
     readonly missions: GameMissions,
+    private readonly locale: Locale,
   ) {
     game.events.on(EVENTS.missionAccept, () => void this.accept());
   }
@@ -23,7 +26,7 @@ export class MissionTracker {
   static of(scene: Phaser.Scene): MissionTracker {
     let tracker = scene.registry.get(REGISTRY.missionTracker) as MissionTracker | undefined;
     if (!tracker) {
-      tracker = new MissionTracker(scene.game, scene.registry.get(REGISTRY.missions) as GameMissions);
+      tracker = new MissionTracker(scene.game, scene.registry.get(REGISTRY.missions) as GameMissions, gameLocale(scene));
       scene.registry.set(REGISTRY.missionTracker, tracker);
     }
     return tracker;
@@ -37,7 +40,7 @@ export class MissionTracker {
     const current = await this.missions.current(this.district);
     if (mine !== this.refreshes) return;
     this.current = current;
-    this.game.events.emit(EVENTS.missionCard, missionCard(this.current, this.district));
+    this.game.events.emit(EVENTS.missionCard, missionCard(this.current, this.district, this.locale));
     this.game.events.emit(EVENTS.missionChanged, this.current);
   }
 

@@ -34,3 +34,12 @@ describe('mission talk', () => {
     expect(clientOutro(brief, false, portrait).map((p) => p.text)).toEqual(['Vuelve pronto']);
   });
 });
+
+describe('mission talk in English', () => {
+  it('labels the choices in English', () => {
+    expect(clientOffer(brief, 'active', portrait, 'en').at(-1)?.choices?.map((c) => c.label)).toEqual(["Let's start", 'Not now']);
+    const replay = clientOffer(brief, 'completed', portrait, 'en')[0];
+    expect(replay.text).toContain('So good to see you again!');
+    expect(replay.choices?.map((c) => c.label)).toEqual(['Play again', 'Not now']);
+  });
+});

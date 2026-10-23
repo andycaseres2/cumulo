@@ -1,6 +1,9 @@
-import { findExamDomain } from '../domain/ExamDomain';
+import { examSimulatorMessages } from '@/i18n/messages/examSimulator';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
+import { findExamDomain, type ExamDomainId } from '../domain/ExamDomain';
 import { EXAM_FORMAT } from '../domain/ExamFormat';
 import { scorePracticeExam, type PracticeExam, type PracticeExamResult } from '../domain/PracticeExam';
+import { domainText } from './examText';
 import './examSimulator.css';
 
 export interface ExamSimulatorOptions {
@@ -11,6 +14,8 @@ export interface ExamSimulatorOptions {
   theoryUrl: (slug: string) => string;
   durationMinutes: number;
   onFinished?: (result: PracticeExamResult) => void;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -35,6 +40,12 @@ const clock = (ms: number) => {
 
 /** Full practice exam: rules, one question at a time with a countdown, then the estimated score and a review. */
 export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOptions): void {
+  const locale = options.locale ?? DEFAULT_LOCALE;
+  const t = examSimulatorMessages[locale];
+  const domainTitle = (id: ExamDomainId) => {
+    const domain = findExamDomain(id);
+    return domain ? domainText(domain, locale).title : '';
+  };
   const root = el('section', { class: 'exam-simulator' });
   host.replaceChildren(root);
   let timer: ReturnType<typeof setInterval> | undefined;
@@ -42,19 +53,15 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
   function showIntro() {
     root.replaceChildren(
       el('div', { class: 'es-card es-intro' }, [
-        el('h2', { class: 'es-title' }, ['Simulacro del examen CLF-C02']),
+        el('h2', { class: 'es-title' }, [t.title]),
         el('ul', { class: 'es-rules' }, [
-          el('li', {}, [`${options.questionCount} preguntas de los cuatro dominios, en la proporción oficial del examen.`]),
-          el('li', {}, [`${options.durationMinutes} minutos. Al terminar el tiempo, el examen se entrega solo.`]),
-          el('li', {}, ['Puedes avanzar, volver y marcar preguntas para revisarlas antes de terminar.']),
-          el('li', {}, [
-            `Al final ves un puntaje estimado en la escala ${EXAM_FORMAT.minScore}–${EXAM_FORMAT.maxScore} (se aprueba con ${EXAM_FORMAT.passingScore}) y el repaso de cada pregunta.`,
-          ]),
+          el('li', {}, [t.rules.questions(options.questionCount)]),
+          el('li', {}, [t.rules.time(options.durationMinutes)]),
+          el('li', {}, [t.rules.navigation]),
+          el('li', {}, [t.rules.score({ min: EXAM_FORMAT.minScore, max: EXAM_FORMAT.maxScore, passing: EXAM_FORMAT.passingScore })]),
         ]),
-        el('p', { class: 'es-note' }, [
-          'Es una estimación: el examen real incluye 15 preguntas que no puntúan, preguntas de respuesta múltiple y una escala que AWS no publica.',
-        ]),
-        button('Empezar simulacro', start, { class: 'es-primary' }),
+        el('p', { class: 'es-note' }, [t.note]),
+        button(t.start, start, { class: 'es-primary' }),
       ]),
     );
   }
@@ -80,7 +87,7 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
 
     const timerText = el('span', { class: 'es-timer', 'data-exam-timer': '', 'aria-live': 'off' }, [clock(deadline - Date.now())]);
     const body = el('div', { class: 'es-question' });
-    const nav = el('div', { class: 'es-nav', role: 'group', 'aria-label': 'Ir a una pregunta' });
+    const nav = el('div', { class: 'es-nav', role: 'group', 'aria-label': t.navLabel });
     const confirm = el('div', { class: 'es-confirm', role: 'alertdialog', 'aria-live': 'assertive' });
     confirm.hidden = true;
 
@@ -88,7 +95,7 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
       nav.replaceChildren(
         ...exam.questions.map((_, i) => {
           const state = flagged.has(i) ? 'flagged' : answers[i] !== null ? 'answered' : 'empty';
-          const cell = button(String(i + 1), () => go(i), { class: 'es-nav-cell', 'data-exam-nav': '', 'data-state': state, 'aria-label': `Pregunta ${i + 1}` });
+          const cell = button(String(i + 1), () => go(i), { class: 'es-nav-cell', 'data-exam-nav': '', 'data-state': state, 'aria-label': t.questionLabel(i + 1) });
           if (i === current) cell.setAttribute('aria-current', 'step');
           cell.dataset.state = state;
           return cell;
@@ -98,9 +105,8 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
 
     function renderQuestion() {
       const q = exam.questions[current];
-      const domain = findExamDomain(q.domainId);
-      body.replaceChildren(
-        el('p', { class: 'es-progress' }, [`Pregunta ${current + 1} de ${exam.questions.length}`, el('span', { class: 'es-domain' }, [domain?.title ?? ''])]),
+            body.replaceChildren(
+        el('p', { class: 'es-progress' }, [t.progress(current + 1, exam.questions.length), el('span', { class: 'es-domain' }, [domainTitle(q.domainId)])]),
         el('p', { class: 'es-prompt' }, [q.prompt]),
         el(
           'div',
@@ -118,15 +124,15 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
           }),
         ),
         el('div', { class: 'es-actions' }, [
-          button('Anterior', () => go(current - 1), { class: 'es-secondary', ...(current === 0 ? { disabled: '' } : {}) }),
-          button(flagged.has(current) ? 'Quitar marca' : 'Marcar para revisar', () => {
+          button(t.previous, () => go(current - 1), { class: 'es-secondary', ...(current === 0 ? { disabled: '' } : {}) }),
+          button(flagged.has(current) ? t.unflag : t.flag, () => {
             if (flagged.has(current)) flagged.delete(current);
             else flagged.add(current);
             renderQuestion();
           }, { class: 'es-secondary' }),
           current < exam.questions.length - 1
-            ? button('Siguiente', () => go(current + 1), { class: 'es-primary' })
-            : button('Revisar y terminar', askToFinish, { class: 'es-primary' }),
+            ? button(t.next, () => go(current + 1), { class: 'es-primary' })
+            : button(t.reviewAndFinish, askToFinish, { class: 'es-primary' }),
         ]),
       );
       renderNav();
@@ -145,10 +151,10 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
         return;
       }
       confirm.replaceChildren(
-        el('p', {}, [`Tienes ${unanswered} ${unanswered === 1 ? 'pregunta' : 'preguntas'} sin responder. Cuentan como incorrectas.`]),
+        el('p', {}, [t.unanswered(unanswered)]),
         el('div', { class: 'es-actions' }, [
-          button('Seguir respondiendo', () => (confirm.hidden = true), { class: 'es-secondary' }),
-          button('Terminar igual', () => finish(false), { class: 'es-primary' }),
+          button(t.keepAnswering, () => (confirm.hidden = true), { class: 'es-secondary' }),
+          button(t.finishAnyway, () => finish(false), { class: 'es-primary' }),
         ]),
       );
       confirm.hidden = false;
@@ -167,12 +173,12 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
     root.replaceChildren(
       el('div', { class: 'es-card es-exam' }, [
         el('div', { class: 'es-topbar' }, [
-          el('span', { class: 'es-timer-label' }, ['Tiempo restante ', timerText]),
-          button('Terminar examen', askToFinish, { class: 'es-secondary' }),
+          el('span', { class: 'es-timer-label' }, [t.timeLeft, timerText]),
+          button(t.finishExam, askToFinish, { class: 'es-secondary' }),
         ]),
         confirm,
         body,
-        el('p', { class: 'es-nav-label' }, ['Preguntas']),
+        el('p', { class: 'es-nav-label' }, [t.questions]),
         nav,
       ]),
     );
@@ -194,28 +200,26 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
   function showResults(exam: PracticeExam, answers: (number | null)[], result: PracticeExamResult, timeUp: boolean) {
     root.replaceChildren(
       el('div', { class: 'es-card es-results' }, [
-        ...(timeUp ? [el('p', { class: 'es-timeup' }, ['Se acabó el tiempo: el examen se entregó con tus respuestas hasta ese momento.'])] : []),
-        el('p', { class: 'es-score-label' }, ['Puntaje estimado']),
+        ...(timeUp ? [el('p', { class: 'es-timeup' }, [t.timeUp])] : []),
+        el('p', { class: 'es-score-label' }, [t.scoreLabel]),
         el('p', { class: result.passed ? 'es-score is-pass' : 'es-score is-fail' }, [
           el('span', { 'data-exam-score': '' }, [String(result.score)]),
-          el('span', { class: 'es-verdict' }, [result.passed ? 'Aprobado' : 'No aprobado']),
+          el('span', { class: 'es-verdict' }, [result.passed ? t.passed : t.failed]),
         ]),
-        el('p', { class: 'es-summary' }, [
-          `${result.correct} de ${result.total} correctas. Se aprueba con ${EXAM_FORMAT.passingScore}.`,
-        ]),
+        el('p', { class: 'es-summary' }, [t.summary(result.correct, result.total, EXAM_FORMAT.passingScore)]),
         el(
           'ul',
           { class: 'es-domains' },
           result.byDomain.map((d) =>
             el('li', { class: 'es-domain-row', 'data-domain': d.domainId }, [
-              el('span', {}, [`${findExamDomain(d.domainId)?.order}. ${findExamDomain(d.domainId)?.title}`]),
-              el('span', { class: 'es-domain-score' }, [`${d.correct} de ${d.total}`]),
+              el('span', {}, [`${findExamDomain(d.domainId)?.order}. ${domainTitle(d.domainId)}`]),
+              el('span', { class: 'es-domain-score' }, [t.domainScore(d.correct, d.total)]),
             ]),
           ),
         ),
-        button('Nuevo simulacro', start, { class: 'es-primary' }),
+        button(t.newExam, start, { class: 'es-primary' }),
       ]),
-      el('h2', { class: 'es-review-title' }, ['Repaso de las preguntas']),
+      el('h2', { class: 'es-review-title' }, [t.reviewTitle]),
       el(
         'ol',
         { class: 'es-review' },
@@ -226,12 +230,12 @@ export function renderExamSimulator(host: HTMLElement, options: ExamSimulatorOpt
           return el('li', { class: 'es-review-item', 'data-exam-review': '', 'data-state': state }, [
             el('p', { class: 'es-prompt' }, [q.prompt]),
             el('p', { class: 'es-review-answer' }, [
-              el('strong', {}, ['Tu respuesta: ']),
-              chosen === null ? 'Sin responder' : `${chosen.label} ${chosen.correct ? '✓' : '✗'}`,
+              el('strong', {}, [t.yourAnswer]),
+              chosen === null ? t.noAnswer : `${chosen.label} ${chosen.correct ? '✓' : '✗'}`,
             ]),
-            ...(chosen?.correct ? [] : [el('p', { class: 'es-review-answer' }, [el('strong', {}, ['Respuesta correcta: ']), right.label])]),
+            ...(chosen?.correct ? [] : [el('p', { class: 'es-review-answer' }, [el('strong', {}, [t.rightAnswer]), right.label])]),
             el('p', { class: 'es-review-why' }, [right.explanation]),
-            el('a', { href: options.theoryUrl(q.topicSlug) }, ['Repasar el tema']),
+            el('a', { href: options.theoryUrl(q.topicSlug) }, [t.reviewTopic]),
           ]);
         }),
       ),

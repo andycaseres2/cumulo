@@ -20,6 +20,8 @@ export const REGISTRY = {
   missionTracker: 'missionTracker',
   /** Character picked before ('man' | 'woman') or null. */
   character: 'character',
+  /** Language of the game's text (Locale). */
+  locale: 'locale',
   /** Callback to tell the host page which character the player picked. */
   onCharacterChosen: 'onCharacterChosen',
 } as const;

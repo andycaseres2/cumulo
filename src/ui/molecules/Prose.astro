@@ -1,8 +1,13 @@
 ---
-/** Typography for long-form Markdown content. */
+/** Typography for long-form Markdown content. `lang` marks content shown in a language other than the page's. */
+export interface Props {
+  lang?: string;
+}
+
+const { lang } = Astro.props;
 ---
 
-<div class="prose"><slot /></div>
+<div class="prose" lang={lang}><slot /></div>
 
 <style>
   .prose {

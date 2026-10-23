@@ -99,4 +99,13 @@ describe('auth forms', () => {
     expect(message()).toContain('Revisa tu correo');
     expect(onSignedIn).not.toHaveBeenCalled();
   });
+
+  it('speaks English when asked, including the account service errors', async () => {
+    renderAuthForms(root(), { auth: fakeAuth({ signIn: { ok: false, error: 'invalid-credentials' } }), onSignedIn: vi.fn(), locale: 'en' });
+    expect(root().querySelector('[data-password-toggle]')!.getAttribute('aria-label')).toBe('Show password');
+    field('email').value = 'andy@example.com';
+    field('password').value = 'secret123';
+    await submit();
+    expect(message()).toBe('Wrong email or password.');
+  });
 });

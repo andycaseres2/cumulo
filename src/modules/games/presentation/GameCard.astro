@@ -6,11 +6,13 @@ import Badge from '@/ui/atoms/Badge.astro';
 import Button from '@/ui/atoms/Button.astro';
 import Card from '@/ui/molecules/Card.astro';
 import { gameArt } from './gameArt';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].gameCard;
 
 export interface Props {
   game: Game;
@@ -26,21 +28,21 @@ const Heading = headingLevel === 2 ? 'h2' : 'h3';
 
 <Card accent={playable ? 'var(--color-accent)' : 'var(--color-border)'}>
   <div class="art" class:list={{ placeholder: !art }}>
-    {art ? <img src={art} alt={`Vista de ${game.title}`} loading="lazy" width="640" height="356" /> : <span>?</span>}
+    {art ? <img src={art} alt={t.artAlt(game.title)} loading="lazy" width="640" height="356" /> : <span>?</span>}
   </div>
   <div class="meta">
-    {playable ? <Badge variant="solid">Disponible</Badge> : <Badge color="var(--color-text-muted)">Próximamente</Badge>}
-    <Badge color="var(--color-text-muted)">Nivel Practitioner</Badge>
+    {playable ? <Badge variant="solid">{t.available}</Badge> : <Badge color="var(--color-text-muted)">{t.comingSoon}</Badge>}
+    <Badge color="var(--color-text-muted)">{t.level}</Badge>
   </div>
   <Heading class="title">{game.title}</Heading>
   <p class="tagline">{game.tagline}</p>
   <p class="description">{game.description}</p>
-  <ul class="domains" aria-label="Dominios que practica">
+  <ul class="domains" aria-label={t.domains}>
     {domains.map((domain) => <li><DomainBadge domain={domain} /></li>)}
   </ul>
   <Fragment slot="footer">
-    {playable && <Button href={routes.game(game.slug)}>Jugar ahora</Button>}
-    {playable && <span class="account-note">Requiere una cuenta gratuita</span>}
+    {playable && <Button href={routes.game(game.slug)}>{t.play}</Button>}
+    {playable && <span class="account-note">{t.accountNote}</span>}
   </Fragment>
 </Card>
 

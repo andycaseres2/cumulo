@@ -1,12 +1,16 @@
 import { MIN_PASSWORD_LENGTH, NAME_LENGTH, signIn, signUp } from '../application/authenticate';
 import type { AuthOutcome, PlayerAuth } from '../domain/PlayerAuth';
-import { AUTH_MESSAGES, CONFIRM_EMAIL_MESSAGE } from './authMessages';
+import { playerMessages } from '@/i18n/messages/player';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
+import { authMessages, confirmEmailMessage } from './authMessages';
 import './authForms.css';
 
 export interface AuthFormsOptions {
   auth: PlayerAuth;
   /** Called after a successful sign-in, e.g. to go back to the game. */
   onSignedIn: () => void;
+  /** Language of the copy; Spanish when omitted. */
+  locale?: Locale;
 }
 
 type Mode = 'sign-in' | 'sign-up';
@@ -29,14 +33,14 @@ const EYE_OFF_ICON =
   '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.7 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.2 3.2M6.6 6.6A17.4 17.4 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m2 2 20 20"/></svg>';
 
 /** Password field with an eye button that shows or hides what was typed. */
-function passwordField(label: string, attrs: Record<string, string>) {
+function passwordField(label: string, attrs: Record<string, string>, toggleLabels: { show: string; hide: string }) {
   const wrapper = field(label, { ...attrs, type: 'password' });
   const input = wrapper.querySelector('input')!;
   const toggle = el('button', { type: 'button', class: 'auth-eye', 'data-password-toggle': '' });
   const render = () => {
     const visible = input.type === 'text';
     toggle.innerHTML = visible ? EYE_OFF_ICON : EYE_ICON;
-    toggle.setAttribute('aria-label', visible ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    toggle.setAttribute('aria-label', visible ? toggleLabels.hide : toggleLabels.show);
     toggle.setAttribute('aria-pressed', String(visible));
   };
   toggle.addEventListener('click', () => {
@@ -51,25 +55,28 @@ function passwordField(label: string, attrs: Record<string, string>) {
 }
 
 /** Sign-in and sign-up forms with tabs, validation messages and a busy state. */
-export function renderAuthForms(host: HTMLElement, { auth, onSignedIn }: AuthFormsOptions) {
+export function renderAuthForms(host: HTMLElement, { auth, onSignedIn, locale = DEFAULT_LOCALE }: AuthFormsOptions) {
+  const t = playerMessages[locale].auth;
+  const errors = authMessages(locale);
+  const toggleLabels = { show: t.showPassword, hide: t.hidePassword };
   const message = el('p', { class: 'auth-message', 'data-auth-message': '', role: 'alert' });
 
   const signInForm = el('form', { class: 'auth-form', novalidate: '' }, [
-    field('Email', { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
-    passwordField('Contraseña', { name: 'password', autocomplete: 'current-password', required: '' }),
-    el('button', { type: 'submit', class: 'auth-submit' }, ['Ingresar']),
+    field(t.email, { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
+    passwordField(t.password, { name: 'password', autocomplete: 'current-password', required: '' }, toggleLabels),
+    el('button', { type: 'submit', class: 'auth-submit' }, [t.signIn]),
   ]);
   const signUpForm = el('form', { class: 'auth-form', novalidate: '', hidden: '' }, [
-    field('Tu nombre', { name: 'name', type: 'text', autocomplete: 'nickname', maxlength: String(NAME_LENGTH.max), required: '' }),
-    field('Email', { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
-    passwordField(`Contraseña (mínimo ${MIN_PASSWORD_LENGTH} caracteres)`, {
+    field(t.name, { name: 'name', type: 'text', autocomplete: 'nickname', maxlength: String(NAME_LENGTH.max), required: '' }),
+    field(t.email, { name: 'email', type: 'email', autocomplete: 'email', required: '' }),
+    passwordField(t.passwordWithMin(MIN_PASSWORD_LENGTH), {
       name: 'password',
       type: 'password',
       autocomplete: 'new-password',
       minlength: String(MIN_PASSWORD_LENGTH),
       required: '',
-    }),
-    el('button', { type: 'submit', class: 'auth-submit' }, ['Crear cuenta']),
+    }, toggleLabels),
+    el('button', { type: 'submit', class: 'auth-submit' }, [t.signUp]),
   ]);
 
   const tabs = el('div', { class: 'auth-tabs', role: 'tablist' });
@@ -79,8 +86,8 @@ export function renderAuthForms(host: HTMLElement, { auth, onSignedIn }: AuthFor
     tabs.append(button);
     return button;
   };
-  const signInTab = tab('sign-in', 'Ingresar');
-  const signUpTab = tab('sign-up', 'Crear cuenta');
+  const signInTab = tab('sign-in', t.signIn);
+  const signUpTab = tab('sign-up', t.signUp);
 
   function show(mode: Mode) {
     signInForm.hidden = mode !== 'sign-in';
@@ -105,9 +112,9 @@ export function renderAuthForms(host: HTMLElement, { auth, onSignedIn }: AuthFor
       try {
         const outcome = await run(new FormData(form));
         if (outcome.ok) onOk(outcome);
-        else say(AUTH_MESSAGES[outcome.error], 'error');
+        else say(errors[outcome.error], 'error');
       } catch {
-        say(AUTH_MESSAGES.unavailable, 'error');
+        say(errors.unavailable, 'error');
       } finally {
         submit.disabled = false;
       }
@@ -125,7 +132,7 @@ export function renderAuthForms(host: HTMLElement, { auth, onSignedIn }: AuthFor
         return;
       }
       signUpForm.reset();
-      say(CONFIRM_EMAIL_MESSAGE, 'success');
+      say(confirmEmailMessage(locale), 'success');
     },
   );
 

@@ -7,16 +7,18 @@ import Container from '@/ui/atoms/Container.astro';
 import PageLayout from '@/ui/layouts/PageLayout.astro';
 import Breadcrumbs from '@/ui/molecules/Breadcrumbs.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf, localePaths } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].theory;
 
 export function getStaticPaths() {
   // Every topic belongs to the first course until the platform offers more than one.
   const [course] = theory.courses();
-  return localePaths().map(({ params }) => ({ params: { ...params, course: course.slug }, props: { course } }));
+  return localePaths().map(({ params }) => ({ params: { ...params, course: course.slug }, props: { course: theory.findCourse(course.slug, params.lang)! } }));
 }
 
 const { course } = Astro.props;
@@ -24,17 +26,17 @@ const [catalog, coverage] = await Promise.all([theory.catalog(locale), theory.co
 ---
 
 <PageLayout
-  title={`Teoría de ${course.title}`}
-  description={`Toda la teoría del examen ${course.title} (${course.examCode}), organizada por los cuatro dominios oficiales.`}
+  title={t.courseTitle(course.title)}
+  description={t.courseDescription(course.title, course.examCode)}
 >
   <Container>
     <div class="page">
-      <Breadcrumbs items={[{ label: 'Teoría', href: routes.theory }, { label: course.title }]} />
+      <Breadcrumbs items={[{ label: t.title, href: routes.theory }, { label: course.title }]} />
       <SectionHeading
         level={1}
-        eyebrow={`Teoría · ${course.examCode}`}
+        eyebrow={t.courseEyebrow(course.examCode)}
         title={course.title}
-        description={`Organizada según los cuatro dominios oficiales del examen ${course.examCode}. Empieza por el primero si nunca usaste la nube.`}
+        description={t.courseLead(course.examCode)}
       />
       <div class="overview">
         <ExamFormatCard />
@@ -60,6 +62,10 @@ const [catalog, coverage] = await Promise.all([theory.catalog(locale), theory.co
 
 <script>
   import { theoryProgressStore } from '@/composition/theoryProgress';
+  import { currentLocale } from '@/i18n/client';
+  import { pagesMessages } from '@/i18n/messages/pages';
+
+  const t = pagesMessages[currentLocale()].theory;
 
   // Marks the topics this visitor completed and counts them per domain.
   const completed = new Set(await (await theoryProgressStore()).load());
@@ -70,7 +76,7 @@ const [catalog, coverage] = await Promise.all([theory.catalog(locale), theory.co
   for (const progress of document.querySelectorAll<HTMLElement>('[data-domain-progress]')) {
     const section = progress.closest('section')!;
     const done = [...section.querySelectorAll<HTMLElement>('[data-topic]')].filter((t) => completed.has(t.dataset.topic!)).length;
-    progress.textContent = `${done} de ${progress.dataset.total} temas completados`;
+    progress.textContent = t.completed(done, progress.dataset.total ?? '');
     progress.hidden = false;
   }
 </script>

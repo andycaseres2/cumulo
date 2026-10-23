@@ -1,18 +1,17 @@
+import { playerMessages } from '@/i18n/messages/player';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import { MIN_PASSWORD_LENGTH, NAME_LENGTH } from '../application/authenticate';
 import type { AuthErrorKind } from '../domain/PlayerAuth';
 
-export const AUTH_MESSAGES: Record<AuthErrorKind, string> = {
-  'invalid-name': `Tu nombre debe tener entre ${NAME_LENGTH.min} y ${NAME_LENGTH.max} caracteres.`,
-  'invalid-email': 'Revisa tu email: no parece válido.',
-  'missing-password': 'Escribe tu contraseña.',
-  'weak-password': `La contraseña debe tener al menos ${MIN_PASSWORD_LENGTH} caracteres.`,
-  'invalid-credentials': 'Email o contraseña incorrectos.',
-  'email-not-confirmed': 'Confirma tu email antes de ingresar: revisa tu bandeja de entrada y la de spam.',
-  'user-exists': 'Ya existe una cuenta con ese email. Prueba ingresar.',
-  'rate-limited': 'Demasiados intentos. Espera unos minutos y vuelve a probar.',
-  unavailable: 'No pudimos conectar con el servicio de cuentas. Revisa tu conexión o intenta más tarde.',
-  unknown: 'Algo salió mal. Intenta de nuevo.',
-};
+/** What to tell the player for each account service error, in `locale`. */
+export function authMessages(locale: Locale = DEFAULT_LOCALE): Record<AuthErrorKind, string> {
+  return playerMessages[locale].auth.errors({ nameMin: NAME_LENGTH.min, nameMax: NAME_LENGTH.max, passwordMin: MIN_PASSWORD_LENGTH });
+}
 
-export const CONFIRM_EMAIL_MESSAGE =
-  '¡Cuenta creada! Revisa tu correo y abre el enlace de confirmación. Después vuelve aquí para ingresar.';
+/** Shown after signing up when the account still needs its email confirmed. */
+export function confirmEmailMessage(locale: Locale = DEFAULT_LOCALE): string {
+  return playerMessages[locale].auth.confirmEmail;
+}
+
+export const AUTH_MESSAGES = authMessages();
+export const CONFIRM_EMAIL_MESSAGE = confirmEmailMessage();

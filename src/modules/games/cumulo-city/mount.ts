@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/locales';
 import { REGISTRY } from './config';
 import { BootScene } from './engine/scenes/BootScene';
 import { CityScene } from './engine/scenes/CityScene';
@@ -15,6 +16,8 @@ export interface CumuloCityOptions {
   missions?: GameMissions;
   /** Character picked before; the selection screen is skipped when present. */
   character?: PlayableCharacter | null;
+  /** Language of the game's text; Spanish when absent. */
+  locale?: Locale;
   /** Called once the player picks a character on the selection screen. */
   onCharacterChosen?: (character: PlayableCharacter) => void;
 }
@@ -41,6 +44,7 @@ export async function mountCumuloCity(parent: HTMLElement, options: CumuloCityOp
     callbacks: {
       preBoot: (booting) => {
         booting.registry.set(REGISTRY.playerName, options.playerName);
+        booting.registry.set(REGISTRY.locale, options.locale ?? DEFAULT_LOCALE);
         booting.registry.set(REGISTRY.missions, options.missions ?? noMissions);
         booting.registry.set(REGISTRY.character, options.character ?? null);
         booting.registry.set(REGISTRY.onCharacterChosen, options.onCharacterChosen ?? (() => {}));

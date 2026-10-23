@@ -17,37 +17,9 @@ import { busStopTalk, STAY } from '../../busStop';
 import { missionAccess, type AccessPolicy } from '../../world/access';
 import { buildCityGround, buildingTop, doorTile, streetProps, type BuildingDef, type GroundGrid } from '../../world/cityMap';
 import { BUS_STOP, districtOf, findBuilding, findDistrict, type District, type DistrictId } from '../../world/districts';
+import { buildingName, districtName } from '../../world/placeNames';
 import { G } from '../../world/tileTypes';
-
-const BUS_LINE = 'Con el bus de la esquina llegas a los otros distritos. Cada uno tiene clientes con problemas distintos.';
-
-/** What neighbours talk about in each district: hints of the problems its clients have. */
-const NPC_LINES: Record<DistrictId, string[]> = {
-  downtown: [
-    '¿Viste la Pastelería Dulce Nube? Dicen que su web se cae cada Navidad.',
-    'Si recién empiezas, pasa por la Cloud Academy. Ahí te explican todo desde cero.',
-    'Rapidito recibe miles de pedidos al mediodía y casi ninguno de madrugada.',
-    'En Seguros Horizonte se preguntan si la nube les conviene más que su centro de datos.',
-  ],
-  financial: [
-    'En el Banco Andino andan preocupados por la seguridad de los datos de sus clientes.',
-    'Aquí todos hablan de auditorías, cifrado y permisos. Es el barrio más cuidadoso de la ciudad.',
-    'La Fintech PagoYa mueve pagos de miles de personas. Un acceso indebido sería un desastre.',
-    'Dicen que en la Bolsa de Valores Andina reciben ataques para tumbar su sistema.',
-  ],
-  tech: [
-    'StreamLlama quiere llegar a toda Latinoamérica, pero sus videos cargan lento fuera de Lima.',
-    'La Municipalidad tiene que guardar sus documentos por diez años. ¡Diez!',
-    'En la Clínica Vida dicen que sus sistemas no pueden caerse nunca.',
-    'En el Startup Lab cada mes nace una startup que quiere crecer sin administrar servidores.',
-  ],
-  market: [
-    'Me contaron que en Startup Hub pagan una fortuna por servidores que nadie usa.',
-    'En el Estudio Contable Saldo siempre preguntan por qué la factura de AWS subió.',
-    'La Florería Primavera vende diez veces más en San Valentín. El resto del año, casi nada.',
-    'En el Contact Center Andino atienden las 24 horas. Si algo se cae, ¿a quién llaman?',
-  ],
-};
+import { gameLocale, gameText } from '../locale';
 
 /** Each district places its neighbours differently, the same way on every visit. */
 const NPC_SEEDS: Record<DistrictId, number> = { downtown: 2024, financial: 2025, tech: 2026, market: 2027 };
@@ -97,6 +69,7 @@ export class CityScene extends Phaser.Scene {
 
   create(data: CityStartData = {}) {
     this.tracker = MissionTracker.of(this);
+    this.access = missionAccess(null, gameLocale(this));
     this.district = findDistrict(data.districtId ?? this.tracker.district);
     this.tracker.district = this.district.id;
     this.transitioning = false;
@@ -164,12 +137,12 @@ export class CityScene extends Phaser.Scene {
   }
 
   private showLocation() {
-    this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: this.district.name, minimap: true });
+    this.game.events.emit(EVENTS.location, { title: 'Cúmulo City', subtitle: districtName(this.district.id, gameLocale(this)), minimap: true });
   }
 
   /** A readable sign over the bus stop, and a blue dot that shows it on the minimap. */
   private markBusStop(stop: { x: number; y: number }) {
-    const text = 'Bus · otros distritos';
+    const text = gameText(this).city.busSign;
     const y = stop.y - 34;
     this.add.rectangle(stop.x, y, text.length * 4 + 12, 10, 0x2b2b3a).setStrokeStyle(1, 0x5b8fd6).setDepth(8_000);
     this.add
@@ -186,9 +159,9 @@ export class CityScene extends Phaser.Scene {
     this.interactions.add({
       x: stop.x,
       y: stop.y - 4,
-      prompt: '[E] Tomar el bus',
+      prompt: gameText(this).city.busPrompt,
       open: () => ({
-        pages: [busStopTalk(this.district.id)],
+        pages: [busStopTalk(this.district.id, gameLocale(this))],
         onChoice: (choice: string) => {
           if (choice !== STAY) this.travel(choice as DistrictId);
         },
@@ -337,13 +310,14 @@ export class CityScene extends Phaser.Scene {
   }
 
   private addDoor({ building, x, y }: Door) {
+    const name = buildingName(building.id, gameLocale(this));
     this.interactions.add({
       x,
       y,
-      prompt: `[E] Entrar a ${building.name}`,
+      prompt: gameText(this).city.enterPrompt(name),
       open: () => {
         const decision = this.access.canEnter(building);
-        if (!decision.allowed) return { title: building.name, text: decision.reason };
+        if (!decision.allowed) return { title: name, text: decision.reason };
         this.enterBuilding(building);
         return null;
       },
@@ -381,7 +355,7 @@ export class CityScene extends Phaser.Scene {
    * active mission's door, or to the bus stop when that building is in another district.
    */
   private async applyMission(current: CurrentMission | null) {
-    this.access = missionAccess(current);
+    this.access = missionAccess(current, gameLocale(this));
     const active = current?.state === 'active' ? findBuilding(current.brief.buildingId) : undefined;
     if (active && districtOf(active.id)?.id === this.district.id) {
       const door = doorTile(active);
@@ -431,7 +405,8 @@ export class CityScene extends Phaser.Scene {
     const taken = new Set([...streetProps(ground, this.district.buildings), BUS_STOP].map((p) => `${p.x},${p.y}`));
     const underBuilding = (x: number, y: number) =>
       this.district.buildings.some((b) => x >= b.x && x < b.x + b.w && y >= buildingTop(b) && y <= b.bottom);
-    const lines = [...NPC_LINES[this.district.id], BUS_LINE];
+    const text = gameText(this).city;
+    const lines = [...text.npcLines[this.district.id], text.busLine];
     const free: { x: number; y: number }[] = [];
     for (let y = 0; y < MAP_H; y++) {
       for (let x = 0; x < MAP_W; x++) {
@@ -448,11 +423,11 @@ export class CityScene extends Phaser.Scene {
         get y() {
           return npc.y;
         },
-        prompt: '[E] Hablar',
+        prompt: text.talkPrompt,
         open: () => {
           npc.frozen = true;
           npc.face(this.player.x, this.player.y);
-          return { title: 'Vecino', text: npc.line, portrait: { key: npc.look, frame: frameName('down', 0) } };
+          return { title: text.neighbour, text: npc.line, portrait: { key: npc.look, frame: frameName('down', 0) } };
         },
         close: () => {
           npc.frozen = false;

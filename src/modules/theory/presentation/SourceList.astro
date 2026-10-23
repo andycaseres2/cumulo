@@ -1,13 +1,17 @@
 ---
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
+
 export interface Props {
   sources: string[];
 }
 
 const { sources } = Astro.props;
+const t = pagesMessages[localeOf(Astro)].topic;
 ---
 
 <aside class="sources" aria-labelledby="fuentes">
-  <h2 id="fuentes">Fuentes oficiales</h2>
+  <h2 id="fuentes">{t.sources}</h2>
   <ul>
     {
       sources.map((url) => (

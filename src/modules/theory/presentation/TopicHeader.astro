@@ -3,6 +3,8 @@ import type { ExamDomain } from '@/modules/exam/domain/ExamDomain';
 import DomainBadge from '@/modules/exam/presentation/DomainBadge.astro';
 import type { Topic } from '@/modules/theory/domain/Topic';
 import Badge from '@/ui/atoms/Badge.astro';
+import { pagesMessages } from '@/i18n/messages/pages';
+import { localeOf } from '@/i18n/page';
 
 export interface Props {
   topic: Topic;
@@ -10,18 +12,19 @@ export interface Props {
 }
 
 const { topic, domain } = Astro.props;
+const t = pagesMessages[localeOf(Astro)].topic;
 ---
 
 <header class="topic-header">
   <div class="meta">
     <DomainBadge domain={domain} variant="solid" />
-    <span class="reading">{topic.readingMinutes} min de lectura</span>
+    <span class="reading">{t.reading(topic.readingMinutes)}</span>
   </div>
   <h1>{topic.title}</h1>
   <p class="summary">{topic.summary}</p>
   {
     topic.services.length > 0 && (
-      <ul class="services" aria-label="Servicios de este tema">
+      <ul class="services" aria-label={t.servicesLabel}>
         {topic.services.map((service) => (
           <li>
             <Badge color="var(--color-text-muted)">{service}</Badge>

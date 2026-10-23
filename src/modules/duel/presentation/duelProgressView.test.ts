@@ -27,4 +27,18 @@ describe('renderDuelProgress', () => {
     expect(host.textContent).toContain('Aún no juegas contrarreloj');
     expect(host.querySelector('a')!.textContent).toBe('Jugar el duelo');
   });
+
+  it('shows the summary in English when the locale is en', () => {
+    const host = document.createElement('div');
+    renderDuelProgress(host, { beatenRivals: ['a'], bestTimeAttack: 14, bestPractice: { storage: 1, compute: 0.5 } }, {
+      rivals,
+      familyCount: 13,
+      gameUrl: '/en/games/service-duel',
+      locale: 'en',
+    });
+    expect(host.querySelector('.dp-count')!.textContent).toBe('1 of 3 rivals beaten');
+    expect(host.textContent).toContain('Time attack record: 14 right');
+    expect(host.textContent).toContain('2 of 13 families trained, 1 mastered');
+    expect(host.querySelector('a')!.textContent).toBe('Keep playing');
+  });
 });

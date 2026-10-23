@@ -2,11 +2,14 @@
 import type { DomainSection } from '@/modules/theory/application/listTheoryCatalog';
 import { domainColor } from '@/modules/exam/presentation/domainColor';
 import WeightStat from '@/ui/molecules/WeightStat.astro';
+import { domainText } from '@/modules/exam/presentation/examText';
+import { pagesMessages } from '@/i18n/messages/pages';
 import { localeOf } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = pagesMessages[locale].domains;
 
 export interface Props {
   sections: DomainSection[];
@@ -21,10 +24,10 @@ const { sections } = Astro.props;
       <li style={`--domain-color: ${domainColor(domain.id)}`}>
         <a href={routes.theoryDomain(domain.id)}>
           <span class="order">{domain.order}</span>
-          <span class="title">{domain.title}</span>
-          <span class="count">{topics.length} temas</span>
+          <span class="title">{domainText(domain, locale).title}</span>
+          <span class="count">{t.topics(topics.length)}</span>
         </a>
-        <WeightStat label="del examen" value={domain.weight} color={domainColor(domain.id)} />
+        <WeightStat label={t.weight} value={domain.weight} color={domainColor(domain.id)} />
       </li>
     ))
   }

@@ -6,6 +6,7 @@ import PageLayout from '@/ui/layouts/PageLayout.astro';
 import SectionHeading from '@/ui/molecules/SectionHeading.astro';
 import { localeOf, localePaths } from '@/i18n/page';
 import { routesFor } from '@/ui/routes';
+import { examSimulatorMessages } from '@/i18n/messages/examSimulator';
 
 export function getStaticPaths() {
   return localePaths();
@@ -13,22 +14,23 @@ export function getStaticPaths() {
 
 const locale = localeOf(Astro);
 const routes = routesFor(locale);
+const t = examSimulatorMessages[locale].page;
 
 // The bank (every theory topic's quiz and practice questions) is served at /practice-exam/bank.json; only its size is needed here.
 const bank = await theory.quizBank(locale);
 ---
 
 <PageLayout
-  title="Simulacro del examen"
-  description={`Practica con un simulacro del examen ${EXAM_FORMAT.code}: ${EXAM_FORMAT.questions} preguntas, ${EXAM_FORMAT.durationMinutes} minutos y puntaje estimado.`}
+  title={t.title}
+  description={t.description(EXAM_FORMAT.code, EXAM_FORMAT.questions, EXAM_FORMAT.durationMinutes)}
 >
   <Container width="reading">
     <div class="page">
       <SectionHeading
         level={1}
-        eyebrow="Practica"
-        title="Simulacro del examen"
-        description={`Pon a prueba todo lo que estudiaste con un examen como el ${EXAM_FORMAT.code}: preguntas de los cuatro dominios, con tiempo y puntaje. Cada intento trae preguntas distintas de un banco de ${bank.length}.`}
+        eyebrow={t.eyebrow}
+        title={t.title}
+        description={t.intro(EXAM_FORMAT.code, bank.length)}
       />
       <div
         data-practice-exam
@@ -55,7 +57,8 @@ const bank = await theory.quizBank(locale);
   import { currentLocale } from '@/i18n/client';
   import { routesFor } from '@/ui/routes';
 
-  const routes = routesFor(currentLocale());
+  const locale = currentLocale();
+  const routes = routesFor(locale);
 
   const host = document.querySelector<HTMLElement>('[data-practice-exam]');
   if (host) {
@@ -67,6 +70,7 @@ const bank = await theory.quizBank(locale);
       questionCount: preview.questions.length,
       theoryUrl: routes.topic,
       durationMinutes: Number(host.dataset.minutes),
+      locale,
     });
   }
 </script>
