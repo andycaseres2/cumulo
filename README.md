@@ -38,6 +38,7 @@ PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 - Never add the **secret key** (`sb_secret_...`) or the legacy `service_role` key: they bypass Row Level Security and must not reach the browser or the repository.
 - The shared client lives in `src/infrastructure/supabase/client.ts`; it returns `null` while the variables are missing.
 - Restart `pnpm dev` after editing `.env`.
+- In production, also set **`SITE_URL`** (e.g. `https://cumulo.app`) as a build variable of the host. It gives every page its canonical link and social preview image, and the absolute URLs of `/sitemap.xml` and `/robots.txt`. Without it those are left out (the sitemap points to localhost).
 
 ### Accounts (Supabase Auth)
 

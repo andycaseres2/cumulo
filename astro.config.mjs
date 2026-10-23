@@ -11,6 +11,9 @@ const oldTopicPages = Object.fromEntries(
 );
 
 export default defineConfig({
+  // Public address of the site (e.g. https://cumulo.app), set by the host at build time. Used for canonical
+  // links, social previews and the sitemap; without it they are left out or point to localhost.
+  site: process.env.SITE_URL || undefined,
   // The dev toolbar overlaps the full-screen game canvas.
   devToolbar: { enabled: false },
   // Routes were Spanish, the progress page became part of the profile and the game was renamed from Nimbus City.

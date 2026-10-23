@@ -17,7 +17,7 @@ const GAMES: Game[] = [
     title: 'Simulacro de examen',
     tagline: '65 preguntas con tiempo, como el examen real',
     description: 'Practica bajo presión con preguntas de escenarios de los cuatro dominios y recibe la explicación de cada respuesta.',
-    status: 'coming-soon',
+    status: 'available',
     level: 'practitioner',
     domains: ['cloud-concepts', 'security-compliance', 'technology-services', 'billing-pricing-support'],
   },
